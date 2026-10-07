@@ -1,0 +1,52 @@
+---
+// Metadati SEO e social di ogni pagina (ARCHITECTURE.md §12).
+export type Lingua = 'it' | 'en';
+
+export interface Alternativa {
+  lang: Lingua;
+  href: string; // percorso assoluto, es. /en/the-project/
+}
+
+interface Props {
+  title: string;
+  description: string;
+  lang: Lingua;
+  og?: string; // percorso dell'immagine OG 1200×630 (default: /og/default.jpg)
+  alternate?: Alternativa[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  lang,
+  og = '/og/default.jpg',
+  alternate = [],
+  noindex = false,
+} = Astro.props;
+const sito = Astro.site ?? Astro.url;
+const canonical = new URL(Astro.url.pathname, sito).href;
+const immagine = new URL(og, sito).href;
+const itAlt = alternate.find((a) => a.lang === 'it');
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex" />}
+
+{alternate.map((a) => (
+  <link rel="alternate" hreflang={a.lang} href={new URL(a.href, sito).href} />
+))}
+{itAlt && <link rel="alternate" hreflang="x-default" href={new URL(itAlt.href, sito).href} />}
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Omaggio a Ennio Morricone" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={immagine} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_GB'} />
+<meta name="twitter:card" content="summary_large_image" />
