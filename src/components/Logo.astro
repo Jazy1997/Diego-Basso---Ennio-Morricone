@@ -1,0 +1,47 @@
+---
+// Il logo del progetto, solo dai 4 file originali (DS › Logo). Rifiuta misure sotto il minimo:
+// verticale 240 px, orizzontale 280 px. Genera WebP @1x/@2x da src/assets/logo.
+import { Image } from 'astro:assets';
+import oroVerticale from '../assets/logo/logo-oro-verticale.png';
+import oroOrizzontale from '../assets/logo/logo-oro-orizzontale.png';
+import biancoVerticale from '../assets/logo/logo-bianco-verticale.png';
+import biancoOrizzontale from '../assets/logo/logo-bianco-orizzontale.png';
+
+interface Props {
+  colore?: 'oro' | 'bianco';
+  forma?: 'verticale' | 'orizzontale';
+  larghezza: number; // px CSS
+  class?: string;
+  caricamento?: 'eager' | 'lazy';
+}
+
+const {
+  colore = 'oro',
+  forma = 'orizzontale',
+  larghezza,
+  class: classe,
+  caricamento = 'lazy',
+} = Astro.props;
+
+const MINIMI = { verticale: 240, orizzontale: 280 } as const;
+if (larghezza < MINIMI[forma]) {
+  throw new Error(
+    `Logo ${forma} largo ${larghezza}px: il minimo del Design System è ${MINIMI[forma]}px. Scrivi il titolo in testo.`,
+  );
+}
+
+const sorgenti = {
+  oro: { verticale: oroVerticale, orizzontale: oroOrizzontale },
+  bianco: { verticale: biancoVerticale, orizzontale: biancoOrizzontale },
+};
+---
+
+<Image
+  src={sorgenti[colore][forma]}
+  alt="Omaggio a Ennio Morricone"
+  width={larghezza}
+  densities={[1, 2]}
+  format="webp"
+  loading={caricamento}
+  class={classe}
+/>
