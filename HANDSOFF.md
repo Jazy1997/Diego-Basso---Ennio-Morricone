@@ -1,7 +1,7 @@
 # HANDSOFF — 2026-10-07 · sessione 0: impianto (ARCHITECTURE, issue #1–#41 = T01–T41, epic #42–#48 = M0–M6)
 
-**Stato**: M2 · fatto: T01–T08 (T03 manca solo workflow) · prod: https://diegobassoenniomorricone.vercel.app
-**Prossimo**: T09 curation foto (scelta da far confermare all'utente) → T10; T11–T12 video (varianti da approvare); T13 grana (riusare `.om-grana` del bundle). Workflow rebuild in scratch: serve `gh auth refresh -s workflow`.
+**Stato**: M2 · fatto: T01–T08, T11–T12 in PR (video caldo approvato) · prod: https://diegobassoenniomorricone.vercel.app
+**Prossimo**: T09–T10 foto (19 scelte e approvate: `scripts/out/selezione.jpg`, crediti Marafante tranne #12–16 = segnaposto) → T13 grana → M3. Workflow rebuild: serve `gh auth refresh -s workflow`.
 **Bloccanti**: T40 (#40) attende dal cliente date, contatti booking/stampa, partner, crediti foto, titolare privacy.
 **Decisioni**: Astro 7 statico · Vercel (statico + endpoint `/api/contatti` con Resend) · CSS token/classi `om-` dal DS (no Tailwind) · font self-hosted · IT `/`, EN `/en/` · segnaposto esclusi in produzione · hero = montaggio ~10 s in loop dal sorgente senza i primi 12 s.
 **Riferimenti**: DS https://claude.ai/artifact/RoM5dV4WD9VgpbCGJG5nxs · materiali `../MATERIALE GRAFICO` · testi `../DOCS` · `gh issue list -L 100` · numero issue = numero ticket
