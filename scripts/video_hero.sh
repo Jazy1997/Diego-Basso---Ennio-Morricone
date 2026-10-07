@@ -64,4 +64,6 @@ rm -f "$TMP"
 if [ "$OUT" = "$RADICE/public/video" ]; then
   mkdir -p "$RADICE/src/assets/video" && mv "$OUT/hero-poster.jpg" "$RADICE/src/assets/video/hero-poster.jpg"
 fi
-ls -la "$OUT"/hero-* | awk '{printf "%8.2f MB  %s\n", $5/1048576, $9}'
+for f in "$OUT"/hero-*; do
+  echo "$(awk "BEGIN{printf \"%.2f\", $(wc -c <"$f")/1048576}") MB  $(basename "$f")"
+done
