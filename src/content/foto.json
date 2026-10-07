@@ -1,0 +1,230 @@
+[
+  {
+    "id": "orchestra-schermo-01",
+    "originale": "55558518093_e9bbabdd37_6k.jpg",
+    "categoria": "orchestra-schermo",
+    "alt": {
+      "it": "L’orchestra sul palco di un teatro all’italiana, con il titolo dello spettacolo proiettato sul grande schermo e la platea piena",
+      "en": "The orchestra on stage in an Italian-style theatre, with the show’s title projected on the big screen and a full house"
+    },
+    "credito": "© Omaggio a Ennio Morricone",
+    "creditoDaConfermare": true,
+    "posizione": "50% 40%"
+  },
+  {
+    "id": "orchestra-schermo-02",
+    "originale": "55558816060_a596b2435f_6k.jpg",
+    "categoria": "orchestra-schermo",
+    "alt": {
+      "it": "L’orchestra schierata davanti al grande schermo, vista dal fondo della platea",
+      "en": "The orchestra lined up in front of the big screen, seen from the back of the stalls"
+    },
+    "credito": "© Omaggio a Ennio Morricone",
+    "creditoDaConfermare": true,
+    "posizione": "50% 45%"
+  },
+  {
+    "id": "orchestra-schermo-03",
+    "originale": "54943497291_1d1c95233b_6k.jpg",
+    "categoria": "orchestra-schermo",
+    "alt": {
+      "it": "Il palco illuminato con l’orchestra e lo schermo, dal buio della sala",
+      "en": "The lit stage with the orchestra and the screen, seen from the dark auditorium"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 50%"
+  },
+  {
+    "id": "maestro-01",
+    "originale": "54943755664_beccfacf42_6k.jpg",
+    "categoria": "maestro",
+    "alt": {
+      "it": "Il Maestro Diego Basso dirige con la bacchetta alzata, su fondo scuro",
+      "en": "Conductor Diego Basso with his baton raised, against a dark background"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "60% 35%"
+  },
+  {
+    "id": "maestro-02",
+    "originale": "Omaggio a Ennio Morricone Losanna-20.jpg",
+    "categoria": "maestro",
+    "alt": {
+      "it": "Diego Basso indica un attacco all’orchestra durante il concerto",
+      "en": "Diego Basso cues the orchestra during the concert"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "55% 35%"
+  },
+  {
+    "id": "maestro-03",
+    "originale": "Omaggio a Ennio Morricone Losanna-22.jpg",
+    "categoria": "maestro",
+    "alt": {
+      "it": "Diego Basso apre le braccia davanti agli archi, visto dal palco",
+      "en": "Diego Basso opens his arms in front of the strings, seen from the stage"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 40%"
+  },
+  {
+    "id": "maestro-04",
+    "originale": "55337699767_4083441f5f_k.jpg",
+    "categoria": "maestro",
+    "alt": {
+      "it": "Diego Basso dirige gli archi, con l’arpa in primo piano",
+      "en": "Diego Basso conducts the strings, with the harp in the foreground"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "60% 30%"
+  },
+  {
+    "id": "soprano-01",
+    "originale": "Omaggio a Ennio Morricone Losanna-27.jpg",
+    "categoria": "soprano",
+    "alt": {
+      "it": "Il soprano Claudia Sasso accanto al Maestro Diego Basso",
+      "en": "Soprano Claudia Sasso next to conductor Diego Basso"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 35%"
+  },
+  {
+    "id": "soprano-02",
+    "originale": "55339043215_1bcc0f6ce1_o.jpg",
+    "categoria": "soprano",
+    "alt": {
+      "it": "Claudia Sasso e Diego Basso al centro dell’orchestra",
+      "en": "Claudia Sasso and Diego Basso at the centre of the orchestra"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 45%"
+  },
+  {
+    "id": "sezione-archi-01",
+    "originale": "55339044000_930922d7fd_5k.jpg",
+    "categoria": "sezione",
+    "alt": {
+      "it": "La sezione degli archi con gli archetti alzati",
+      "en": "The string section with bows raised"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 50%"
+  },
+  {
+    "id": "sezione-corni-01",
+    "originale": "Omaggio a Ennio Morricone Losanna-12.jpg",
+    "categoria": "sezione",
+    "alt": {
+      "it": "I corni dell’orchestra durante l’esecuzione",
+      "en": "The orchestra’s horns during the performance"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "45% 50%"
+  },
+  {
+    "id": "sezione-violini-01",
+    "originale": "Omaggio a Ennio Morricone Losanna-14.jpg",
+    "categoria": "sezione",
+    "alt": {
+      "it": "Violini in primo piano durante il concerto",
+      "en": "Violins in close-up during the concert"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 50%"
+  },
+  {
+    "id": "sezione-percussioni-01",
+    "originale": "Omaggio a Ennio Morricone Losanna-10.jpg",
+    "categoria": "sezione",
+    "alt": {
+      "it": "Le percussioni e i fiati dell’orchestra",
+      "en": "The orchestra’s percussion and woodwinds"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 50%"
+  },
+  {
+    "id": "luogo-castello-01",
+    "originale": "55558562494_d3a4d3c366_6k.jpg",
+    "categoria": "luogo",
+    "alt": {
+      "it": "Il concerto all’aperto davanti alle mura di un castello illuminate, con il pubblico in primo piano",
+      "en": "The open-air concert in front of illuminated castle walls, with the audience in the foreground"
+    },
+    "credito": "© Omaggio a Ennio Morricone",
+    "creditoDaConfermare": true,
+    "posizione": "50% 55%"
+  },
+  {
+    "id": "luogo-castello-02",
+    "originale": "55558562629_8eec0bccf2_5k.jpg",
+    "categoria": "luogo",
+    "alt": {
+      "it": "Il pubblico davanti al palco allestito tra le mura di un castello",
+      "en": "The audience in front of the stage set within castle walls"
+    },
+    "credito": "© Omaggio a Ennio Morricone",
+    "creditoDaConfermare": true,
+    "posizione": "50% 55%"
+  },
+  {
+    "id": "luogo-aperto-01",
+    "originale": "55557376932_60f6c6f2dc_k.jpg",
+    "categoria": "luogo",
+    "alt": {
+      "it": "Il Maestro dirige all’aperto tra le rovine, davanti a un pubblico numeroso",
+      "en": "The conductor leads an open-air concert among ruins, before a large audience"
+    },
+    "credito": "© Omaggio a Ennio Morricone",
+    "creditoDaConfermare": true,
+    "posizione": "50% 45%"
+  },
+  {
+    "id": "pubblico-01",
+    "originale": "Omaggio a Ennio Morricone Losanna-31.jpg",
+    "categoria": "pubblico",
+    "alt": {
+      "it": "L’orchestra e il soprano sul palco, visti tra le sagome del pubblico",
+      "en": "The orchestra and the soprano on stage, seen between audience silhouettes"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 55%"
+  },
+  {
+    "id": "saluti-01",
+    "originale": "Omaggio a Ennio Morricone Losanna-33.jpg",
+    "categoria": "saluti",
+    "alt": {
+      "it": "L’orchestra, Claudia Sasso e Diego Basso salutano il pubblico a fine concerto",
+      "en": "The orchestra, Claudia Sasso and Diego Basso take their bow at the end of the concert"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "50% 40%"
+  },
+  {
+    "id": "quinte-01",
+    "originale": "Omaggio a Ennio Morricone Losanna-37.jpg",
+    "categoria": "quinte",
+    "alt": {
+      "it": "I fagotti e i fiati sorridono durante gli applausi",
+      "en": "The bassoons and woodwinds smile during the applause"
+    },
+    "credito": "Foto © Lorenzo Marafante",
+    "creditoDaConfermare": false,
+    "posizione": "55% 45%"
+  }
+]

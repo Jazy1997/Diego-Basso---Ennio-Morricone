@@ -76,8 +76,7 @@ WEBSITE/
    │  ├─ foto/           # JPG ottimizzati con nomi semantici
    │  ├─ logo/           # logo-oro-verticale.png …
    │  ├─ video/          # hero-poster.jpg (per <Picture>)
-   │  └─ grana.png
-   ├─ components/        # vedi §8
+      ├─ components/        # vedi §8
    ├─ layouts/BaseLayout.astro
    ├─ content/           # vedi §9
    ├─ content.config.ts  # schemi Zod
@@ -241,7 +240,13 @@ Regole:
 - OG 1200×630: finestra Cinemascope con foto + logo orizzontale oro nella banda; una per pagina (`public/og/`).
 
 ### Grana
-`src/assets/grana.png` tile 256×256 ≤ 20 KB (rumore monocromatico), `opacity: var(--grana-opacita)`, `mix-blend-mode: overlay`, solo sopra foto/video.
+Si usa `.om-grana` di `bundle.css` del DS (rumore SVG incorporato, nessun file in più), con `opacity: var(--grana-opacita)` e `mix-blend-mode: overlay`, solo sopra foto e video (T13).
+
+### Note sulle foto (T09)
+- 19 foto scelte e approvate; provini in `scripts/out/` (non nel repo). Escluse: fotogrammi di film sullo schermo, scritte "Tribute to Ennio Morricone".
+- Ritaglio 8% in basso: elimina la firma del fotografo con il logo ricolorato (vietato dal DS).
+- Crediti: Lorenzo Marafante; le foto con "© Omaggio a Ennio Morricone" (#12–16 del provino) hanno `creditoDaConfermare: true` (T40).
+- `maestro-04` e `luogo-aperto-01` sono a 2048 px: non usarle a tutta larghezza.
 
 ---
 
