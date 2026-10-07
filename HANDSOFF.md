@@ -1,7 +1,7 @@
 # HANDSOFF — 2026-10-07 · sessione 0: impianto (ARCHITECTURE, issue #1–#41 = T01–T41, epic #42–#48 = M0–M6)
 
-**Stato**: M0 · fatto: T01 (#1) · T02 in PR (branch `feat/T02-scaffold`, chiude #2 al merge)
-**Prossimo**: merge PR T02 → T03 Vercel (#3, serve account Vercel dell'utente). In parallelo: T04, T05, T08–T13, T21, T26.
+**Stato**: M0 · fatto: T01, T02 · T03 in PR (`feat/T03-vercel`) · prod: https://diegobassoenniomorricone.vercel.app
+**Prossimo**: merge T03 → M1 (T04 token, T05 font) e M2 asset (T08–T13). Utente: Deploy Hook Vercel → secret GitHub `VERCEL_DEPLOY_HOOK`.
 **Bloccanti**: T40 (#40) attende dal cliente date, contatti booking/stampa, partner, crediti foto, titolare privacy.
 **Decisioni**: Astro 7 statico · Vercel (statico + endpoint `/api/contatti` con Resend) · CSS token/classi `om-` dal DS (no Tailwind) · font self-hosted · IT `/`, EN `/en/` · segnaposto esclusi in produzione · hero = montaggio ~10 s in loop dal sorgente senza i primi 12 s.
 **Riferimenti**: DS https://claude.ai/artifact/RoM5dV4WD9VgpbCGJG5nxs · materiali `../MATERIALE GRAFICO` · testi `../DOCS` · `gh issue list -L 100` · numero issue = numero ticket
