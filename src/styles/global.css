@@ -1,3 +1,4 @@
 /* Stili globali del sito. Ordine: token del DS → classi om- del DS → base del sito (T06). */
 @import './ds/tokens.css';
+@import './fonts.css';
 @import './ds/bundle.css';
