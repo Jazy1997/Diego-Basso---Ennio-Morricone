@@ -48,7 +48,8 @@ Sezioni DS più usate: `05-segno` (Cinemascope, coordinate, grana, icone), `06-i
 | Sitemap | `@astrojs/sitemap` con i18n | SEO |
 | Icone | `lucide-static` (SVG inline, tratto 1,5) | Regola DS |
 | Qualità | Prettier + `prettier-plugin-astro`, `astro check` | Coerenza |
-| Hosting | **Netlify**: deploy da `main`, deploy preview per ogni PR, Netlify Forms | Gratis, HTTPS, form senza backend |
+| Hosting | **Vercel**: deploy da `main`, preview per ogni PR; adapter `@astrojs/vercel` solo per l'endpoint del modulo (`/api/contatti`, `prerender = false`); tutto il resto statico | Gratis (Hobby), HTTPS, preview automatiche |
+| Email modulo | **Resend** (API, piano gratuito) chiamato dall'endpoint; chiave in variabile d'ambiente Vercel `RESEND_API_KEY` | Nessun servizio form di terze parti nel browser |
 | Media | Python 3.12 (Pillow) + ffmpeg 9 in `scripts/` | Pipeline foto/video riproducibile |
 
 Node 24 LTS. Nessun framework UI client (React/Vue): il poco JS è in `<script>` di Astro (vanilla, moduli).
@@ -60,7 +61,7 @@ Node 24 LTS. Nessun framework UI client (React/Vue): il poco JS è in `<script>`
 ```
 WEBSITE/
 ├─ ARCHITECTURE.md · HANDSOFF.md · CLAUDE.md · README.md
-├─ astro.config.mjs · netlify.toml · tsconfig.json · package.json
+├─ astro.config.mjs · vercel.json · tsconfig.json · package.json
 ├─ scripts/
 │  ├─ foto.py            # originali selezionati → src/assets/foto (3200 px, q85)
 │  ├─ loghi.py           # PNG → misure web, favicon, OG
@@ -88,7 +89,7 @@ WEBSITE/
       └─ global.css      # reset, base, layout, utility
 ```
 
-Non si committano: originali foto/video, `scripts/out/`, `dist/`, `node_modules/`, `.netlify/`.
+Non si committano: originali foto/video, `scripts/out/`, `dist/`, `node_modules/`, `.vercel/`.
 
 ---
 
@@ -195,7 +196,7 @@ Ogni componente usa le classi `om-` di `src/styles/ds/bundle.css` (copiato dal D
 | `VideoTrailer` | — | `youtubeId`, `titolo`, `poster` | Facade: poster + play rotondo (`raggio-tondo`); al click iframe `youtube-nocookie.com` |
 | `Streaming` | `om-pulsante--contorno` | `lang` | Link da `content/link.json` |
 | `SchedaContatto` | — (`sala-200`, `raggio-0`) | `titolo`, `nome`, `email`, `telefono` | `mailto:`/`tel:` |
-| `ModuloContatti` | campi `sala-300`, bordo `linea-forte` | `lang` | Netlify Forms: `data-netlify`, honeypot, motivo (Booking/Stampa/Info), consenso privacy obbligatorio, pagina di conferma |
+| `ModuloContatti` | campi `sala-300`, bordo `linea-forte` | `lang` | POST a `/api/contatti` (validazione Zod lato server, invio via Resend), honeypot + limite di frequenza, motivo (Booking/Stampa/Info), consenso privacy obbligatorio, pagina di conferma |
 | `Footer` | `om-partner` | `lang` | Crediti fotografici aggregati da `foto.json` |
 | `Reveal` | — | slot | `IntersectionObserver` aggiunge `.is-visibile`; disattivo con reduced-motion |
 | `Sezione` | — | `id`, `occhiello`, `titolo` | `h2` + occhiello, spaziatura DS |
@@ -219,8 +220,8 @@ Ogni componente usa le classi `om-` di `src/styles/ds/bundle.css` (copiato dal D
 | `foto` | `foto.json` | `file`, `categoria`, `alt` {it,en}, `credito`, `segnaposto` |
 
 Regole:
-- Eventi futuri ordinati per data crescente; passati → Archivio (decrescente). Data passata calcolata a build: serve un **rebuild giornaliero** (Netlify build hook + scheduled function o GitHub Action cron) — vedi T03.
-- **Segnaposto**: in `astro dev` visibili con bordo tratteggiato e scritta "SEGNAPOSTO"; in build di produzione (`CONTEXT=production` su Netlify) i contenuti `segnaposto: true` sono **esclusi**. Il ticket T40 li sostituisce.
+- Eventi futuri ordinati per data crescente; passati → Archivio (decrescente). Data passata calcolata a build: serve un **rebuild giornaliero** (Vercel Deploy Hook chiamato da una GitHub Action cron alle 04:00) — vedi T03.
+- **Segnaposto**: in `astro dev` visibili con bordo tratteggiato e scritta "SEGNAPOSTO"; in build di produzione (`VERCEL_ENV=production`) i contenuti `segnaposto: true` sono **esclusi**. Il ticket T40 li sostituisce.
 - Formati data (DS): grafica `SAB 17.07.2027 · ORE 21:00`, testo "sabato 17 luglio 2027, ore 21", EN "Sat 17 July 2027, 9 pm". Helper in `src/i18n/date.ts` con `Intl.DateTimeFormat`, fuso `Europe/Rome`.
 
 ---
@@ -258,7 +259,7 @@ Regole:
 - Title: `<Pagina> — Omaggio a Ennio Morricone` (Home: `Omaggio a Ennio Morricone — Diego Basso, Orchestra Ritmico Sinfonica Italiana`). Description 140–160 caratteri per pagina e lingua (dal testo breve DS).
 - OG/Twitter: `og:image` 1200×630 per pagina, `og:locale` it_IT / en_GB.
 - JSON-LD: `MusicEvent` per ogni data (name, startDate con fuso, location `Place`+`PostalAddress`+`GeoCoordinates`, performer `PerformingGroup` + `Person`, offers url, eventStatus, eventAttendanceMode); `PerformingGroup` + `MusicAlbum` (streaming) in Home.
-- `@astrojs/sitemap` con i18n, `robots.txt`, canonical, 404 `noindex`. Deploy preview `noindex` (header Netlify su `deploy-preview`).
+- `@astrojs/sitemap` con i18n, `robots.txt`, canonical, 404 `noindex`. Le preview Vercel hanno già `X-Robots-Tag: noindex`.
 
 ---
 
@@ -274,7 +275,7 @@ Regole:
 | Font | ≤ 3 file preload (subset latin) |
 | Lighthouse mobile | ≥ 95 in tutte le categorie |
 
-Cache Netlify: `/_astro/*` e `/video/*` `max-age=31536000, immutable`; HTML `no-cache`.
+Cache (`vercel.json` › headers): `/_astro/*` e `/video/*` `max-age=31536000, immutable`; HTML `no-cache`.
 
 ---
 
@@ -293,15 +294,15 @@ Cache Netlify: `/_astro/*` e `/video/*` `max-age=31536000, immutable`; HTML `no-
 
 - Nessun cookie di profilazione → nessun banner cookie necessario (solo informativa).
 - Font self-hosted; YouTube solo al click (facade, `youtube-nocookie.com`); Spotify/Apple/Tidal solo link, niente embed.
-- Analytics: opzionale, cookieless (Netlify Analytics o Plausible).
-- Netlify Forms: dati trattati da Netlify (USA) → indicarlo nell'informativa; titolare del trattamento **da fornire** (segnaposto).
+- Analytics: opzionale, cookieless (Vercel Web Analytics o Plausible).
+- Modulo: dati trattati da Vercel e Resend (USA) → indicarlo nell'informativa; titolare del trattamento **da fornire** (segnaposto).
 
 ---
 
 ## 16. Convenzioni di lavoro
 
 - **Ticket**: GitHub Issues `T01…T41`, milestone M0–M6, label per area; `Dipende da: #n` nel corpo. Epic per milestone con task list.
-- **Branch**: `feat/T08-loghi`; commit `T08: export loghi web (#12)`; PR verso `main` → deploy preview Netlify → approvazione → merge (squash).
+- **Branch**: `feat/T08-loghi`; commit `T08: export loghi web (#12)`; PR verso `main` → preview Vercel → approvazione → merge (squash).
 - **Definition of Done** (ogni ticket):
   - [ ] Criteri di accettazione dell'issue soddisfatti
   - [ ] Regole d'oro DS rispettate (buio, oro ≤ 10%, logo intatto, Cinemascope, tre voci tipografiche, solo materiale nostro, mai viola/verde, moderno non vintage, spazio, nomi esatti)
@@ -318,7 +319,7 @@ Cache Netlify: `/_astro/*` e `/video/*` `max-age=31536000, immutable`; HTML `no-
 
 | Milestone | Ticket |
 | --- | --- |
-| M0 Setup | T01 toolchain · T02 scaffold Astro · T03 Netlify |
+| M0 Setup | T01 toolchain · T02 scaffold Astro · T03 Vercel |
 | M1 Fondamenta | T04 token + bundle DS · T05 font · T06 stili base · T07 BaseLayout |
 | M2 Asset | T08 loghi · T09 curation foto · T10 pipeline foto · T11 analisi video · T12 montaggio video · T13 grana |
 | M3 Componenti | T14 Pulsante+Etichetta · T15 Testata · T16 Cinemascope · T17 HeroVideo · T18 Crediti · T19 DataTour · T20 FasciaPartner · T21 content collections · T22 VideoTrailer · T23 Repertorio · T24 Footer |
