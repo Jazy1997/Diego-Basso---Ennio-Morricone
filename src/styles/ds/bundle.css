@@ -1,0 +1,109 @@
+/* Copia di components/bundle.css del Design System "Omaggio a Ennio Morricone"
+   (https://claude.ai/artifact/RoM5dV4WD9VgpbCGJG5nxs). Non modificare: ritocchi in global.css.
+   Unica differenza dall'originale: rimosso l'@import di Google Fonts (font self-hosted, ARCHITECTURE.md §15). */
+
+/* Omaggio a Ennio Morricone — classi dei componenti (prefisso om-). Valori solo da tokens.css. */
+
+/* ---------- Base ---------- */
+body { margin: 0; background: var(--sala-100); color: var(--avorio); font-family: var(--font-testo); -webkit-font-smoothing: antialiased; }
+.titolo-xl, .titolo-l, .titolo-m, .numero-data, .occhiello, .crediti { text-transform: uppercase; }
+.numero-data, .coordinate { font-variant-numeric: tabular-nums; }
+.om-oro { color: var(--oro); }
+.om-tenue { color: var(--avorio-tenue); }
+.om-anteprima { padding: var(--spazio-8); }
+.om-riga { display: flex; flex-wrap: wrap; gap: var(--spazio-4); align-items: center; }
+:where(a, button, input, select, textarea, [tabindex]):focus-visible { outline: 2px solid transparent; box-shadow: var(--anello-focus); }
+
+/* Segnaposto per le anteprime: sostituire sempre con foto reali del concerto */
+.om-segnaposto { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: flex-start; padding: var(--spazio-4); box-sizing: border-box;
+  background: radial-gradient(60% 90% at 50% 110%, var(--oro-ombra) 0%, var(--sala-200) 55%, var(--sala-000) 100%);
+  font: 500 11px/16px var(--font-testo); letter-spacing: .12em; text-transform: uppercase; color: var(--avorio-tenue); }
+
+/* ---------- Grana pellicola (solo sopra immagini) ---------- */
+.om-grana { position: absolute; inset: 0; pointer-events: none; opacity: var(--grana-opacita); mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
+
+/* ---------- Pulsante ---------- */
+.om-pulsante { display: inline-flex; align-items: center; justify-content: center; gap: var(--spazio-2); box-sizing: border-box; height: 48px; padding: 0 28px;
+  border: 1px solid transparent; border-radius: var(--raggio-1); font: 600 13px/1 var(--font-testo); letter-spacing: .16em; text-transform: uppercase;
+  text-decoration: none; cursor: pointer; transition: background-color .25s ease, border-color .25s ease, color .25s ease; white-space: nowrap; }
+.om-pulsante--oro { background: var(--oro); border-color: var(--oro); color: var(--su-oro); }
+.om-pulsante--oro:hover { background: var(--oro-luce); border-color: var(--oro-luce); }
+.om-pulsante--contorno { background: transparent; border-color: var(--linea-forte); color: var(--avorio); }
+.om-pulsante--contorno:hover { border-color: var(--oro); color: var(--oro); }
+.om-pulsante--testo { height: auto; padding: 0; background: none; color: var(--oro); border-bottom: 1px solid currentColor; border-radius: 0; padding-bottom: 4px; }
+.om-pulsante--testo:hover { color: var(--oro-luce); }
+.om-pulsante--piccolo { height: 40px; padding: 0 20px; font-size: 12px; }
+.om-pulsante[aria-disabled="true"] { background: transparent; border-color: var(--linea); color: var(--avorio-tenue); cursor: not-allowed; }
+
+/* ---------- Etichetta ---------- */
+.om-etichetta { display: inline-block; padding: 5px 10px; border: 1px solid var(--oro); color: var(--oro); font: 600 11px/14px var(--font-testo); letter-spacing: .16em; text-transform: uppercase; }
+.om-etichetta--nuova { background: var(--oro); color: var(--su-oro); }
+.om-etichetta--esaurito { border-color: var(--linea-forte); color: var(--avorio-tenue); }
+
+/* ---------- Testata (sito) ---------- */
+.om-testata { display: flex; align-items: center; justify-content: space-between; gap: var(--spazio-8); padding: var(--spazio-6) var(--margine-web); background: var(--sala-100); border-bottom: 1px solid var(--linea); }
+.om-testata--trasparente { background: transparent; border-bottom-color: transparent; }
+.om-testata__logo img { display: block; width: 280px; height: auto; }
+.om-testata__nav { display: flex; gap: var(--spazio-6); }
+.om-testata__nav a { white-space: nowrap; font: 600 12px/16px var(--font-display); letter-spacing: .16em; text-transform: uppercase; color: var(--avorio); text-decoration: none; padding: var(--spazio-2) 0; border-bottom: 1px solid transparent; }
+.om-testata__nav a:hover, .om-testata__nav a[aria-current] { color: var(--oro); border-bottom-color: var(--oro); }
+.om-testata__azioni { display: flex; align-items: center; gap: var(--spazio-6); }
+.om-lingua { white-space: nowrap; font: 500 12px/16px var(--font-testo); letter-spacing: .12em; color: var(--avorio-tenue); }
+.om-lingua a { color: inherit; text-decoration: none; }
+.om-lingua a[aria-current] { color: var(--avorio); }
+@media (max-width: 1080px) { .om-testata__nav { display: none; } }
+
+/* ---------- Cinemascope ---------- */
+.om-cinemascope { margin: 0; background: var(--sala-000); }
+.om-cinemascope__finestra { position: relative; aspect-ratio: var(--rapporto-cinemascope); overflow: hidden; background: var(--sala-200); }
+.om-cinemascope__finestra > img, .om-cinemascope__finestra > video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.om-cinemascope__banda { display: flex; align-items: center; justify-content: space-between; gap: var(--spazio-6); min-height: var(--spazio-8); padding: var(--spazio-4) var(--margine-web); }
+.om-cinemascope--filetto .om-cinemascope__finestra { border-bottom: 1px solid var(--oro); }
+.om-cinemascope__sottotitolo { margin: 0; font: italic 500 22px/1.3 var(--font-accento); color: var(--avorio); }
+
+/* ---------- Crediti (blocco stile locandina) ---------- */
+.om-crediti { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--spazio-4) 0; margin: 0; }
+.om-crediti__voce { padding: 0 var(--spazio-6); border-left: 1px solid var(--linea); }
+.om-crediti__voce:first-child { padding-left: 0; border-left: 0; }
+.om-crediti dt { margin: 0 0 var(--spazio-1); font: 500 11px/16px var(--font-testo); letter-spacing: .14em; text-transform: uppercase; color: var(--avorio-tenue); }
+.om-crediti dd { margin: 0; font: 800 18px/1.15 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--avorio); }
+.om-crediti--centrato { justify-content: center; text-align: center; }
+.om-crediti--centrato .om-crediti__voce:first-child { padding-left: var(--spazio-6); }
+
+/* ---------- DataTour (riga del calendario) ---------- */
+.om-date { margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--linea); }
+.om-data { display: grid; grid-template-columns: 200px 1fr auto; align-items: center; gap: var(--spazio-8); padding: var(--spazio-8) var(--spazio-6); border-top: 1px solid var(--linea); transition: background-color .3s ease; }
+.om-data:hover { background: var(--sala-200); }
+.om-data__giorno { display: flex; flex-direction: column; gap: var(--spazio-1); }
+.om-data__numero { font: 800 56px/1 var(--font-display); letter-spacing: -.02em; color: var(--oro); font-variant-numeric: tabular-nums; }
+.om-data__anno, .om-data__coordinate { font: 500 12px/16px var(--font-testo); letter-spacing: .12em; text-transform: uppercase; color: var(--avorio-tenue); font-variant-numeric: tabular-nums; }
+.om-data__citta { margin: 0; font: 800 28px/1.1 var(--font-display); letter-spacing: .02em; text-transform: uppercase; color: var(--avorio); }
+.om-data__sede { margin: var(--spazio-1) 0 var(--spazio-2); font: 400 17px/28px var(--font-testo); color: var(--avorio); }
+.om-data__coordinate { margin: 0; }
+.om-data__azione { display: flex; align-items: center; gap: var(--spazio-4); }
+.om-data--passata .om-data__numero, .om-data--passata .om-data__citta { color: var(--avorio-tenue); }
+@media (max-width: 720px) { .om-data { grid-template-columns: 1fr; gap: var(--spazio-4); padding: var(--spazio-6) 0; } }
+
+/* ---------- Conto alla rovescia (leader della pellicola) ---------- */
+.om-leader { --om-lato: 320px; --om-progresso: .25; position: relative; width: var(--om-lato); height: var(--om-lato); border-radius: var(--raggio-tondo);
+  background: conic-gradient(var(--oro-ombra) calc(var(--om-progresso) * 1turn), var(--sala-100) 0); }
+.om-leader__grafica { position: absolute; inset: 0; width: 100%; height: 100%; }
+.om-leader__anello { fill: none; stroke: var(--linea-forte); stroke-width: 1.5; }
+.om-leader__mirino { stroke: var(--linea-forte); stroke-width: 1; }
+.om-leader__numero { position: absolute; inset: 0; display: grid; place-items: center; font: 800 calc(var(--om-lato) * .5)/1 var(--font-display); color: var(--oro); font-variant-numeric: tabular-nums; }
+.om-conto { display: flex; flex-direction: column; align-items: center; gap: var(--spazio-4); text-align: center; }
+.om-conto__testo { margin: 0; font: 600 13px/16px var(--font-display); letter-spacing: .28em; text-transform: uppercase; color: var(--avorio); }
+.om-conto__data { margin: 0; font: 500 12px/16px var(--font-testo); letter-spacing: .12em; text-transform: uppercase; color: var(--avorio-tenue); }
+
+/* ---------- Fascia partner ---------- */
+.om-partner { display: flex; flex-wrap: wrap; gap: var(--spazio-6) var(--spazio-12); padding-top: var(--spazio-6); border-top: 1px solid var(--linea); }
+.om-partner__gruppo { display: flex; flex-direction: column; gap: var(--spazio-3); }
+.om-partner__etichetta { margin: 0; font: 600 11px/16px var(--font-display); letter-spacing: .24em; text-transform: uppercase; color: var(--avorio-tenue); }
+.om-partner__loghi { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spazio-6); }
+.om-partner__loghi img { display: block; height: 40px; width: auto; }
+.om-partner__riquadro { display: grid; place-items: center; height: 64px; min-width: 120px; padding: var(--spazio-3); box-sizing: border-box; background: var(--carta); }
+.om-partner__riquadro img { height: 40px; }
+.om-partner__segnaposto { display: grid; place-items: center; height: 40px; padding: 0 var(--spazio-4); border: 1px dashed var(--linea-forte); font: 500 11px/1 var(--font-testo); letter-spacing: .12em; text-transform: uppercase; color: var(--avorio-tenue); }
+
+@media (prefers-reduced-motion: reduce) { .om-pulsante, .om-data { transition: none; } }
