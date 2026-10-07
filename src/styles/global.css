@@ -200,3 +200,8 @@ a:hover {
     transform: none;
   }
 }
+
+/* Il <main> riceve il focus dallo skip link: nessun anello sul contenitore intero */
+main:focus {
+  outline: none;
+}

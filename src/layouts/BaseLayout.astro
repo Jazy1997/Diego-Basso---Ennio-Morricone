@@ -1,0 +1,49 @@
+---
+// Layout unico di tutte le pagine (ARCHITECTURE.md §8): head, skip link, testata, contenuto, piè di pagina.
+// Testata e piè di pagina arrivano dagli slot "testata" e "piede" (componenti T15 e T24).
+import '../styles/global.css';
+import FontPreload from '../components/FontPreload.astro';
+import Seo, { type Alternativa, type Lingua } from '../components/Seo.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: Lingua;
+  og?: string;
+  alternate?: Alternativa[];
+  noindex?: boolean;
+}
+
+const { lang = 'it', ...seo } = Astro.props;
+const salta = lang === 'it' ? 'Vai al contenuto' : 'Skip to content';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0a08" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <FontPreload />
+    <slot name="head" />
+    <Seo lang={lang} {...seo} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  </head>
+  <body>
+    <a class="salta-contenuto" href="#contenuto">
+      {salta}
+    </a>
+    <slot name="testata" />
+    <main id="contenuto" tabindex="-1">
+      <slot />
+    </main>
+    <slot name="piede" />
+    <script>
+      import '../scripts/reveal.ts';
+    </script>
+  </body>
+</html>
