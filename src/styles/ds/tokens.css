@@ -1,0 +1,58 @@
+/* Omaggio a Ennio Morricone — generato da tokens.json con scripts/tokens.py. Non modificare a mano. */
+
+:root {
+  /* color */
+  --sala-000: #050404;
+  --sala-100: #0b0a08;
+  --sala-200: #15120f;
+  --sala-300: #201b16;
+  --linea: #3a3128;
+  --linea-forte: #7d6c57;
+  --avorio: #f3ecdf;
+  --avorio-tenue: #b5a994;
+  --oro: #e7ad54;
+  --oro-luce: #f2c47e;
+  --oro-ombra: #8f6526;
+  --su-oro: var(--sala-100);
+  --velo: rgba(5, 4, 4, 0.62);
+  --carta: #f4efe6;
+  --inchiostro: #14110e;
+  --oro-su-carta: #8a5a14;
+  /* spacing */
+  --spazio-1: 4px;
+  --spazio-2: 8px;
+  --spazio-3: 12px;
+  --spazio-4: 16px;
+  --spazio-6: 24px;
+  --spazio-8: 32px;
+  --spazio-12: 48px;
+  --spazio-16: 64px;
+  --spazio-24: 96px;
+  --spazio-32: 128px;
+  /* radius */
+  --raggio-0: 0px;
+  --raggio-1: 2px;
+  --raggio-tondo: 50%;
+  /* shadow */
+  --ombra-sospesa: 0 24px 48px -12px #000000cc;
+  --anello-focus: 0 0 0 2px #0b0a08, 0 0 0 4px #e7ad54;
+  /* rapporti */
+  --rapporto-cinemascope: 2.39 / 1;
+  --rapporto-video: 16 / 9;
+  --rapporto-post: 4 / 5;
+  --rapporto-quadrato: 1 / 1;
+  --rapporto-verticale: 9 / 16;
+  --rapporto-manifesto-70x100: 7 / 10;
+  --rapporto-manifesto-100x140: 5 / 7;
+  --rapporto-a3: 297 / 420;
+  --rapporto-brochure: 297 / 210;
+  /* effetti */
+  --grana-opacita: 0.07;
+  --margine-web: clamp(16px, 5vw, 64px);
+  --margine-stampa: 6%;
+  --colonna-testo: 68ch;
+  /* famiglie tipografiche */
+  --font-display: "Avenir Next", "Avenir Next LT Pro", "Nunito Sans", system-ui, sans-serif;
+  --font-testo: "Alright Sans", "Source Sans 3", system-ui, sans-serif;
+  --font-accento: "Cormorant Garamond", Cormorant, Georgia, serif;
+}
