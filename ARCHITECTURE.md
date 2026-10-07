@@ -41,7 +41,7 @@ Sezioni DS più usate: `05-segno` (Cinemascope, coordinate, grana, icone), `06-i
 
 | Ambito | Scelta | Perché |
 | --- | --- | --- |
-| Framework | **Astro 5**, output statico, TypeScript `strict` | HTML puro, zero JS di default, i18n nativo, ottimizzazione immagini |
+| Framework | **Astro 7**, output statico, TypeScript `strict` | HTML puro, zero JS di default, i18n nativo, ottimizzazione immagini |
 | Stili | CSS puro + custom properties | Token e classi `om-` del DS sono già CSS; niente Tailwind |
 | Immagini | `astro:assets` (`<Picture>`, sharp) → AVIF + WebP + fallback JPG | Formati e misure generati in build |
 | Font | `@fontsource-variable/nunito-sans`, `@fontsource-variable/source-sans-3`, `@fontsource/cormorant-garamond` (500, 500 italic, 600 italic) | Self-hosted: niente Google Fonts remoto (GDPR) |
