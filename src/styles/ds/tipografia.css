@@ -1,0 +1,22 @@
+/* Omaggio a Ennio Morricone — stili tipografici generati da tokens.json con scripts/tokens.py. Non modificare a mano. */
+
+.titolo-xl { font-family: var(--font-display); font-size: 88px; line-height: 0.92; font-weight: 800; letter-spacing: -0.01em; }
+.titolo-l { font-family: var(--font-display); font-size: 56px; line-height: 1; font-weight: 800; }
+.titolo-m { font-family: var(--font-display); font-size: 28px; line-height: 1.1; font-weight: 800; letter-spacing: 0.02em; }
+.numero-data { font-family: var(--font-display); font-size: 64px; line-height: 1; font-weight: 800; letter-spacing: -0.02em; }
+.occhiello { font-family: var(--font-display); font-size: 13px; line-height: 16px; font-weight: 600; letter-spacing: 0.28em; }
+.lead { font-family: var(--font-testo); font-size: 22px; line-height: 32px; font-weight: 400; }
+.corpo { font-family: var(--font-testo); font-size: 17px; line-height: 28px; font-weight: 400; }
+.corpo-piccolo { font-family: var(--font-testo); font-size: 14px; line-height: 22px; font-weight: 400; }
+.crediti { font-family: var(--font-testo); font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.16em; }
+.coordinate { font-family: var(--font-testo); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.12em; }
+.didascalia { font-family: var(--font-testo); font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.02em; }
+.evocativo-xl { font-family: var(--font-accento); font-size: 56px; line-height: 1.05; font-weight: 500; font-style: italic; }
+.evocativo { font-family: var(--font-accento); font-size: 30px; line-height: 1.2; font-weight: 500; font-style: italic; }
+.citazione { font-family: var(--font-accento); font-size: 22px; line-height: 1.35; font-weight: 500; font-style: italic; }
+
+@media (max-width: 720px) {
+  .titolo-xl { font-size: 48px; }
+  .titolo-l { font-size: 36px; }
+  .evocativo-xl { font-size: 36px; }
+}

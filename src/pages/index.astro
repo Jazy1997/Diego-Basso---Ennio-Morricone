@@ -1,5 +1,5 @@
 ---
-// Pagina provvisoria: la Home vera arriva con T28.
+// Pagina provvisoria con un campionario degli stili base: la Home vera arriva con T28.
 import '../styles/global.css';
 import FontPreload from '../components/FontPreload.astro';
 ---
@@ -10,18 +10,57 @@ import FontPreload from '../components/FontPreload.astro';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
     <title>Omaggio a Ennio Morricone</title>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
     <FontPreload />
   </head>
-  <body style="padding: var(--margine-web)">
-    <p class="om-oro" style="font: 600 13px/16px var(--font-display); letter-spacing: 0.28em">
-      DIEGO BASSO DIRIGE
-    </p>
-    <h1 style="font: 800 clamp(48px, 8vw, 88px)/0.92 var(--font-display); text-transform: uppercase">
-      Omaggio a Ennio Morricone
-    </h1>
-    <p style="font: italic 500 30px/1.2 var(--font-accento)">
-      Musica e cinema in un unico grande spettacolo
-    </p>
-    <p style="font: 400 17px/28px var(--font-testo)">Sito in costruzione.</p>
+  <body>
+    <a class="salta-contenuto" href="#contenuto">
+      Vai al contenuto
+    </a>
+    <main id="contenuto">
+      <section class="sezione contenitore">
+        <div class="sezione__testa">
+          <p class="occhiello om-oro">Diego Basso dirige</p>
+          <h1 class="titolo-xl">Un concerto che diventa racconto</h1>
+        </div>
+        <p class="evocativo-xl">Musica e cinema in un unico grande spettacolo</p>
+      </section>
+      <section class="sezione contenitore" data-reveal>
+        <div class="sezione__testa">
+          <p class="occhiello om-tenue">Sito in costruzione</p>
+          <h2 class="titolo-l">Il progetto</h2>
+        </div>
+        <div class="testo">
+          <p class="lead">Musica e cinema in un unico grande spettacolo.</p>
+          <p class="corpo">
+            Il pubblico passa dalla dimensione epica dei western di Sergio Leone alla delicatezza di
+            <em>Nuovo Cinema Paradiso</em>, dalla spiritualità di <em>The Mission</em> alle
+            atmosfere sospese di <em>C’era una volta in America</em>.
+          </p>
+          <p class="citazione">Un’emozione riconoscibile anche ad occhi chiusi.</p>
+        </div>
+      </section>
+      <section class="sezione contenitore" data-reveal>
+        <p class="numero-data">12.07</p>
+        <p class="titolo-m">Teatro Verdi · Padova</p>
+        <p class="coordinate om-tenue">45.4093° N · 11.8715° E</p>
+        <p class="evocativo">Nuovo Cinema Paradiso</p>
+        <p class="crediti">Orchestra Ritmico Sinfonica Italiana</p>
+        <p class="didascalia om-tenue">Esempio di stili: dati non reali</p>
+        <p style="margin-top: var(--spazio-6)">
+          <a class="om-pulsante om-pulsante--oro" href="#contenuto">
+            Prossime date
+          </a>
+          <a class="om-pulsante om-pulsante--contorno" href="#contenuto">
+            Scarica il press kit
+          </a>
+        </p>
+      </section>
+    </main>
+    <script>
+      import '../scripts/reveal.ts';
+    </script>
   </body>
 </html>

@@ -7,3 +7,4 @@ src/styles/ds/bundle.css
 *.md
 src/styles/ds/tokens.css
 src/styles/ds/tokens.json
+src/styles/ds/tipografia.css
