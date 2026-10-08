@@ -1,0 +1,15 @@
+{
+  "data": "2027-05-08",
+  "ora": "20:45",
+  "citta": "Treviso",
+  "sede": "Teatro Comunale Mario Del Monaco",
+  "indirizzo": "Corso del Popolo 31",
+  "cap": "31100",
+  "nazione": "IT",
+  "lat": 45.6634,
+  "lng": 12.2444,
+  "biglietti": "https://www.example.com/biglietti",
+  "stato": "esaurito",
+  "versione": "proiezioni",
+  "segnaposto": true
+}

@@ -1,0 +1,5 @@
+[
+  { "id": "booking", "nome": "Booking", "email": "booking@example.com", "telefono": "+39 000 000 0000", "segnaposto": true },
+  { "id": "stampa", "nome": "Ufficio stampa", "email": "stampa@example.com", "telefono": "+39 000 000 0000", "segnaposto": true },
+  { "id": "pubblico", "email": "info@example.com", "segnaposto": true }
+]

@@ -1,0 +1,5 @@
+[
+  { "id": "patrocinio-esempio", "gruppo": "patrocinio", "nome": "Ente patrocinante", "segnaposto": true },
+  { "id": "organizzazione-esempio", "gruppo": "organizzazione", "nome": "Organizzazione", "segnaposto": true },
+  { "id": "partner-esempio", "gruppo": "main", "nome": "Main partner", "segnaposto": true }
+]

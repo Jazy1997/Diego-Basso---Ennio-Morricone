@@ -1,0 +1,19 @@
+[
+  {
+    "id": "diego-basso",
+    "nome": "Diego Basso",
+    "ruolo": { "it": "Direttore d’orchestra, trascrizioni e direzione musicale", "en": "Conductor, transcriptions and musical direction" },
+    "foto": "maestro-01"
+  },
+  {
+    "id": "claudia-sasso",
+    "nome": "Claudia Sasso",
+    "ruolo": { "it": "Soprano lirico", "en": "Lyric soprano" },
+    "foto": "soprano-01"
+  },
+  {
+    "id": "orchestra",
+    "nome": "Orchestra Ritmico Sinfonica Italiana",
+    "ruolo": { "it": "46 elementi", "en": "46 musicians" }
+  }
+]
