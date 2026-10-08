@@ -1,0 +1,188 @@
+---
+// Sezione dell'album (ARCHITECTURE.md §6 riga 9, §15): player Spotify con facciata (si carica solo al click,
+// niente cookie di Spotify prima) e icone per tutte le piattaforme da link.json.
+import { Image } from 'astro:assets';
+import type { Lingua } from './Seo.astro';
+import Icona from './Icona.astro';
+import LinkIcona from './LinkIcona.astro';
+import copertina from '../assets/album/copertina.jpg';
+import { prendi } from '../lib/contenuti';
+
+interface Props {
+  lang?: Lingua;
+}
+
+const { lang = 'it' } = Astro.props;
+
+const link = (await prendi('link'))
+  .filter((l) => l.data.icona && l.data.tipo !== 'social')
+  .sort((a, b) => a.data.ordine - b.data.ordine);
+const spotify = link.find((l) => l.id === 'spotify');
+const albumId = spotify?.data.url.match(/album\/([A-Za-z0-9]+)/)?.[1];
+
+const T = {
+  it: {
+    occhiello: 'Ascolta l’album',
+    crediti: 'Orchestra Ritmico Sinfonica Italiana, Coro lirico Opera House, Coro pop Art Voice Academy. Diego Basso, direttore.',
+    ascolta: 'Ascolta qui',
+    nota: 'Il player di Spotify si carica al click.',
+    etichetta: 'Ascolta l’album qui con il player di Spotify',
+    piattaforme: 'Anche su',
+    titoloPlayer: 'Player Spotify: Omaggio a Ennio Morricone',
+  },
+  en: {
+    occhiello: 'Listen to the album',
+    crediti: 'Orchestra Ritmico Sinfonica Italiana, Coro lirico Opera House, Coro pop Art Voice Academy. Diego Basso, conductor.',
+    ascolta: 'Listen here',
+    nota: 'The Spotify player loads when you click.',
+    etichetta: 'Listen to the album here with the Spotify player',
+    piattaforme: 'Also on',
+    titoloPlayer: 'Spotify player: Omaggio a Ennio Morricone',
+  },
+}[lang];
+---
+
+<div class="album">
+  <div class="album__testo">
+    <p class="occhiello om-oro">{T.occhiello}</p>
+    <h2 class="evocativo-xl" lang="it">Omaggio a Ennio Morricone</h2>
+    <p class="corpo om-tenue">{T.crediti}</p>
+    {
+      link.length > 0 && (
+        <div class="album__piattaforme">
+          <p class="occhiello om-tenue">{T.piattaforme}</p>
+          <ul>
+            {link.map((l) => (
+              <li>
+                <LinkIcona
+                  href={l.data.url}
+                  icona={l.data.icona!}
+                  etichetta={l.data.nome}
+                  esterno
+                  lang={lang}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+
+  {
+    albumId && (
+      <div class="album__player" data-album data-id={albumId} data-titolo={T.titoloPlayer}>
+        <button class="album__avvia" type="button" aria-label={T.etichetta}>
+          <Image
+            src={copertina}
+            alt=""
+            width={352}
+            densities={[1, 2]}
+            format="webp"
+            class="album__copertina"
+          />
+          <span class="album__invito">
+            <Icona nome="spotify" misura={32} />
+            <span class="album__ascolta">{T.ascolta}</span>
+            <span class="didascalia om-tenue">{T.nota}</span>
+          </span>
+        </button>
+      </div>
+    )
+  }
+</div>
+
+<script>
+  import '../scripts/album.ts';
+</script>
+
+<style>
+  .album {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: var(--spazio-12);
+  }
+
+  .album__testo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-4);
+  }
+
+  .album__piattaforme {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-3);
+    margin-top: var(--spazio-4);
+  }
+
+  .album__piattaforme ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spazio-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Stessa altezza del player di Spotify (352 px): nessuno spostamento al click */
+  .album__player {
+    container-type: inline-size;
+    height: 352px;
+    background: var(--sala-200);
+  }
+
+  .album__player :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 352px;
+    border: 0;
+  }
+
+  .album__avvia {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+  }
+
+  /* Copertina fino a 352 px, mai più di metà riquadro: il testo ha sempre spazio */
+  .album__avvia :global(.album__copertina) {
+    flex: none;
+    width: min(352px, 50cqw);
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  .album__invito {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spazio-3);
+    padding: var(--spazio-6);
+    color: var(--avorio);
+  }
+
+  .album__ascolta {
+    font: 600 13px/1 var(--font-testo);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-bottom: 1px solid currentColor;
+    align-self: flex-start;
+    padding-bottom: 4px;
+  }
+
+  .album__avvia:hover .album__invito {
+    color: var(--oro);
+  }
+
+  @media (max-width: 960px) {
+    .album {
+      grid-template-columns: 1fr;
+    }
+  }
+
+</style>
