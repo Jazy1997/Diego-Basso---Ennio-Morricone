@@ -39,6 +39,8 @@ const testi = defineCollection({
     titolo: z.string(),
     ordine: z.number().int(),
     lang: z.enum(['it', 'en']),
+    // lungo: dal docx alla lettera; breve (≈50 parole) e medio (≈100) dal DS › Tono.
+    tipo: z.enum(['lungo', 'breve', 'medio']).default('lungo'),
   }),
 });
 

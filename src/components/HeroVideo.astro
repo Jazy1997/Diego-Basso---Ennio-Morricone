@@ -20,7 +20,8 @@ interface Props {
 
 const { lang = 'it', hrefDate = localizedPath('date', lang), titolo = true } = Astro.props;
 
-const T = { ...t(lang).hero, riproduci: t(lang).comune.riproduciVideo };
+const D = t(lang);
+const T = { ...D.hero, sottotitolo: D.claim.sottotitolo, riproduci: D.comune.riproduciVideo };
 const Titolo = titolo ? 'h1' : 'div';
 ---
 

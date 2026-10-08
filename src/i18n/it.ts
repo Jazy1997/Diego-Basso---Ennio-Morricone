@@ -1,5 +1,5 @@
 // Dizionario UI italiano (ARCHITECTURE.md §11): menu, pulsanti, etichette, footer, testi di servizio.
-// I testi lunghi stanno in content/testi/; le date in i18n/date.ts. en.ts deve avere le stesse chiavi.
+// Testi lunghi, breve e medio in content/testi/; claim del DS › Tono qui sotto; le date in i18n/date.ts. en.ts deve avere le stesse chiavi.
 export const it = {
   comune: {
     biglietti: 'Biglietti',
@@ -16,9 +16,13 @@ export const it = {
     contatti: 'Contatti',
   },
   testata: { nav: 'Principale', menu: 'Menu', chiudi: 'Chiudi' },
+  claim: {
+    sottotitolo: 'Musica e cinema in un unico grande spettacolo',
+    proiezioni: 'Un viaggio tra proiezioni e musica.',
+    chiusura: 'Un viaggio nella memoria del cinema attraverso la forza della musica dal vivo.',
+  },
   hero: {
     occhiello: 'Diego Basso dirige',
-    sottotitolo: 'Musica e cinema in un unico grande spettacolo',
     date: 'Prossime date',
     pausa: 'Metti in pausa il video',
   },

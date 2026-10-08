@@ -17,9 +17,13 @@ export const en: Dizionario = {
     contatti: 'Contacts',
   },
   testata: { nav: 'Main', menu: 'Menu', chiudi: 'Close' },
+  claim: {
+    sottotitolo: 'Music and cinema in one great show',
+    proiezioni: 'A journey through projections and music.',
+    chiusura: 'A journey into the memory of cinema through the power of live music.',
+  },
   hero: {
     occhiello: 'Diego Basso conducts',
-    sottotitolo: 'Music and cinema in one great show',
     date: 'Upcoming dates',
     pausa: 'Pause the video',
   },
