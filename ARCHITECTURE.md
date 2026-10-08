@@ -31,7 +31,7 @@ Sito promozionale del progetto *Omaggio a Ennio Morricone*, ideato nel 2004 dal 
 | Scheda tecnica | `../DOCS/STAGE PLOT - ENNIO MORRICONE.pdf` | Palco, organico, esigenze tecniche |
 | Foto | `../MATERIALE GRAFICO/FOTO/` | 50 JPG originali (fino a 31 MB): **mai nel repo** |
 | Video | `../MATERIALE GRAFICO/VIDEO/VIDEO HERO.mp4` | 104,3 s, 1920×1080, 25 fps, H.264 + AAC |
-| Logo | `../MATERIALE GRAFICO/LOGO/Logo Morricone-01…04.png` | 4 PNG trasparenti (oro/bianco × verticale/orizzontale) |
+| Logo | `../MATERIALE GRAFICO/LOGO/Logo Morricone.svg` | Vettoriale con le 4 versioni (oro/bianco × verticale/orizzontale) su una tavola; i PNG `Logo Morricone-01…04.png` restano come riferimento |
 
 Sezioni DS più usate: `05-segno` (Cinemascope, coordinate, grana, icone), `06-immagini`, `07-tono` (testi approvati IT/EN, nomi), `08-formati` § Sito, `02-logo`.
 
@@ -64,7 +64,8 @@ WEBSITE/
 ├─ astro.config.mjs · vercel.json · tsconfig.json · package.json
 ├─ scripts/
 │  ├─ foto.py            # originali selezionati → src/assets/foto (3200 px, q85)
-│  ├─ loghi.py           # PNG → misure web, favicon, OG
+│  ├─ loghi-svg.mjs      # SVG del logo → 4 SVG ritagliati + master PNG 1600 px
+│  ├─ loghi.py           # master PNG → favicon, icone, OG provvisoria
 │  ├─ testi.py           # docx → content/testi/it/*.md (alla lettera, titoli film in corsivo)
 │  ├─ video_analisi.sh   # scene detection + contact sheet (output in scripts/out/, ignorato)
 │  └─ video_hero.sh      # montaggio 10 s, export MP4/WebM, poster
@@ -75,7 +76,7 @@ WEBSITE/
 └─ src/
    ├─ assets/
    │  ├─ foto/           # JPG ottimizzati con nomi semantici
-   │  ├─ logo/           # logo-oro-verticale.png …
+   │  ├─ logo/           # logo-{oro,bianco}-{verticale,orizzontale}.svg (+ master .png)
    │  ├─ video/          # hero-poster.jpg (per <Picture>)
       ├─ components/        # vedi §8
    ├─ layouts/BaseLayout.astro
@@ -216,10 +217,10 @@ Regole:
 - **Mappa** in `content/foto.json` (originale → nuovo nome, alt IT/EN, credito).
 - In pagina: `<Picture formats={['avif','webp']} widths={[640,960,1280,1920,2560]} sizes=…>`; tagli 2,39:1 via `object-fit: cover` + `object-position` per foto.
 
-### Loghi (`scripts/loghi.py`)
-- Abbinamento verificato a vista: `Logo Morricone-0X.png` → `logo-oro-verticale.png`, `logo-oro-orizzontale.png`, `logo-bianco-verticale.png`, `logo-bianco-orizzontale.png` (misure attese: verticale 4407×1506, orizzontale 4740×687).
-- Export: orizzontale 280 / 560 px (Testata @1x/@2x), verticale 480 / 960 px (Hero), PNG ottimizzati + WebP.
-- Favicon (`favicon.svg` non possibile da PNG → `favicon.ico` 32/48 + `apple-touch-icon.png` 180): logo su `sala-100`, area 0,5 H. Misure minime DS: sotto 240 px (vert.) / 280 px (oriz.) **non** usare il logo.
+### Loghi (`scripts/loghi-svg.mjs` → `scripts/loghi.py`)
+- Sorgente: `Logo Morricone.svg`, un `<g>` per versione. `loghi-svg.mjs` misura ogni gruppo (raster con sharp + trim), scrive `src/assets/logo/logo-{colore}-{forma}.svg` con `viewBox` ritagliato e un master PNG 1600 px. L'oro del file (`#f2a93d`) diventa l'oro del DS `#e7ad54`, lo stesso dei PNG originali.
+- Nel sito il componente `Logo` usa gli SVG (`<img>`, nitidi a ogni misura): il WebP ricampionato dai PNG perdeva il lato sinistro della "O" di OMAGGIO.
+- Favicon (`loghi.py`, dal master verticale oro: `favicon.ico` 16/32/48 + `apple-touch-icon.png` 180): logo su `sala-100`, area 0,5 H. Misure minime DS: sotto 240 px (vert.) / 280 px (oriz.) **non** usare il logo.
 - OG 1200×630: finestra Cinemascope con foto + logo orizzontale oro nella banda; una per pagina (`public/og/`).
 
 ### Grana
