@@ -1,0 +1,51 @@
+---
+// Date (ARCHITECTURE.md §5, §9): prossime date in ordine crescente, Archivio separato (solo se ci sono date
+// passate). Nessuna data futura: "Nuove date in arrivo" con invito al contatto (in ListaDate).
+// Biglietti sulle biglietterie esterne in nuova scheda (DataTour); JSON-LD MusicEvent per ogni riga.
+import type { Lingua } from '../Seo.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Testata from '../Testata.astro';
+import TestaPagina from '../TestaPagina.astro';
+import Sezione from '../Sezione.astro';
+import ListaDate from '../ListaDate.astro';
+import Footer from '../Footer.astro';
+import { prendi } from '../../lib/contenuti';
+import { oggiRoma } from '../../i18n/date';
+import { alternate, t } from '../../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+}
+
+const { lang } = Astro.props;
+const D = t(lang);
+
+const eventi = await prendi('eventi');
+const oggi = oggiRoma();
+const passate = eventi.some((e) => e.data.data < oggi);
+---
+
+<BaseLayout
+  title={`${D.menu.date} — Omaggio a Ennio Morricone`}
+  description={D.seo.date}
+  lang={lang}
+  alternate={alternate('date')}
+  noindex
+>
+  <Testata slot="testata" lang={lang} corrente="date" />
+  <TestaPagina occhiello="Omaggio a Ennio Morricone" titolo={D.hero.date} />
+
+  <Sezione id="prossime">
+    <ListaDate lang={lang} eventi={eventi} />
+  </Sezione>
+
+  {
+    passate && (
+      <Sezione id="archivio" titolo={D.date.archivio}>
+        <ListaDate lang={lang} eventi={eventi} archivio />
+      </Sezione>
+    )
+  }
+
+  <Footer slot="piede" lang={lang} />
+</BaseLayout>

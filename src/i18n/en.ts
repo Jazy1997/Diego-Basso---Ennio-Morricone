@@ -27,7 +27,7 @@ export const en: Dizionario = {
     date: 'Upcoming dates',
     pausa: 'Pause the video',
   },
-  date: { vuoto: 'New dates coming soon', contatti: 'Get in touch' },
+  date: { vuoto: 'New dates coming soon', contatti: 'Get in touch', archivio: 'Past concerts' },
   etichette: {
     nuova: 'New date',
     ultimi: 'Last tickets',
@@ -61,6 +61,7 @@ export const en: Dizionario = {
       'The project conceived in 2004 by Maestro Diego Basso: orchestra, voice and the big screen on a symphonic journey through Ennio Morricone’s music for cinema.',
     maestro:
       'Diego Basso, conductor and transcriber: his vision of Ennio Morricone’s repertoire, his work with Alessandroni and Griminelli, and the line-up.',
+    date: 'Upcoming dates of Omaggio a Ennio Morricone with Diego Basso and the Orchestra Ritmico Sinfonica Italiana: cities, venues, times, tickets and past concerts.',
   },
   home: {
     tutteDate: 'All dates',
