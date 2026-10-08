@@ -24,6 +24,9 @@ const {
   alternate = [],
   noindex = false,
 } = Astro.props;
+// Indicizzazione accesa solo con PUBLIC_INDICIZZA=true (variabile Vercel di produzione, al go-live T41):
+// fino ad allora ogni pagina è noindex e robots.txt chiude il sito.
+const indicizza = import.meta.env.PUBLIC_INDICIZZA === 'true';
 const sito = Astro.site ?? Astro.url;
 const canonical = new URL(Astro.url.pathname, sito).href;
 const immagine = new URL(og, sito).href;
@@ -33,7 +36,7 @@ const itAlt = alternate.find((a) => a.lang === 'it');
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
-{noindex && <meta name="robots" content="noindex" />}
+{(noindex || !indicizza) && <meta name="robots" content="noindex" />}
 
 {alternate.map((a) => (
   <link rel="alternate" hreflang={a.lang} href={new URL(a.href, sito).href} />

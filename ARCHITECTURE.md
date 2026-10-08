@@ -67,6 +67,8 @@ WEBSITE/
 │  ├─ loghi-svg.mjs      # SVG del logo → 4 SVG ritagliati + master PNG 1600 px
 │  ├─ loghi.py           # master PNG → favicon, icone, OG provvisoria
 │  ├─ testi.py           # docx → content/testi/it/*.md (alla lettera, titoli film in corsivo)
+│  ├─ og.py              # immagini Open Graph 1200×630 per pagina
+│  ├─ verifica_en.py     # parità IT/EN, hreflang, parole italiane nelle pagine EN (sulla build)
 │  ├─ video_analisi.sh   # scene detection + contact sheet (output in scripts/out/, ignorato)
 │  └─ video_hero.sh      # montaggio 10 s, export MP4/WebM, poster
 ├─ public/
@@ -248,7 +250,9 @@ Si usa `.om-grana` di `bundle.css` del DS (rumore SVG incorporato, nessun file i
 - Title: `<Pagina> — Omaggio a Ennio Morricone` (Home: `Omaggio a Ennio Morricone — Diego Basso, Orchestra Ritmico Sinfonica Italiana`). Description 140–160 caratteri per pagina e lingua (dal testo breve DS).
 - OG/Twitter: `og:image` 1200×630 per pagina, `og:locale` it_IT / en_GB.
 - JSON-LD: `MusicEvent` per ogni data (name, startDate con fuso, location `Place`+`PostalAddress`+`GeoCoordinates`, performer `PerformingGroup` + `Person`, offers url, eventStatus, eventAttendanceMode); `PerformingGroup` + `MusicAlbum` (streaming) in Home.
-- `@astrojs/sitemap` con i18n, `robots.txt`, canonical, 404 `noindex`. Le preview Vercel hanno già `X-Robots-Tag: noindex`.
+- `@astrojs/sitemap` con alternate IT/EN costruite dalle `routes` (slug tradotti; escluse le pagine di conferma), `robots.txt` generato da `src/pages/robots.txt.ts`, canonical, 404 `noindex`. Le preview Vercel hanno già `X-Robots-Tag: noindex`.
+- **Interruttore di indicizzazione**: `PUBLIC_INDICIZZA=true` (variabile Vercel di produzione, da accendere al go-live T41). Senza, ogni pagina è `noindex` e `robots.txt` è `Disallow: /`.
+- OG per pagina: `python scripts/og.py` → `public/og/{home,progetto,maestro,date,promoter,contatti,default}.jpg` (foto in finestra Cinemascope + logo oro nella banda, valide per IT ed EN).
 
 ---
 

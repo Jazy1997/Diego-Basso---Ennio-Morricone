@@ -32,7 +32,7 @@ const schede = MOTIVI.map((id) => contatti.find((c) => c.id === id))
   description={D.seo.contatti}
   lang={lang}
   alternate={alternate('contatti')}
-  noindex
+  og="/og/contatti.jpg"
 >
   <Testata slot="testata" lang={lang} corrente="contatti" />
   <TestaPagina occhiello="Omaggio a Ennio Morricone" titolo={D.menu.contatti} />
