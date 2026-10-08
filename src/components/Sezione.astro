@@ -1,5 +1,6 @@
 ---
-// Sezione di pagina (ARCHITECTURE.md §6, §8): spaziatura DS, occhiello oro + titolo h2, comparsa con Reveal.
+// Sezione di pagina (ARCHITECTURE.md §6, §8): spaziatura DS, occhiello oro + titolo h2 (senza titolo l'occhiello
+// è l'h2), comparsa con Reveal.
 // `contenitore` (predefinito) limita la larghezza e applica i margini web; senza, la sezione va a tutta larghezza.
 // `affiancata`: da 1100 px titolo a sinistra (fermo mentre il testo scorre) e contenuto a destra, così la colonna
 // di testo non lascia metà schermo vuota; sotto 1100 px una colonna sola. Lo slot "testa" aggiunge contenuto
@@ -10,6 +11,8 @@ interface Props {
   titolo?: string;
   /** Classe tipografica del titolo: `titolo-l` (predefinita) o `evocativo-xl` per un claim. */
   stileTitolo?: 'titolo-l' | 'evocativo-xl';
+  /** Titolo solo per i lettori di schermo (gerarchia h1 → h2 → h3 quando il titolo visivo è già sopra). */
+  titoloNascosto?: boolean;
   centrato?: boolean;
   affiancata?: boolean;
   contenitore?: boolean;
@@ -21,6 +24,7 @@ const {
   occhiello,
   titolo,
   stileTitolo = 'titolo-l',
+  titoloNascosto = false,
   centrato = false,
   affiancata = false,
   contenitore = true,
@@ -43,8 +47,13 @@ const testa = occhiello || titolo || Astro.slots.has('testa');
   {
     testa && (
       <div class="sezione__testa">
-        {occhiello && <p class="occhiello om-oro">{occhiello}</p>}
-        {titolo && <h2 class={stileTitolo}>{titolo}</h2>}
+        {occhiello &&
+          (titolo ? (
+            <p class="occhiello om-oro">{occhiello}</p>
+          ) : (
+            <h2 class="occhiello om-oro">{occhiello}</h2>
+          ))}
+        {titolo && <h2 class:list={[stileTitolo, titoloNascosto && 'solo-lettori']}>{titolo}</h2>}
         <slot name="testa" />
       </div>
     )
