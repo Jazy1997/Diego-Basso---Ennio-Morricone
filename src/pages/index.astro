@@ -9,6 +9,7 @@ import Testata from '../components/Testata.astro';
 import Crediti from '../components/Crediti.astro';
 import Repertorio from '../components/Repertorio.astro';
 import Footer from '../components/Footer.astro';
+import Album from '../components/Album.astro';
 import ListaDate from '../components/ListaDate.astro';
 import VideoTrailer from '../components/VideoTrailer.astro';
 import posterTrailer from '../assets/video/trailer-poster.jpg';
@@ -121,6 +122,9 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
       <h2 class="titolo-l">Un viaggio nella musica per il cinema</h2>
     </div>
     <Repertorio />
+  </section>
+  <section class="sezione contenitore" id="album" data-reveal>
+    <Album />
   </section>
   <section class="sezione contenitore" data-reveal>
     <div class="sezione__testa">
