@@ -32,7 +32,6 @@ const titolare = pagina === 'privacy' ? (await prendi('contatti')).find((c) => c
   description={D.seo[pagina]}
   lang={lang}
   alternate={alternate(pagina)}
-  noindex
 >
   <Testata slot="testata" lang={lang} corrente={pagina} />
   <TestaPagina titolo={voce.data.titolo}>

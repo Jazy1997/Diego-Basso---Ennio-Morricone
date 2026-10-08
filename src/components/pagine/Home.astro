@@ -71,7 +71,7 @@ const jsonLd = [
   description={D.seo.home.description}
   lang={lang}
   alternate={alternate('home')}
-  noindex
+  og="/og/home.jpg"
 >
   <link slot="head" rel="preload" as="image" fetchpriority="high" {...poster} />
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

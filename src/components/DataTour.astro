@@ -31,7 +31,8 @@ const jsonLd = {
   startDate: inizio,
   eventStatus: 'https://schema.org/EventScheduled',
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-  image: new URL('/og/default.jpg', sito).href,
+  description: t(lang).claim.sottotitolo,
+  image: new URL('/og/date.jpg', sito).href,
   location: {
     '@type': 'Place',
     name: e.sede,
@@ -47,7 +48,6 @@ const jsonLd = {
   performer: [
     { '@type': 'PerformingGroup', name: 'Orchestra Ritmico Sinfonica Italiana' },
     { '@type': 'Person', name: 'Diego Basso' },
-    { '@type': 'Person', name: 'Claudia Sasso' },
   ],
   ...(e.biglietti && {
     offers: {
