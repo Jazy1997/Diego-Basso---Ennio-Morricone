@@ -9,10 +9,14 @@ import Testata from '../components/Testata.astro';
 import Crediti from '../components/Crediti.astro';
 import Repertorio from '../components/Repertorio.astro';
 import FasciaPartner from '../components/FasciaPartner.astro';
+import VideoTrailer from '../components/VideoTrailer.astro';
+import posterTrailer from '../assets/video/trailer-poster.jpg';
+import { getEntry } from 'astro:content';
 import { precaricaPoster } from '../lib/hero';
 import { prendi } from '../lib/contenuti';
 
 const poster = await precaricaPoster();
+const trailer = await getEntry('link', 'trailer');
 const nomi = ['eventi', 'persone', 'luoghi', 'partner', 'contatti', 'link', 'foto'] as const;
 const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n)).length}`));
 ---
@@ -103,6 +107,16 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
       <h2 class="titolo-l">Un viaggio nella musica per il cinema</h2>
     </div>
     <Repertorio />
+  </section>
+  <section class="sezione contenitore" data-reveal>
+    <div class="sezione__testa">
+      <p class="occhiello om-oro">Video</p>
+    </div>
+    {
+      trailer?.data.youtubeId && (
+        <VideoTrailer youtubeId={trailer.data.youtubeId} titolo={trailer.data.nome} poster={posterTrailer} />
+      )
+    }
   </section>
   <section class="sezione contenitore">
     <FasciaPartner />
