@@ -8,7 +8,7 @@ import HeroVideo from '../components/HeroVideo.astro';
 import Testata from '../components/Testata.astro';
 import Crediti from '../components/Crediti.astro';
 import Repertorio from '../components/Repertorio.astro';
-import FasciaPartner from '../components/FasciaPartner.astro';
+import Footer from '../components/Footer.astro';
 import ListaDate from '../components/ListaDate.astro';
 import VideoTrailer from '../components/VideoTrailer.astro';
 import posterTrailer from '../assets/video/trailer-poster.jpg';
@@ -132,7 +132,5 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
       )
     }
   </section>
-  <section class="sezione contenitore">
-    <FasciaPartner />
-  </section>
+  <Footer slot="piede" />
 </BaseLayout>

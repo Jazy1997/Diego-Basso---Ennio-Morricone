@@ -1,0 +1,229 @@
+---
+// Piè di pagina (ARCHITECTURE.md §6 riga 11, §8): schede Booking/Stampa/Pubblico, ascolto e social,
+// FasciaPartner, crediti fotografici aggregati da foto.json, Privacy/Cookie, ©, logo bianco orizzontale 280 px.
+// I dati segnaposto (contatti, social, partner) spariscono in produzione tramite prendi().
+import type { Lingua } from './Seo.astro';
+import Logo from './Logo.astro';
+import SchedaContatto from './SchedaContatto.astro';
+import FasciaPartner from './FasciaPartner.astro';
+import { prendi } from '../lib/contenuti';
+import { localizedPath } from '../i18n/utils';
+
+interface Props {
+  lang?: Lingua;
+}
+
+const { lang = 'it' } = Astro.props;
+
+const T = {
+  it: {
+    contatti: 'Contatti',
+    booking: 'Booking',
+    stampa: 'Stampa',
+    pubblico: 'Informazioni per il pubblico',
+    ascolta: 'Ascolta l’album',
+    seguici: 'Seguici',
+    foto: 'Fotografie',
+    privacy: 'Privacy',
+    cookie: 'Cookie',
+    nuovaScheda: '(si apre in una nuova scheda)',
+  },
+  en: {
+    contatti: 'Contacts',
+    booking: 'Booking',
+    stampa: 'Press',
+    pubblico: 'Audience information',
+    ascolta: 'Listen to the album',
+    seguici: 'Follow us',
+    foto: 'Photography',
+    privacy: 'Privacy',
+    cookie: 'Cookies',
+    nuovaScheda: '(opens in a new tab)',
+  },
+}[lang];
+
+const contatti = await prendi('contatti');
+const schede = (['booking', 'stampa', 'pubblico'] as const)
+  .map((id) => contatti.find((c) => c.id === id))
+  .filter((c) => c !== undefined)
+  .map((c) => ({ ...c.data, titolo: T[c.id as 'booking' | 'stampa' | 'pubblico'] }));
+
+const link = await prendi('link');
+// Ordine fisso (ARCHITECTURE.md §6): la collezione torna ordinata per id.
+const ORDINE = ['spotify', 'apple-music', 'tidal'];
+const streaming = link
+  .filter((l) => l.data.tipo === 'streaming')
+  .sort((a, b) => ORDINE.indexOf(a.id) - ORDINE.indexOf(b.id));
+const social = link.filter((l) => l.data.tipo === 'social');
+
+const crediti = [...new Set((await prendi('foto')).map((f) => f.data.credito))];
+const anno = new Date().getFullYear();
+---
+
+<footer class="piede">
+  <div class="contenitore piede__dentro">
+    {
+      schede.length > 0 && (
+        <section class="piede__contatti" aria-labelledby="piede-contatti">
+          <h2 class="solo-lettori" id="piede-contatti">
+            {T.contatti}
+          </h2>
+          {schede.map((s) => (
+            <SchedaContatto
+              titolo={s.titolo}
+              nome={s.nome}
+              email={s.email}
+              telefono={s.telefono}
+              segnaposto={s.segnaposto}
+            />
+          ))}
+        </section>
+      )
+    }
+
+    <div class="piede__riga">
+      <a class="piede__logo" href={localizedPath('home', lang)}>
+        <Logo colore="bianco" forma="orizzontale" larghezza={280} />
+      </a>
+      <div class="piede__link">
+        {
+          streaming.length > 0 && (
+            <div>
+              <p class="occhiello om-tenue">{T.ascolta}</p>
+              <ul>
+                {streaming.map((l) => (
+                  <li>
+                    <a href={l.data.url} target="_blank" rel="noopener">
+                      {l.data.nome}
+                      <span class="solo-lettori">{T.nuovaScheda}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+        {
+          social.length > 0 && (
+            <div>
+              <p class="occhiello om-tenue">{T.seguici}</p>
+              <ul>
+                {social.map((l) => (
+                  <li class:list={[l.data.segnaposto && 'segnaposto']}>
+                    <a href={l.data.url} target="_blank" rel="noopener">
+                      {l.data.nome}
+                      <span class="solo-lettori">{T.nuovaScheda}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+    </div>
+
+    <FasciaPartner lang={lang} />
+
+    <div class="piede__legale">
+      {
+        crediti.length > 0 && (
+          <p class="didascalia om-tenue">
+            {T.foto}: {crediti.join(' · ')}
+          </p>
+        )
+      }
+      <p class="didascalia om-tenue piede__note">
+        <span>© {anno} Omaggio a Ennio Morricone</span>
+        <a href={localizedPath('privacy', lang)}>{T.privacy}</a>
+        <a href={localizedPath('cookie', lang)}>{T.cookie}</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .piede {
+    margin-top: var(--spazio-24);
+    background: var(--sala-000);
+    border-top: 1px solid var(--linea);
+  }
+
+  .piede__dentro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-12);
+    padding-block: var(--spazio-16) var(--spazio-8);
+  }
+
+  .piede__contatti {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spazio-4);
+  }
+
+  .piede__riga {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spazio-8);
+  }
+
+  .piede__logo {
+    flex: none;
+  }
+
+  .piede__link {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spazio-12);
+  }
+
+  .piede__link ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-2);
+    margin: var(--spazio-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .piede__link a {
+    color: var(--avorio);
+    text-decoration: none;
+  }
+
+  .piede__link a:hover {
+    color: var(--oro);
+    text-decoration: underline;
+  }
+
+  .piede__legale {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-2);
+    padding-top: var(--spazio-6);
+    border-top: 1px solid var(--linea);
+  }
+
+  .piede__note {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spazio-1) var(--spazio-6);
+  }
+
+  .piede__note a {
+    color: inherit;
+  }
+
+  .piede__note a:hover {
+    color: var(--oro);
+  }
+
+  @media (max-width: 900px) {
+    .piede__contatti {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
