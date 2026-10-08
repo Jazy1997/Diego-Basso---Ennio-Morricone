@@ -1,4 +1,4 @@
-# HANDSOFF — 2026-10-08 · sessione 3: M4 (T25 i18n, T26 testi IT)
+# HANDSOFF — 2026-10-08 · sessione 3: M4 completata (T25 i18n, T26 testi IT, T27 testi EN)
 
 **Stato**: M0–M3 completate · campionario su `/` (provvisoria `noindex`) · prod: https://diegobassoenniomorricone.vercel.app
 **Revisione fatta**: hover pulsanti oro · Repertorio con temi sotto i film (+ *Maddalena*) · contatti/social/piattaforme solo icone (`LinkIcona`, Simple Icons) · sezione Album con player Spotify al click (T73) · hero a tutto schermo, video intero in HLS adattivo (T75, ARCHITECTURE §7 riscritto).
@@ -6,7 +6,8 @@
 **Da verificare a mano**: video hero su Safari/iOS (HLS nativo) sulla preview.
 **T25 fatto**: config i18n Astro (`it` senza prefisso), dizionario UI in `src/i18n/{it,en}.ts` (tipo `Dizionario`: stesse chiavi), helper `t(lang)` in `utils.ts`; tutti i componenti leggono da lì (niente più tabelle `{it,en}[lang]` sparse). Le pagine `/en/…` nascono con T28+ (il selettore punta già a `localizedPath(corrente, …)`).
 **T26 fatto**: `python scripts/testi.py` rigenera `content/testi/it/*.md` dal docx (7 sezioni, verificato identico al docx; film/album/spettacolo in corsivo, temi tra “ ”); `breve.md`/`medio.md` dal DS (`tipo: breve|medio`, i lunghi `tipo: lungo` di default); claim in `t(lang).claim`. Il docx scrive *Il buono, il brutto e il cattivo* e “Chi Mai” (il DS: senza «e», “Chi mai”): tenuto il docx.
-**Prossimo**: T27 testi EN (breve/medio/claim già approvati nel DS; lunghi da tradurre → revisione madrelingua). Poi M5 (T28 Home: cablare `Testata trasparente`, `Footer`, `Album`, preload `precaricaPoster()`).
+**T27 fatto**: `content/testi/en/*.md` (stessi file dell'IT). Breve e claim EN dal DS; medio e lunghi tradotti da Claude (inglese britannico, titoli dei film nell'edizione inglese: *Cinema Paradiso*, *The Legend of 1900*, *A Fistful of Dynamite*…) → **da far revisionare a un madrelingua**.
+**Prossimo**: M5 (T28 Home: cablare `Testata trasparente`, `Footer`, `Album`, preload `precaricaPoster()`; pagine come file sottili IT/EN su `src/components/pagine/`).
 **Decisioni**: dati via `prendi()` (segnaposto esclusi solo con `VERCEL_ENV=production`) · menu Testata sotto 1200 px · hero: deroga DS (testo sopra il video), animazione "sipario" 2,39:1 → tutto schermo · sorgente video con SAR errato → `setsar=1` · HLS su Vercel in cartella versionata (`/video/*` immutabile), spostabile su Cloudflare R2 con `PUBLIC_VIDEO_BASE` · `hls.js/light` caricato solo quando parte il video.
 **Flusso**: branch → PR (`Closes #n`) → check Vercel → squash merge autonomo. Numero issue = numero ticket (le issue nuove si rititolano `Tnn`).
 **Comandi**: `npm run dev|build|check` · test prod `VERCEL_ENV=production npx astro build` · `python scripts/{tokens,loghi,foto}.py` · `bash scripts/video_hero.sh`
