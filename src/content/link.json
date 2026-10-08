@@ -3,7 +3,7 @@
   { "id": "apple-music", "tipo": "streaming", "nome": "Apple Music", "url": "https://music.apple.com/us/album/omaggio-a-ennio-morricone-feat-coro-lirico-opera/1880615570" },
   { "id": "tidal", "tipo": "streaming", "nome": "Tidal", "url": "https://tidal.com/album/501580032" },
   { "id": "youtube-playlist", "tipo": "video", "nome": "YouTube", "url": "https://www.youtube.com/playlist?list=PLexFDCR3qWT5uixc2XOgPzUvoNWZOxqET" },
-  { "id": "trailer", "tipo": "video", "nome": "Trailer", "url": "https://www.youtube.com/watch?v=Vj3FlYADbdM", "youtubeId": "Vj3FlYADbdM" },
+  { "id": "trailer", "tipo": "video", "nome": "Omaggio a Ennio Morricone – Alba a Sernaglia della Battaglia", "url": "https://www.youtube.com/watch?v=Vj3FlYADbdM", "youtubeId": "Vj3FlYADbdM" },
   { "id": "instagram", "tipo": "social", "nome": "Instagram", "url": "https://www.instagram.com/", "segnaposto": true },
   { "id": "facebook", "tipo": "social", "nome": "Facebook", "url": "https://www.facebook.com/", "segnaposto": true }
 ]
