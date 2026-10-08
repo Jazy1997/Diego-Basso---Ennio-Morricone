@@ -123,7 +123,7 @@ Spazio tra sezioni `spazio-24` (desktop) / `spazio-16` (mobile); margini `margin
 | # | Sezione | Componente | Contenuto | Mobile |
 | --- | --- | --- | --- | --- |
 | 1 | Testata | `Testata` | Logo orizzontale oro 280 px, menu, IT/EN, "Biglietti". Trasparente sopra l'hero, `sala-100` + filetto `linea` dopo lo scorrimento | < 1080 px: pulsante "Menu" → pannello a tutto schermo, voci `titolo-m` |
-| 2 | Hero | `HeroVideo` | Finestra Cinemascope a tutta larghezza, video muto in loop (§7). Banda alta: occhiello "DIEGO BASSO DIRIGE". Banda bassa: logo **verticale oro** (≥ 240 px) + sottotitolo *Musica e cinema in un unico grande spettacolo* (`evocativo`) + pulsante oro "Prossime date" | Bande più alte, logo 240 px, pulsante a tutta larghezza |
+| 2 | Hero | `HeroVideo` | Finestra Cinemascope a tutta larghezza, video muto in loop (§7). Niente occhiello (decisione dell'utente, ott. 2026). Banda bassa: logo **verticale oro** (≥ 240 px) + sottotitolo *Musica e cinema in un unico grande spettacolo* (`evocativo`) + pulsante oro "Prossime date" | Bande più alte, logo 240 px, pulsante a tutta larghezza |
 | 3 | Prossime date | `ListaDate` (3 `DataTour`) | Prime 3 date future + link "Tutte le date". Nessuna data: "Nuove date in arrivo" + link contatti | Righe impilate |
 | 4 | Il progetto | `Sezione` + `Cinemascope` | Occhiello "IL PROGETTO", `lead` = sottotitolo, testo medio (DS › Tono), foto orchestra+schermo 2,39:1, link "Scopri il progetto" | — |
 | 5 | Il repertorio | `Repertorio` | Titoli dei film in `evocativo`, colonna centrata come titoli di coda; temi in `citazione` | Una colonna |
@@ -153,7 +153,7 @@ Un solo pulsante oro per schermata (DS › Pulsante): in Hero "Prossime date"; i
 
 ### 7.2 Componente `HeroVideo`
 - `section.hero` alta `max(100svh, 520px)`; poster (`<Picture>`, LCP precaricato con `precaricaPoster()`) e `<video muted loop playsinline preload="none">` a tutto schermo con `object-fit: cover`; grana; due veli sfumati (in alto per la testata trasparente, in basso per i testi).
-- In basso a sinistra: occhiello "DIEGO BASSO DIRIGE", logo verticale oro (`h1`, 240–360 px), sottotitolo, pulsante oro "Prossime date". Pausa/play in basso a destra (su mobile in alto a destra).
+- In basso a sinistra: logo verticale oro (senza occhiello) (`h1`, 240–360 px), sottotitolo, pulsante oro "Prossime date". Pausa/play in basso a destra (su mobile in alto a destra).
 - **Animazione firma**: all'apertura il video è una finestra 2,39:1 al centro (`clip-path: inset(max(0px, calc(50% - 20.92vw)) 0)`) che in 0,8 s si apre a tutto schermo; poi compaiono i testi. Sugli schermi più larghi di 2,39:1 l'effetto è nullo.
 - `prefers-reduced-motion` **o** Save-Data: niente animazione, niente video (resta il poster). Uno script inline decide prima del primo disegno (`data-anima`).
 - `src/scripts/hero.ts`: la sorgente si collega solo quando il video deve partire. Safari/iOS usano HLS nativo, gli altri browser caricano `hls.js/light` in quel momento (~110 KB gzip, chunk separato), con `capLevelToPlayerSize`. Pausa fuori viewport e con scheda nascosta, e in pausa smette anche il download (`stopLoad`).

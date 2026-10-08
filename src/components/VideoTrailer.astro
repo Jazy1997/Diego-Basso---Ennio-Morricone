@@ -65,8 +65,10 @@ const etichetta = `${t(lang).comune.riproduciVideo}: ${titolo}`;
     place-items: center;
   }
 
+  /* Il <picture> sta fuori dalla griglia: con display: contents i <source> diventerebbero righe e sposterebbero il play. */
   .trailer :global(picture) {
-    display: contents;
+    position: absolute;
+    inset: 0;
   }
 
   .trailer :global(.trailer__poster) {
