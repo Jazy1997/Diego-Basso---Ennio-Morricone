@@ -1,0 +1,274 @@
+---
+// Home (ARCHITECTURE.md §6): le 11 sezioni nell'ordine della tabella, una sola implementazione per IT e EN.
+// Unico pulsante oro per schermata: "Prossime date" nell'hero, "Scarica il press kit" in Promoter e venue.
+import { Picture, getImage } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import type { Lingua } from '../Seo.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Testata from '../Testata.astro';
+import HeroVideo from '../HeroVideo.astro';
+import Sezione from '../Sezione.astro';
+import ListaDate from '../ListaDate.astro';
+import Cinemascope from '../Cinemascope.astro';
+import Repertorio from '../Repertorio.astro';
+import Crediti from '../Crediti.astro';
+import VideoTrailer from '../VideoTrailer.astro';
+import Album from '../Album.astro';
+import Pulsante from '../Pulsante.astro';
+import Footer from '../Footer.astro';
+import posterTrailer from '../../assets/video/trailer-poster.jpg';
+import immagineAlbum from '../../assets/album/copertina.jpg';
+import { precaricaPoster } from '../../lib/hero';
+import { foto } from '../../lib/foto';
+import { mostraSegnaposto, prendi } from '../../lib/contenuti';
+import { paragrafi, testo } from '../../lib/testi';
+import { alternate, localizedPath, t } from '../../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+}
+
+const { lang } = Astro.props;
+const D = t(lang);
+const T = D.home;
+
+const poster = await precaricaPoster();
+const medio = paragrafi((await testo('medio', lang)).body ?? '');
+const visione = paragrafi((await testo('visione', lang)).body ?? '')[0];
+const ritratto = await foto('maestro-01', lang);
+const trailer = await getEntry('link', 'trailer');
+
+// Press kit: il pulsante compare quando lo zip è in public/presskit (T32); prima solo come segnaposto fuori produzione.
+const pressKit = Object.keys(import.meta.glob('/public/presskit/*.zip'))[0]?.replace('/public', '');
+
+// JSON-LD (ARCHITECTURE.md §12): l'orchestra con direttore e soprano, e l'album con le piattaforme.
+const sito = Astro.site ?? Astro.url;
+const piattaforme = (await prendi('link')).filter((l) => l.data.tipo === 'streaming');
+const copertina = await getImage({ src: immagineAlbum, width: 640 });
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'PerformingGroup',
+    name: 'Orchestra Ritmico Sinfonica Italiana',
+    url: new URL(localizedPath('home', lang), sito).href,
+    member: [
+      { '@type': 'Person', name: 'Diego Basso', jobTitle: D.crediti.direttore },
+      { '@type': 'Person', name: 'Claudia Sasso', jobTitle: D.crediti.soprano },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'MusicAlbum',
+    name: 'Omaggio a Ennio Morricone',
+    inLanguage: 'it',
+    datePublished: '2021',
+    image: new URL(copertina.src, sito).href,
+    byArtist: { '@type': 'MusicGroup', name: 'Orchestra Ritmico Sinfonica Italiana' },
+    sameAs: piattaforme.map((p) => p.data.url),
+  },
+];
+---
+
+<BaseLayout
+  title={D.seo.home.title}
+  description={D.seo.home.description}
+  lang={lang}
+  alternate={alternate('home')}
+  noindex
+>
+  <link slot="head" rel="preload" as="image" fetchpriority="high" {...poster} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Testata slot="testata" lang={lang} corrente="home" trasparente />
+
+  <!-- 2 · Hero -->
+  <HeroVideo lang={lang} />
+
+  <!-- 3 · Prossime date -->
+  <Sezione id="date" occhiello={D.hero.date}>
+    <ListaDate lang={lang} limite={3} />
+    <p class="home__link">
+      <Pulsante href={localizedPath('date', lang)} variante="testo" lang={lang}>{T.tutteDate}</Pulsante>
+    </p>
+  </Sezione>
+
+  <!-- 4 · Il progetto -->
+  <Sezione id="progetto" occhiello={T.progetto} titolo={D.claim.sottotitolo} stileTitolo="evocativo-xl">
+    <div class="testo">
+      {medio.map((p) => <p class="corpo" set:html={p} />)}
+    </div>
+    <Cinemascope
+      class="home__cinemascope"
+      foto="orchestra-schermo-03"
+      lang={lang}
+      sottotitolo={D.claim.proiezioni}
+      sizes="(min-width: 1568px) 1440px, 92vw"
+    />
+    <p class="home__link">
+      <Pulsante href={localizedPath('progetto', lang)} variante="testo" lang={lang}>{T.scopriProgetto}</Pulsante>
+    </p>
+  </Sezione>
+
+  <!-- 5 · Il repertorio -->
+  <Sezione occhiello={T.repertorio} titolo={T.repertorioTitolo} centrato>
+    <Repertorio lang={lang} />
+  </Sezione>
+
+  <!-- 6 · Il Maestro -->
+  <Sezione id="maestro" class="home__maestro">
+    <Picture
+      class="home__ritratto"
+      src={ritratto.src}
+      alt={ritratto.alt}
+      widths={[480, 720, 960, 1280]}
+      sizes="(min-width: 900px) 40vw, 92vw"
+      formats={['avif', 'webp']}
+      style="object-position: 55% 30%"
+    />
+    <div class="home__maestro-testo">
+      <div class="sezione__testa">
+        <p class="occhiello om-oro">{T.maestro}</p>
+        <h2 class="titolo-l">{T.maestroTitolo}</h2>
+      </div>
+      <div class="testo">
+        <p class="corpo" set:html={visione} />
+      </div>
+      <p class="home__link">
+        <Pulsante href={localizedPath('maestro', lang)} variante="testo" lang={lang}>{T.scopriMaestro}</Pulsante>
+      </p>
+    </div>
+  </Sezione>
+
+  <!-- 7 · Formazione -->
+  <Sezione occhiello={T.formazione}>
+    <Crediti lang={lang} />
+  </Sezione>
+
+  <!-- 8 · Video -->
+  {
+    trailer?.data.youtubeId && (
+      <Sezione occhiello={T.video}>
+        <VideoTrailer
+          youtubeId={trailer.data.youtubeId}
+          titolo={trailer.data.nome}
+          poster={posterTrailer}
+          lang={lang}
+        />
+      </Sezione>
+    )
+  }
+
+  <!-- 9 · Ascolta l'album -->
+  <Sezione id="album">
+    <Album lang={lang} />
+  </Sezione>
+
+  <!-- 10 · Promoter e venue -->
+  <Sezione id="promoter" occhiello={T.promoter} titolo={T.promoterTitolo}>
+    <ul class="home__argomenti">
+      {
+        T.argomenti.map((a) => (
+          <li>
+            <h3 class="titolo-m">{a.titolo}</h3>
+            <p class="corpo om-tenue">{a.testo}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="om-riga home__azioni">
+      {
+        pressKit ? (
+          <Pulsante href={pressKit} lang={lang}>
+            {T.pressKit}
+          </Pulsante>
+        ) : (
+          mostraSegnaposto && (
+            <span class="segnaposto">
+              <Pulsante disabilitato lang={lang}>
+                {T.pressKitInArrivo}
+              </Pulsante>
+            </span>
+          )
+        )
+      }
+      <Pulsante href={localizedPath('contatti', lang)} variante="contorno" lang={lang}>{T.booking}</Pulsante>
+      <Pulsante href={localizedPath('promoter', lang)} variante="testo" lang={lang}>{T.scopriPromoter}</Pulsante>
+    </div>
+  </Sezione>
+
+  <!-- 11 · Piè di pagina -->
+  <Footer slot="piede" lang={lang} />
+</BaseLayout>
+
+<style>
+  .home__link {
+    margin-top: var(--spazio-6);
+  }
+
+  .home__link :global(.om-pulsante--testo) {
+    padding-inline: 0;
+  }
+
+  .sezione :global(.home__cinemascope) {
+    margin-top: var(--spazio-12);
+  }
+
+  /* Il Maestro: ritratto verticale 4:5 accanto al testo; su mobile foto sopra, testo sotto. */
+  /* La <section> la disegna Sezione: la classe arriva da qui, quindi :global. */
+  :global(.home__maestro) {
+    display: grid;
+    gap: var(--spazio-8);
+    align-items: center;
+  }
+
+  :global(.home__maestro) :global(.home__ritratto) {
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 4 / 5;
+    height: auto;
+    object-fit: cover;
+  }
+
+  @media (min-width: 900px) {
+    :global(.home__maestro) {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--spazio-16);
+    }
+  }
+
+  .home__argomenti {
+    display: grid;
+    gap: var(--spazio-8);
+    margin: 0 0 var(--spazio-12);
+    padding: 0;
+    list-style: none;
+  }
+
+  .home__argomenti li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-3);
+    padding-top: var(--spazio-6);
+    border-top: 1px solid var(--linea);
+  }
+
+  @media (min-width: 900px) {
+    .home__argomenti {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .home__azioni {
+    gap: var(--spazio-6);
+  }
+
+  @media (max-width: 600px) {
+    .home__azioni {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .home__azioni :global(.om-pulsante:not(.om-pulsante--testo)) {
+      width: 100%;
+    }
+  }
+</style>
