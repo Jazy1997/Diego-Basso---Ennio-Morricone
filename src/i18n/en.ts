@@ -57,6 +57,8 @@ export const en: Dizionario = {
       description:
         'Conceived in 2004 by conductor Diego Basso: the Orchestra Ritmico Sinfonica Italiana and soprano Claudia Sasso perform Ennio Morricone’s music for cinema.',
     },
+    progetto:
+      'The project conceived in 2004 by Maestro Diego Basso: orchestra, voice and the big screen on a symphonic journey through Ennio Morricone’s music for cinema.',
   },
   home: {
     tutteDate: 'All dates',

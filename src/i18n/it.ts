@@ -56,6 +56,8 @@ export const it = {
       description:
         'Il progetto ideato nel 2004 dal Maestro Diego Basso: l’Orchestra Ritmico Sinfonica Italiana e il soprano Claudia Sasso nella musica per il cinema di Ennio Morricone.',
     },
+    progetto:
+      'Il progetto ideato nel 2004 dal Maestro Diego Basso: orchestra, voce e grande schermo in un viaggio sinfonico nella musica per il cinema di Ennio Morricone.',
   },
   home: {
     tutteDate: 'Tutte le date',

@@ -1,0 +1,39 @@
+---
+// Apertura delle pagine interne (ARCHITECTURE.md §5): occhiello, titolo h1 (unico della pagina) e lead facoltativo.
+interface Props {
+  occhiello?: string;
+  titolo: string;
+  lead?: string;
+}
+
+const { occhiello, titolo, lead } = Astro.props;
+---
+
+<header class="testa-pagina contenitore">
+  {occhiello && <p class="occhiello om-oro">{occhiello}</p>}
+  <h1 class="titolo-xl">{titolo}</h1>
+  {lead && <p class="evocativo testa-pagina__lead">{lead}</p>}
+  <slot />
+</header>
+
+<style>
+  .testa-pagina {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-3);
+    padding-top: var(--spazio-16);
+    padding-bottom: var(--spazio-12);
+  }
+
+  .testa-pagina__lead {
+    max-width: var(--colonna-testo);
+    margin-top: var(--spazio-2);
+  }
+
+  @media (max-width: 720px) {
+    .testa-pagina {
+      padding-top: var(--spazio-12);
+      padding-bottom: var(--spazio-8);
+    }
+  }
+</style>

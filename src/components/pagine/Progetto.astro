@@ -1,0 +1,90 @@
+---
+// Il progetto (ARCHITECTURE.md §5): i testi lunghi del docx con foto Cinemascope 2,39:1 tra le sezioni,
+// il Repertorio dopo "Un viaggio nella musica per il cinema" e la chiusura con il claim finale.
+import { render } from 'astro:content';
+import type { Lingua } from '../Seo.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Testata from '../Testata.astro';
+import TestaPagina from '../TestaPagina.astro';
+import Sezione from '../Sezione.astro';
+import Cinemascope from '../Cinemascope.astro';
+import Repertorio from '../Repertorio.astro';
+import Pulsante from '../Pulsante.astro';
+import Footer from '../Footer.astro';
+import { testo } from '../../lib/testi';
+import { alternate, localizedPath, t } from '../../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+}
+
+const { lang } = Astro.props;
+const D = t(lang);
+
+// Ordine della pagina: testo, poi la foto che lo segue (nessuna foto dopo il viaggio: lì c'è il Repertorio).
+const SEZIONI = [
+  { id: 'progetto', foto: 'orchestra-schermo-01' },
+  { id: 'viaggio', repertorio: true, foto: 'sezione-archi-01' },
+  { id: 'racconto', foto: 'pubblico-01' },
+  { id: 'esperienza' },
+] as const;
+
+const sezioni = await Promise.all(
+  SEZIONI.map(async (s) => {
+    const voce = await testo(s.id, lang);
+    const { Content } = await render(voce);
+    return { ...s, titolo: voce.data.titolo, Content };
+  }),
+);
+---
+
+<BaseLayout
+  title={`${D.menu.progetto} — Omaggio a Ennio Morricone`}
+  description={D.seo.progetto}
+  lang={lang}
+  alternate={alternate('progetto')}
+  noindex
+>
+  <Testata slot="testata" lang={lang} corrente="progetto" />
+  <TestaPagina occhiello="Omaggio a Ennio Morricone" titolo={D.menu.progetto} lead={D.claim.sottotitolo} />
+
+  {
+    sezioni.map((s) => (
+      <>
+        <Sezione id={s.id} titolo={s.id === 'progetto' ? undefined : s.titolo}>
+          <div class="testo corpo">
+            <s.Content />
+          </div>
+        </Sezione>
+        {'repertorio' in s && s.repertorio && (
+          <Sezione occhiello={D.home.repertorio} centrato>
+            <Repertorio lang={lang} />
+          </Sezione>
+        )}
+        {'foto' in s && s.foto && (
+          <section class="sezione" data-reveal>
+            <Cinemascope foto={s.foto} lang={lang} />
+          </section>
+        )}
+      </>
+    ))
+  }
+
+  <!-- Chiusura: il claim finale del docx (DS › Tono) e le date -->
+  <Sezione class="progetto__chiusura" centrato>
+    <Cinemascope foto="saluti-01" lang={lang} sottotitolo={D.claim.chiusura} filetto />
+    <p class="progetto__azione">
+      <Pulsante href={localizedPath('date', lang)} lang={lang}>{D.hero.date}</Pulsante>
+    </p>
+  </Sezione>
+
+  <Footer slot="piede" lang={lang} />
+</BaseLayout>
+
+<style>
+  .progetto__azione {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spazio-12);
+  }
+</style>
