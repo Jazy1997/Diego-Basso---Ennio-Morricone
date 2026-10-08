@@ -10,3 +10,4 @@ scripts/out/
 .DS_Store
 Thumbs.db
 public/fonts/
+graphify-out/
