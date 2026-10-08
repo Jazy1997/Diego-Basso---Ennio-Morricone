@@ -1,0 +1,233 @@
+---
+// Promoter e venue (ARCHITECTURE.md §5): tutto ciò che serve a un teatro per scegliere lo spettacolo.
+// "Oltre vent'anni di storia" dal docx + luoghi con città e coordinate (Guangzhou a parte, all'estero) ·
+// due versioni · scheda tecnica dallo stage plot · press kit · contatto booking.
+import { render } from 'astro:content';
+import type { Lingua } from '../Seo.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Testata from '../Testata.astro';
+import TestaPagina from '../TestaPagina.astro';
+import Sezione from '../Sezione.astro';
+import Cinemascope from '../Cinemascope.astro';
+import SchedaContatto from '../SchedaContatto.astro';
+import PulsantePressKit from '../PulsantePressKit.astro';
+import Pulsante from '../Pulsante.astro';
+import Footer from '../Footer.astro';
+import { prendi } from '../../lib/contenuti';
+import { testo } from '../../lib/testi';
+import { coordinate } from '../../i18n/date';
+import { alternate, localizedPath, t } from '../../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+}
+
+const { lang } = Astro.props;
+const D = t(lang);
+const T = D.promoter;
+
+const storia = await testo('storia', lang);
+const { Content: Storia } = await render(storia);
+const luoghi = (await prendi('luoghi')).sort((a, b) => a.data.ordine - b.data.ordine);
+const italia = luoghi.filter((l) => l.data.nazione === 'IT');
+const estero = luoghi.filter((l) => l.data.nazione !== 'IT');
+const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
+---
+
+<BaseLayout
+  title={`${D.menu.promoter} — Omaggio a Ennio Morricone`}
+  description={D.seo.promoter}
+  lang={lang}
+  alternate={alternate('promoter')}
+  noindex
+>
+  <Testata slot="testata" lang={lang} corrente="promoter" />
+  <TestaPagina occhiello={D.menu.promoter} titolo={D.home.promoterTitolo}>
+    <div class="om-riga promoter__azioni">
+      <PulsantePressKit lang={lang} />
+      <Pulsante href="#booking" variante="contorno" lang={lang}>{T.scrivi}</Pulsante>
+    </div>
+  </TestaPagina>
+
+  <!-- Oltre vent'anni di storia -->
+  <Sezione id="storia" titolo={storia.data.titolo}>
+    <div class="testo corpo">
+      <Storia />
+    </div>
+    <h3 class="occhiello om-oro promoter__etichetta">{T.luoghi}</h3>
+    <ul class="promoter__luoghi">
+      {
+        italia.map((l) => (
+          <li>
+            <p class="titolo-m">{l.data.citta[lang]}</p>
+            <p class="corpo">{l.data.nome}</p>
+            <p class="coordinate om-tenue">{coordinate(l.data.lat, l.data.lng)}</p>
+          </li>
+        ))
+      }
+    </ul>
+    {
+      estero.map((l) => (
+        <div class="promoter__estero">
+          <p class="occhiello om-oro">{T.internazionale} · 2015/2016</p>
+          <p class="titolo-l">{l.data.citta[lang]}</p>
+          <p class="corpo">{l.data.nome}</p>
+          <p class="coordinate om-tenue">{coordinate(l.data.lat, l.data.lng)}</p>
+        </div>
+      ))
+    }
+  </Sezione>
+
+  <section class="sezione" data-reveal>
+    <Cinemascope foto="luogo-castello-01" lang={lang} />
+  </section>
+
+  <!-- Due versioni -->
+  <Sezione id="versioni" titolo={T.versioni}>
+    <ul class="promoter__versioni">
+      {
+        [T.conProiezioni, T.inConcerto].map((v) => (
+          <li>
+            <h3 class="titolo-m">{v.titolo}</h3>
+            <p class="corpo om-tenue">{v.testo}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Sezione>
+
+  <!-- Scheda tecnica -->
+  <Sezione id="scheda" titolo={T.scheda}>
+    <dl class="promoter__scheda">
+      {
+        T.voci.map((v) => (
+          <div>
+            <dt class="occhiello om-tenue">{v.nome}</dt>
+            <dd class="corpo">{v.valore}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="didascalia om-tenue promoter__nota">{T.schedaNota}</p>
+  </Sezione>
+
+  <!-- Booking -->
+  <Sezione id="booking" titolo={T.booking}>
+    <div class="promoter__booking">
+      {
+        booking && (
+          <SchedaContatto
+            titolo={T.booking}
+            nome={booking.data.nome}
+            email={booking.data.email}
+            telefono={booking.data.telefono}
+            segnaposto={booking.data.segnaposto}
+            lang={lang}
+          />
+        )
+      }
+      <Pulsante href={localizedPath('contatti', lang)} variante="testo" lang={lang}>{D.menu.contatti}</Pulsante>
+    </div>
+  </Sezione>
+
+  <Footer slot="piede" lang={lang} />
+</BaseLayout>
+
+<style>
+  .promoter__azioni {
+    margin-top: var(--spazio-8);
+    gap: var(--spazio-6);
+  }
+
+  .promoter__etichetta {
+    margin: var(--spazio-12) 0 var(--spazio-6);
+  }
+
+  .promoter__luoghi,
+  .promoter__versioni {
+    display: grid;
+    gap: var(--spazio-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .promoter__luoghi li,
+  .promoter__versioni li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-2);
+    padding-top: var(--spazio-4);
+    border-top: 1px solid var(--linea);
+  }
+
+  /* Guangzhou in evidenza: l'unica data all'estero, con filetto oro. */
+  .promoter__estero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-2);
+    margin-top: var(--spazio-12);
+    padding: var(--spazio-8);
+    background: var(--sala-200);
+    border-top: 1px solid var(--oro);
+  }
+
+  .promoter__scheda {
+    display: grid;
+    gap: var(--spazio-6) var(--spazio-8);
+    margin: 0;
+  }
+
+  .promoter__scheda div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-2);
+    padding-top: var(--spazio-4);
+    border-top: 1px solid var(--linea);
+  }
+
+  .promoter__scheda dd {
+    margin: 0;
+  }
+
+  .promoter__nota {
+    margin-top: var(--spazio-6);
+  }
+
+  .promoter__booking {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-6);
+    max-width: 420px;
+  }
+
+  .promoter__booking > :global(.om-pulsante) {
+    align-self: flex-start;
+  }
+
+  @media (min-width: 720px) {
+    .promoter__luoghi,
+    .promoter__scheda {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .promoter__versioni {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--spazio-8);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .promoter__luoghi,
+    .promoter__scheda {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .promoter__azioni {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>

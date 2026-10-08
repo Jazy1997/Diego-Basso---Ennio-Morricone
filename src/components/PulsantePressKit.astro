@@ -1,0 +1,32 @@
+---
+// "Scarica il press kit" (pulsante oro): compare quando lo zip è in public/presskit/; prima solo come segnaposto
+// disabilitato fuori produzione (ARCHITECTURE.md §9: nessun segnaposto visibile in produzione).
+import type { Lingua } from './Seo.astro';
+import Pulsante from './Pulsante.astro';
+import { mostraSegnaposto } from '../lib/contenuti';
+import { t } from '../i18n/utils';
+
+interface Props {
+  lang?: Lingua;
+}
+
+const { lang = 'it' } = Astro.props;
+const T = t(lang).home;
+const zip = Object.keys(import.meta.glob('/public/presskit/*.zip'))[0]?.replace('/public', '');
+---
+
+{
+  zip ? (
+    <Pulsante href={zip} lang={lang}>
+      {T.pressKit}
+    </Pulsante>
+  ) : (
+    mostraSegnaposto && (
+      <span class="segnaposto">
+        <Pulsante disabilitato lang={lang}>
+          {T.pressKitInArrivo}
+        </Pulsante>
+      </span>
+    )
+  )
+}
