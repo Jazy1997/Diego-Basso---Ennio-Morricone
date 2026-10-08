@@ -1,0 +1,81 @@
+---
+// Il Maestro (ARCHITECTURE.md §5): "La visione del Maestro Diego Basso" dal docx alla lettera.
+// Primo paragrafo accanto al ritratto; gli altri due (Alessandroni, Griminelli, "Lost Boys Calling") sono le
+// collaborazioni; chiude la Formazione con Crediti e la foto di soprano e direttore.
+import type { Lingua } from '../Seo.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Testata from '../Testata.astro';
+import TestaPagina from '../TestaPagina.astro';
+import Sezione from '../Sezione.astro';
+import Ritratto from '../Ritratto.astro';
+import Cinemascope from '../Cinemascope.astro';
+import Crediti from '../Crediti.astro';
+import Footer from '../Footer.astro';
+import { paragrafi, testo } from '../../lib/testi';
+import { alternate, t } from '../../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+}
+
+const { lang } = Astro.props;
+const D = t(lang);
+
+const visione = await testo('visione', lang);
+const [apertura, ...collaborazioni] = paragrafi(visione.body ?? '');
+const formazione = await testo('formazione', lang);
+---
+
+<BaseLayout
+  title={`${D.menu.maestro} — Omaggio a Ennio Morricone`}
+  description={D.seo.maestro}
+  lang={lang}
+  alternate={alternate('maestro')}
+  noindex
+>
+  <Testata slot="testata" lang={lang} corrente="maestro" />
+  <TestaPagina occhiello={D.menu.maestro} titolo={visione.data.titolo} />
+
+  <Sezione class="maestro__apertura">
+    <Ritratto foto="maestro-02" posizione="78% 25%" lang={lang} />
+    <div class="testo corpo">
+      <p class="lead" set:html={apertura} />
+    </div>
+  </Sezione>
+
+  <Sezione id="collaborazioni" titolo={D.maestro.collaborazioni}>
+    <div class="testo corpo">
+      {collaborazioni.map((p) => <p set:html={p} />)}
+    </div>
+  </Sezione>
+
+  <section class="sezione" data-reveal>
+    <Cinemascope foto="luogo-aperto-01" lang={lang} />
+  </section>
+
+  <Sezione id="formazione" titolo={formazione.data.titolo}>
+    <Crediti lang={lang} />
+  </Sezione>
+
+  <section class="sezione" data-reveal>
+    <Cinemascope foto="soprano-02" lang={lang} />
+  </section>
+
+  <Footer slot="piede" lang={lang} />
+</BaseLayout>
+
+<style>
+  /* La <section> la disegna Sezione: la classe arriva da qui, quindi :global. */
+  :global(.maestro__apertura) {
+    display: grid;
+    gap: var(--spazio-8);
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    :global(.maestro__apertura) {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--spazio-16);
+    }
+  }
+</style>

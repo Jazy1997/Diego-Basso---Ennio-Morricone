@@ -59,6 +59,8 @@ export const en: Dizionario = {
     },
     progetto:
       'The project conceived in 2004 by Maestro Diego Basso: orchestra, voice and the big screen on a symphonic journey through Ennio Morricone’s music for cinema.',
+    maestro:
+      'Diego Basso, conductor and transcriber: his vision of Ennio Morricone’s repertoire, his work with Alessandroni and Griminelli, and the line-up.',
   },
   home: {
     tutteDate: 'All dates',
@@ -92,6 +94,7 @@ export const en: Dizionario = {
     booking: 'Contact booking',
     scopriPromoter: 'Everything for promoters & venues',
   },
+  maestro: { collaborazioni: 'Collaborations' },
   contatto: { email: 'Email', tel: 'Phone' },
   piede: {
     contatti: 'Contacts',
