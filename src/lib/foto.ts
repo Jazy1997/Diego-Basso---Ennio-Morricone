@@ -5,6 +5,9 @@ import type { Lingua } from '../components/Seo.astro';
 
 const file = import.meta.glob<{ default: ImageMetadata }>('../assets/foto/*.jpg', { eager: true });
 
+/** Qualità AVIF/WebP: quella predefinita impasta le foto scure del concerto (ombre a blocchi, grana sporca). */
+export const QUALITA = 82;
+
 /** Misure generate per <Picture>; quelle più larghe dell'originale si scartano. */
 export const LARGHEZZE = [640, 960, 1280, 1920, 2560];
 

@@ -4,7 +4,7 @@
 // Il testo vive solo nelle bande: `occhiello` / slot "alta" in alto, `sottotitolo` / slot "bassa" nella figcaption.
 import { Picture } from 'astro:assets';
 import type { Lingua } from './Seo.astro';
-import { foto as prendiFoto } from '../lib/foto';
+import { QUALITA, foto as prendiFoto } from '../lib/foto';
 
 interface Props {
   foto?: string; // id in foto.json
@@ -50,6 +50,7 @@ const bandaBassa = sottotitolo || Astro.slots.has('bassa');
           alt={immagine.alt}
           formats={['avif', 'webp']}
           widths={immagine.larghezze}
+          quality={QUALITA}
           sizes={sizes}
           loading={caricamento}
           fetchpriority={caricamento === 'eager' ? 'high' : undefined}

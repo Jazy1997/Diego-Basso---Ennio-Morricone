@@ -5,11 +5,13 @@
 import { getImage } from 'astro:assets';
 import poster from '../assets/video/hero-poster.jpg';
 import video from '../assets/video/hero.json';
+import { QUALITA } from './foto';
 
 export const POSTER = {
   src: poster,
   widths: [640, 960, 1280, 1920],
   sizes: '100vw',
+  quality: QUALITA,
 } as const;
 
 const base = (import.meta.env.PUBLIC_VIDEO_BASE || '/video').replace(/\/$/, '');
@@ -17,6 +19,6 @@ export const sorgenteVideo = `${base}/${video.cartella}/master.m3u8`;
 
 /** Attributi per <link rel="preload" as="image"> del poster AVIF. */
 export async function precaricaPoster() {
-  const avif = await getImage({ src: POSTER.src, widths: [...POSTER.widths], format: 'avif' });
+  const avif = await getImage({ src: POSTER.src, widths: [...POSTER.widths], quality: POSTER.quality, format: 'avif' });
   return { imagesrcset: avif.srcSet.attribute, imagesizes: POSTER.sizes, type: 'image/avif' };
 }
