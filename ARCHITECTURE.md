@@ -65,6 +65,7 @@ WEBSITE/
 ├─ scripts/
 │  ├─ foto.py            # originali selezionati → src/assets/foto (3200 px, q85)
 │  ├─ loghi.py           # PNG → misure web, favicon, OG
+│  ├─ testi.py           # docx → content/testi/it/*.md (alla lettera, titoli film in corsivo)
 │  ├─ video_analisi.sh   # scene detection + contact sheet (output in scripts/out/, ignorato)
 │  └─ video_hero.sh      # montaggio 10 s, export MP4/WebM, poster
 ├─ public/
