@@ -8,6 +8,7 @@ import HeroVideo from '../components/HeroVideo.astro';
 import Testata from '../components/Testata.astro';
 import Crediti from '../components/Crediti.astro';
 import Repertorio from '../components/Repertorio.astro';
+import FasciaPartner from '../components/FasciaPartner.astro';
 import { precaricaPoster } from '../lib/hero';
 import { prendi } from '../lib/contenuti';
 
@@ -102,5 +103,8 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
       <h2 class="titolo-l">Un viaggio nella musica per il cinema</h2>
     </div>
     <Repertorio />
+  </section>
+  <section class="sezione contenitore">
+    <FasciaPartner />
   </section>
 </BaseLayout>
