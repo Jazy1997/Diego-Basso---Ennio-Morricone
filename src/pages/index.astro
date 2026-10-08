@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Logo from '../components/Logo.astro';
 import Pulsante from '../components/Pulsante.astro';
 import Etichetta from '../components/Etichetta.astro';
+import Cinemascope from '../components/Cinemascope.astro';
 import { prendi } from '../lib/contenuti';
 
 const nomi = ['eventi', 'persone', 'luoghi', 'partner', 'contatti', 'link', 'foto'] as const;
@@ -71,5 +72,21 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
     <p class="didascalia om-tenue" style="margin-top: var(--spazio-6)" data-conteggi>
       Collezioni: {conteggi.join(' · ')}
     </p>
+  </section>
+  <section class="sezione" data-reveal>
+    <Cinemascope
+      foto="orchestra-schermo-03"
+      occhiello="Il progetto"
+      sottotitolo="Un viaggio tra proiezioni e musica"
+      filetto
+    />
+  </section>
+  <section class="sezione contenitore" data-reveal>
+    <Cinemascope foto="luogo-castello-01" sizes="(min-width: 1568px) 1440px, 92vw">
+      <Fragment slot="bassa">
+        <p class="titolo-m">Teatro Verdi · Padova</p>
+        <p class="coordinate om-tenue">45.4093° N · 11.8713° E</p>
+      </Fragment>
+    </Cinemascope>
   </section>
 </BaseLayout>

@@ -1,0 +1,92 @@
+---
+// La finestra Cinemascope 2,39:1 tra due bande sala-000 (DS › Il segno, ARCHITECTURE.md §8).
+// Dentro la finestra: una foto di foto.json (`foto`) oppure lo slot predefinito (video). Grana sempre sopra.
+// Il testo vive solo nelle bande: `occhiello` / slot "alta" in alto, `sottotitolo` / slot "bassa" nella figcaption.
+import { Picture } from 'astro:assets';
+import type { Lingua } from './Seo.astro';
+import { foto as prendiFoto } from '../lib/foto';
+
+interface Props {
+  foto?: string; // id in foto.json
+  occhiello?: string;
+  sottotitolo?: string;
+  filetto?: boolean;
+  lang?: Lingua;
+  sizes?: string;
+  caricamento?: 'eager' | 'lazy';
+  class?: string;
+}
+
+const {
+  foto,
+  occhiello,
+  sottotitolo,
+  filetto = false,
+  lang = 'it',
+  sizes = '100vw',
+  caricamento = 'lazy',
+  class: classe,
+} = Astro.props;
+
+const immagine = foto ? await prendiFoto(foto, lang) : undefined;
+const bandaAlta = occhiello || Astro.slots.has('alta');
+const bandaBassa = sottotitolo || Astro.slots.has('bassa');
+---
+
+<figure class:list={['om-cinemascope', filetto && 'om-cinemascope--filetto', classe]}>
+  {
+    bandaAlta && (
+      <div class="om-cinemascope__banda">
+        {occhiello && <p class="occhiello om-oro">{occhiello}</p>}
+        <slot name="alta" />
+      </div>
+    )
+  }
+  <div class="om-cinemascope__finestra">
+    {
+      immagine ? (
+        <Picture
+          src={immagine.src}
+          alt={immagine.alt}
+          formats={['avif', 'webp']}
+          widths={immagine.larghezze}
+          sizes={sizes}
+          loading={caricamento}
+          fetchpriority={caricamento === 'eager' ? 'high' : undefined}
+          style={`object-position: ${immagine.posizione}`}
+        />
+      ) : (
+        <slot />
+      )
+    }
+    <span class="om-grana" aria-hidden="true"></span>
+  </div>
+  {
+    bandaBassa && (
+      <figcaption class="om-cinemascope__banda">
+        {sottotitolo && <p class="om-cinemascope__sottotitolo">{sottotitolo}</p>}
+        <slot name="bassa" />
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  /* <Picture> avvolge l'img in <picture>: il bundle DS copre solo img/video figli diretti. */
+  .om-cinemascope__finestra :global(picture) {
+    display: contents;
+  }
+
+  .om-cinemascope__finestra :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 720px) {
+    .om-cinemascope__banda {
+      flex-wrap: wrap;
+    }
+  }
+</style>
