@@ -64,6 +64,8 @@ export const en: Dizionario = {
     date: 'Upcoming dates of Omaggio a Ennio Morricone with Diego Basso and the Orchestra Ritmico Sinfonica Italiana: cities, venues, times, tickets and past concerts.',
     promoter:
       'For theatres, festivals and major events: more than twenty years of history, two versions of the show, technical rider, press kit and booking contact.',
+    contatti:
+      'Contacts for Omaggio a Ennio Morricone: booking for theatres and festivals, press office and audience information, with a form to write to us.',
   },
   home: {
     tutteDate: 'All dates',
@@ -122,6 +124,33 @@ export const en: Dizionario = {
     ],
     booking: 'Booking',
     scrivi: 'Contact booking',
+  },
+  modulo: {
+    titolo: 'Write to us',
+    nome: 'Full name',
+    email: 'Email',
+    motivo: 'Subject',
+    motivi: { booking: 'Booking', stampa: 'Press', pubblico: 'Information' },
+    messaggio: 'Message',
+    privacy: 'I have read the privacy notice and consent to the processing of my data in order to receive a reply.',
+    informativa: 'Read the privacy notice',
+    obbligatori: 'All fields are required.',
+    invia: 'Send',
+    invio: 'Sending…',
+    riepilogo: 'Please check these fields:',
+    errori: {
+      nome: 'Please enter your name.',
+      email: 'Please enter a valid email address.',
+      motivo: 'Please choose a subject.',
+      messaggio: 'Please write a message of at least 10 characters.',
+      privacy: 'We need your consent to reply.',
+      frequenza: 'Too many messages sent: please try again in a few minutes.',
+      invio: 'Your message could not be sent. Please try again or email us directly.',
+      configurazione: 'The form is not active yet. Please email us directly.',
+    },
+    grazieTitolo: 'Message sent',
+    grazieTesto: 'Thank you, we will get back to you as soon as possible.',
+    torna: 'Back to the home page',
   },
   contatto: { email: 'Email', tel: 'Phone' },
   piede: {

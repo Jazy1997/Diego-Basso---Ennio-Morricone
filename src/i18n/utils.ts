@@ -12,6 +12,7 @@ export const routes = {
   date: { it: 'date', en: 'dates' },
   promoter: { it: 'promoter-e-venue', en: 'promoters-and-venues' },
   contatti: { it: 'contatti', en: 'contacts' },
+  grazie: { it: 'contatti/grazie', en: 'contacts/thank-you' },
   privacy: { it: 'privacy', en: 'privacy' },
   cookie: { it: 'cookie', en: 'cookies' },
 } as const satisfies Record<string, Record<Lingua, string>>;

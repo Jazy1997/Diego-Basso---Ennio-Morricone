@@ -285,6 +285,7 @@ Cache (`vercel.json` › headers): `/_astro/*` e `/video/*` `max-age=31536000, i
 - Font self-hosted; YouTube solo al click (facade, `youtube-nocookie.com`); player Spotify solo al click (facade nella sezione Album); Apple Music/Tidal solo link.
 - Analytics: opzionale, cookieless (Vercel Web Analytics o Plausible).
 - Modulo: dati trattati da Vercel e Resend (USA) → indicarlo nell'informativa; titolare del trattamento **da fornire** (segnaposto).
+- Variabili Vercel del modulo: `RESEND_API_KEY` e `RESEND_FROM` (es. `Omaggio a Ennio Morricone <modulo@dominio-verificato>`); i destinatari sono gli indirizzi di `contatti.json` per motivo. Senza configurazione: in dev l'invio è simulato nel log, altrove il modulo risponde "non ancora attivo".
 
 ---
 
