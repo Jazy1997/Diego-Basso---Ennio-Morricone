@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
 
   const esito = schemaModulo.safeParse(dati);
   if (!esito.success) {
-    const campi = [...new Set(esito.error.issues.map((i) => i.message as CampoModulo))];
+    const campi = [...new Set(esito.error.issues.map((i) => String(i.path[0]) as CampoModulo))];
     return risposta({ ok: false, campi });
   }
   if (troppi(clientAddress ?? 'sconosciuto')) return risposta({ ok: false, errore: 'frequenza' });
