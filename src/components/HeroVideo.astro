@@ -1,14 +1,14 @@
 ---
-// Hero della Home (ARCHITECTURE.md §7.2): finestra Cinemascope a tutta larghezza con il video muto in loop.
-// Il poster è un <Picture> sotto il video (LCP, precaricato con precaricaPoster() di lib/hero.ts).
-// Animazione firma: la finestra parte 16:9 e le bande la chiudono a 2,39:1 in 0,8 s.
-// Con reduced-motion o Save-Data niente animazione e niente riproduzione automatica: resta il poster.
+// Hero della Home (ARCHITECTURE.md §7.2): video a tutto schermo su desktop e mobile, in loop, in streaming HLS.
+// Deroga al DS decisa dall'utente: niente bande fisse; testata, logo, sottotitolo e pulsante stanno sopra il video,
+// leggibili grazie a due veli sfumati. Resta l'animazione firma: all'apertura il video è una finestra 2,39:1
+// che in 0,8 s si apre a tutto schermo. Con reduced-motion o Save-Data niente animazione e niente video: resta il poster.
 import { Picture } from 'astro:assets';
 import type { Lingua } from './Seo.astro';
 import Logo from './Logo.astro';
 import Pulsante from './Pulsante.astro';
 import Icona from './Icona.astro';
-import { POSTER } from '../lib/hero';
+import { POSTER, sorgenteVideo } from '../lib/hero';
 
 interface Props {
   lang?: Lingua;
@@ -38,11 +38,8 @@ const T = {
 const Titolo = titolo ? 'h1' : 'div';
 ---
 
-<figure class="om-cinemascope om-hero" data-hero>
-  <div class="om-cinemascope__banda om-hero__alta">
-    <p class="occhiello om-oro">{T.occhiello}</p>
-  </div>
-  <div class="om-cinemascope__finestra om-hero__finestra">
+<section class="hero" data-hero data-sorgente={sorgenteVideo}>
+  <div class="hero__schermo">
     <Picture
       src={POSTER.src}
       widths={[...POSTER.widths]}
@@ -51,38 +48,37 @@ const Titolo = titolo ? 'h1' : 'div';
       alt=""
       loading="eager"
       fetchpriority="high"
-      class="om-hero__poster"
+      class="hero__poster"
     />
-    <video class="om-hero__video" muted loop playsinline preload="none" aria-hidden="true">
-      <source src="/video/hero-1280.mp4" type="video/mp4" media="(max-width: 1024px)" />
-      <source src="/video/hero-1920.mp4" type="video/mp4" />
-    </video>
+    <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true"></video>
     <span class="om-grana" aria-hidden="true"></span>
-    <button
-      class="om-hero__pausa"
-      type="button"
-      aria-label={T.riproduci}
-      data-pausa={T.pausa}
-      data-riproduci={T.riproduci}
-      hidden
-    >
-      <Icona nome="pause" class="om-hero__icona-pausa" />
-      <Icona nome="play" class="om-hero__icona-play" />
-    </button>
+    <span class="hero__velo" aria-hidden="true"></span>
   </div>
-  <figcaption class="om-cinemascope__banda om-hero__bassa">
-    <Titolo class="om-hero__logo">
+
+  <div class="hero__contenuto">
+    <p class="occhiello om-oro">{T.occhiello}</p>
+    <Titolo class="hero__logo">
       <Logo forma="verticale" larghezza={360} caricamento="eager" />
     </Titolo>
-    <div class="om-hero__azioni">
-      <p class="om-cinemascope__sottotitolo">{T.sottotitolo}</p>
-      <Pulsante href={hrefDate} lang={lang}>{T.date}</Pulsante>
-    </div>
-  </figcaption>
-</figure>
+    <p class="om-cinemascope__sottotitolo">{T.sottotitolo}</p>
+    <Pulsante href={hrefDate} lang={lang} class="hero__pulsante">{T.date}</Pulsante>
+  </div>
+
+  <button
+    class="hero__pausa"
+    type="button"
+    aria-label={T.riproduci}
+    data-pausa={T.pausa}
+    data-riproduci={T.riproduci}
+    hidden
+  >
+    <Icona nome="pause" class="hero__icona-pausa" />
+    <Icona nome="play" class="hero__icona-play" />
+  </button>
+</section>
 
 <script is:inline>
-  // Prima del primo disegno: decide se animare le bande (evita il salto 2,39:1 → 16:9).
+  // Prima del primo disegno: decide se animare (evita il salto tutto schermo → finestra).
   (function () {
     var hero = document.currentScript.previousElementSibling;
     var ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -96,51 +92,41 @@ const Titolo = titolo ? 'h1' : 'div';
 </script>
 
 <style>
-  /* La finestra è 16:9 nel disegno ma occupa lo spazio di una 2,39:1 (margini negativi):
-     clip-path ritaglia le bande. 56,25 = 100·9/16; 41,841 = 100/2,39; 7,2045 = metà della differenza. */
-  .om-hero {
-    container-type: inline-size;
+  .hero {
+    position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 100svh;
+    justify-content: flex-end;
+    min-height: max(100svh, 520px);
+    background: var(--sala-000);
+    overflow: hidden;
   }
 
-  .om-hero__alta,
-  .om-hero__bassa {
-    flex: 1 0 auto;
+  .hero__schermo {
+    position: absolute;
+    inset: 0;
   }
 
-  .om-hero__alta {
-    align-items: flex-end;
-    padding-top: calc(var(--altezza-testata, 0px) + var(--spazio-4));
+  /* Animazione firma: parte come finestra 2,39:1 al centro (bande sala-000 sopra e sotto) e si apre. */
+  .hero[data-anima] .hero__schermo {
+    animation: om-sipario 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both;
   }
 
-  .om-hero__finestra {
-    z-index: 1;
-    aspect-ratio: var(--rapporto-video);
-    margin-block: -7.2045cqw;
-    clip-path: inset(7.2045cqw 0);
-  }
-
-  .om-hero[data-anima] .om-hero__finestra {
-    animation: om-bande 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both;
-  }
-
-  @keyframes om-bande {
+  @keyframes om-sipario {
     from {
-      clip-path: inset(0 0);
+      clip-path: inset(max(0px, calc(50% - 20.92vw)) 0);
     }
     to {
-      clip-path: inset(7.2045cqw 0);
+      clip-path: inset(0 0);
     }
   }
 
-  .om-hero__finestra :global(picture) {
+  .hero__schermo :global(picture) {
     display: contents;
   }
 
-  .om-hero__finestra :global(.om-hero__poster),
-  .om-hero__video {
+  .hero__schermo :global(.hero__poster),
+  .hero__video {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -148,20 +134,61 @@ const Titolo = titolo ? 'h1' : 'div';
     object-fit: cover;
   }
 
-  .om-hero__video {
+  .hero__video {
     opacity: 0;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.8s ease;
   }
 
-  .om-hero__video.is-in-riproduzione {
+  .hero__video.is-in-riproduzione {
     opacity: 1;
   }
 
-  /* Il pulsante sta dentro la parte visibile della finestra (sopra il ritaglio inferiore). */
-  .om-hero__pausa {
+  /* Veli: in alto per la testata trasparente, in basso per logo e testi. */
+  .hero__velo {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, var(--velo) 0, transparent 22%),
+      linear-gradient(to top, rgba(5, 4, 4, 0.85) 0, var(--velo) 28%, transparent 62%);
+    pointer-events: none;
+  }
+
+  .hero__contenuto {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spazio-4);
+    width: 100%;
+    max-width: calc(1440px + 2 * var(--margine-web));
+    margin-inline: auto;
+    padding: var(--spazio-24) var(--margine-web) var(--spazio-12);
+  }
+
+  .hero[data-anima] .hero__contenuto {
+    animation: om-compari 0.6s ease 1s both;
+  }
+
+  @keyframes om-compari {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  .hero__logo :global(img) {
+    width: clamp(240px, 25vw, 360px);
+    height: auto;
+  }
+
+  .hero__contenuto :global(.hero__pulsante) {
+    margin-top: var(--spazio-2);
+  }
+
+  .hero__pausa {
     position: absolute;
     right: var(--margine-web);
-    bottom: calc(7.2045cqw + var(--spazio-4));
+    bottom: var(--spazio-12);
     z-index: 2;
     display: grid;
     place-items: center;
@@ -173,59 +200,37 @@ const Titolo = titolo ? 'h1' : 'div';
     color: var(--avorio);
   }
 
-  .om-hero__pausa:hover {
+  .hero__pausa:hover {
     color: var(--oro);
     border-color: var(--oro);
   }
 
-  .om-hero__pausa[hidden] {
+  .hero__pausa[hidden] {
     display: none;
   }
 
-  .om-hero__pausa :global(.om-hero__icona-play),
-  .om-hero__pausa[data-in-pausa] :global(.om-hero__icona-pausa) {
+  .hero__pausa :global(.hero__icona-play),
+  .hero__pausa[data-in-pausa] :global(.hero__icona-pausa) {
     display: none;
   }
 
-  .om-hero__pausa[data-in-pausa] :global(.om-hero__icona-play) {
+  .hero__pausa[data-in-pausa] :global(.hero__icona-play) {
     display: block;
   }
 
-  .om-hero__bassa {
-    align-items: flex-start;
-    padding-block: var(--spazio-6) var(--spazio-8);
-  }
-
-  .om-hero__logo :global(img) {
-    width: clamp(240px, 25vw, 360px);
-    height: auto;
-  }
-
-  .om-hero__azioni {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--spazio-4);
-    text-align: right;
-  }
-
   @media (max-width: 720px) {
-    .om-hero__bassa {
-      flex-direction: column;
+    .hero__contenuto {
       align-items: stretch;
-      justify-content: flex-start;
-      gap: var(--spazio-6);
+      padding-bottom: var(--spazio-8);
     }
 
-    .om-hero__pausa {
-      width: 36px;
-      height: 36px;
-      bottom: calc(7.2045cqw + var(--spazio-2));
+    .hero__contenuto :global(.hero__pulsante) {
+      width: 100%;
     }
 
-    .om-hero__azioni {
-      align-items: stretch;
-      text-align: left;
+    .hero__pausa {
+      top: calc(var(--altezza-testata) + var(--spazio-2));
+      bottom: auto;
     }
   }
 </style>
