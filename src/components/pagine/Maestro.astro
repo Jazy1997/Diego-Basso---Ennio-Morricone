@@ -43,7 +43,7 @@ const formazione = await testo('formazione', lang);
     </div>
   </Sezione>
 
-  <Sezione id="collaborazioni" titolo={D.maestro.collaborazioni}>
+  <Sezione id="collaborazioni" titolo={D.maestro.collaborazioni} affiancata>
     <div class="testo corpo">
       {collaborazioni.map((p) => <p set:html={p} />)}
     </div>

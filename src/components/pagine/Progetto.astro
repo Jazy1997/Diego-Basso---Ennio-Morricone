@@ -46,12 +46,17 @@ const sezioni = await Promise.all(
   noindex
 >
   <Testata slot="testata" lang={lang} corrente="progetto" />
-  <TestaPagina occhiello="Omaggio a Ennio Morricone" titolo={D.menu.progetto} lead={D.claim.sottotitolo} />
+  <TestaPagina occhiello="Omaggio a Ennio Morricone" titolo={D.menu.progetto} />
 
   {
     sezioni.map((s) => (
       <>
-        <Sezione id={s.id} titolo={s.id === 'progetto' ? undefined : s.titolo}>
+        <Sezione
+          id={s.id}
+          titolo={s.id === 'progetto' ? D.claim.sottotitolo : s.titolo}
+          stileTitolo={s.id === 'progetto' ? 'evocativo-xl' : 'titolo-l'}
+          affiancata
+        >
           <div class="testo corpo">
             <s.Content />
           </div>

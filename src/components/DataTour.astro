@@ -66,8 +66,8 @@ const jsonLd = {
     <span class="solo-lettori">{dataEstesa(e.data, e.ora, lang)}</span>
   </div>
   <div class="om-data__luogo">
-    <h3 class="om-data__citta">{e.citta}</h3>
-    <p class="om-data__sede">{e.sede}</p>
+    <h3 class="om-data__citta" lang={lang === 'it' ? undefined : 'it'}>{e.citta}</h3>
+    <p class="om-data__sede" lang={lang === 'it' ? undefined : 'it'}>{e.sede}</p>
     <p class="om-data__coordinate">{coordinate(e.lat, e.lng)}</p>
   </div>
   {
