@@ -1,0 +1,111 @@
+---
+// Il repertorio come i titoli di coda (ARCHITECTURE.md §6, DS › Tono › Come si scrivono i nomi):
+// film in `evocativo` corsivo in una colonna centrata, temi tra “ ” in `citazione`. Titoli esatti, mai tradotti;
+// `lang` segnala ai lettori di schermo i titoli in una lingua diversa da quella della pagina.
+import type { Lingua } from './Seo.astro';
+
+interface Props {
+  lang?: Lingua;
+}
+
+const { lang = 'it' } = Astro.props;
+
+const FILM: { titolo: string; lingua: Lingua }[] = [
+  { titolo: 'Nuovo Cinema Paradiso', lingua: 'it' },
+  { titolo: 'Malèna', lingua: 'it' },
+  { titolo: 'The Mission', lingua: 'en' },
+  { titolo: 'La leggenda del pianista sull’oceano', lingua: 'it' },
+  { titolo: 'Sacco e Vanzetti', lingua: 'it' },
+  { titolo: 'C’era una volta in America', lingua: 'it' },
+  { titolo: 'C’era una volta il West', lingua: 'it' },
+  { titolo: 'Il buono, il brutto, il cattivo', lingua: 'it' },
+  { titolo: 'Giù la testa', lingua: 'it' },
+  { titolo: 'Per un pugno di dollari', lingua: 'it' },
+  { titolo: 'Per qualche dollaro in più', lingua: 'it' },
+];
+
+const TEMI: { titolo: string; lingua: Lingua }[] = [
+  { titolo: 'Gabriel’s Oboe', lingua: 'en' },
+  { titolo: 'L’estasi dell’oro', lingua: 'it' },
+  { titolo: 'Chi mai', lingua: 'it' },
+  { titolo: 'Playing Love', lingua: 'en' },
+];
+
+const T = {
+  it: { film: 'I film', temi: 'I temi' },
+  en: { film: 'The films', temi: 'The themes' },
+}[lang];
+const lingua = (l: Lingua) => (l === lang ? undefined : l);
+---
+
+<div class="repertorio">
+  <h3 class="solo-lettori">{T.film}</h3>
+  <ul class="repertorio__film">
+    {
+      FILM.map((f, i) => (
+        <li class="evocativo" lang={lingua(f.lingua)} data-reveal style={`--i: ${i}`}>
+          {f.titolo}
+        </li>
+      ))
+    }
+  </ul>
+  <span class="repertorio__filetto" aria-hidden="true"></span>
+  <h3 class="solo-lettori">{T.temi}</h3>
+  <ul class="repertorio__temi" data-reveal>
+    {
+      TEMI.map((t) => (
+        <li class="citazione" lang={lingua(t.lingua)}>
+          “{t.titolo}”
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .repertorio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spazio-12);
+    text-align: center;
+  }
+
+  .repertorio ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .repertorio__film {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-4);
+    color: var(--avorio);
+  }
+
+  /* Comparsa leggera in sequenza, come i titoli di coda */
+  .repertorio__film [data-reveal] {
+    transition-delay: calc(var(--i) * 60ms);
+  }
+
+  .repertorio__filetto {
+    width: var(--spazio-12);
+    height: 1px;
+    background: var(--linea);
+  }
+
+  .repertorio__temi {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spazio-2) var(--spazio-8);
+    color: var(--avorio-tenue);
+  }
+
+  @media (max-width: 720px) {
+    .repertorio__temi {
+      flex-direction: column;
+    }
+  }
+</style>
