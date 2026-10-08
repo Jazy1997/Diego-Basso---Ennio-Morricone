@@ -9,6 +9,7 @@ import Testata from '../components/Testata.astro';
 import Crediti from '../components/Crediti.astro';
 import Repertorio from '../components/Repertorio.astro';
 import FasciaPartner from '../components/FasciaPartner.astro';
+import ListaDate from '../components/ListaDate.astro';
 import VideoTrailer from '../components/VideoTrailer.astro';
 import posterTrailer from '../assets/video/trailer-poster.jpg';
 import { getEntry } from 'astro:content';
@@ -30,6 +31,19 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
   <link slot="head" rel="preload" as="image" fetchpriority="high" {...poster} />
   <Testata slot="testata" trasparente />
   <HeroVideo />
+  <section class="sezione contenitore" id="date" data-reveal>
+    <div class="sezione__testa">
+      <p class="occhiello om-oro">Prossime date</p>
+    </div>
+    <ListaDate limite={3} />
+    <div class="sezione__testa" style="margin-top: var(--spazio-12)">
+      <p class="occhiello om-tenue">Archivio</p>
+    </div>
+    <ListaDate archivio lang="en" />
+    <div style="margin-top: var(--spazio-12)">
+      <ListaDate eventi={[]} />
+    </div>
+  </section>
   <section class="sezione contenitore" data-reveal>
     <div class="sezione__testa">
       <p class="occhiello om-tenue">Sito in costruzione</p>

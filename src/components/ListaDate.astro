@@ -1,0 +1,63 @@
+---
+// Elenco delle date (DS › DataTour): prossime in ordine crescente (con `limite` per la Home),
+// oppure `archivio` con le passate dalla più recente. Nessuna data futura: "Nuove date in arrivo".
+// "Passata" si calcola alla build: il rebuild giornaliero (T03) tiene aggiornato l'elenco.
+import type { CollectionEntry } from 'astro:content';
+import type { Lingua } from './Seo.astro';
+import DataTour from './DataTour.astro';
+import Pulsante from './Pulsante.astro';
+import { prendi } from '../lib/contenuti';
+import { oggiRoma } from '../i18n/date';
+import { localizedPath } from '../i18n/utils';
+
+interface Props {
+  lang?: Lingua;
+  eventi?: CollectionEntry<'eventi'>[];
+  limite?: number;
+  archivio?: boolean;
+}
+
+const { lang = 'it', eventi = await prendi('eventi'), limite, archivio = false } = Astro.props;
+
+const oggi = oggiRoma();
+const chiave = (e: CollectionEntry<'eventi'>) => `${e.data.data}T${e.data.ora}`;
+const scelti = eventi
+  .filter((e) => (archivio ? e.data.data < oggi : e.data.data >= oggi))
+  .sort((a, b) => (archivio ? -1 : 1) * chiave(a).localeCompare(chiave(b)))
+  .slice(0, limite);
+
+const T = {
+  it: { vuoto: 'Nuove date in arrivo', contatti: 'Scrivici' },
+  en: { vuoto: 'New dates coming soon', contatti: 'Get in touch' },
+}[lang];
+---
+
+{
+  scelti.length > 0 ? (
+    <ol class="om-date">
+      {scelti.map((e) => (
+        <DataTour evento={e} lang={lang} />
+      ))}
+    </ol>
+  ) : (
+    !archivio && (
+      <div class="lista-date__vuota">
+        <p class="titolo-m">{T.vuoto}</p>
+        <Pulsante href={localizedPath('contatti', lang)} variante="testo" lang={lang}>
+          {T.contatti}
+        </Pulsante>
+      </div>
+    )
+  )
+}
+
+<style>
+  .lista-date__vuota {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spazio-4);
+    padding-block: var(--spazio-8);
+    border-block: 1px solid var(--linea);
+  }
+</style>
