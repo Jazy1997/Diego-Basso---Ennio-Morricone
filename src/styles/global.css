@@ -167,6 +167,26 @@ a:hover {
   transform: none;
 }
 
+/* ---------- Segnaposto (solo dev e preview: in produzione i contenuti sono esclusi) ---------- */
+.segnaposto {
+  position: relative;
+  outline: 1px dashed var(--linea-forte);
+  outline-offset: 2px;
+}
+
+.segnaposto::after {
+  content: 'SEGNAPOSTO';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 6px;
+  background: var(--sala-300);
+  color: var(--avorio-tenue);
+  font: 500 10px/14px var(--font-testo);
+  letter-spacing: 0.12em;
+  pointer-events: none;
+}
+
 /* ---------- Comparsa allo scorrimento (Reveal): 600 ms, +12 px, una volta ---------- */
 .js [data-reveal] {
   opacity: 0;

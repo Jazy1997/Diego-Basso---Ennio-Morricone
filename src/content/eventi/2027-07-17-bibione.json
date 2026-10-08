@@ -1,0 +1,15 @@
+{
+  "data": "2027-07-17",
+  "ora": "21:15",
+  "citta": "Bibione",
+  "sede": "Spiaggia del Faro",
+  "indirizzo": "Via del Faro",
+  "cap": "30028",
+  "nazione": "IT",
+  "lat": 45.6363,
+  "lng": 13.0975,
+  "biglietti": "https://www.example.com/biglietti",
+  "stato": "nuova",
+  "versione": "concerto",
+  "segnaposto": true
+}

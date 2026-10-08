@@ -1,0 +1,8 @@
+[
+  { "id": "teatro-malibran", "nome": "Teatro Malibran", "citta": { "it": "Venezia", "en": "Venice" }, "nazione": "IT", "lat": 45.439, "lng": 12.3382, "ordine": 1 },
+  { "id": "teatro-mario-del-monaco", "nome": "Teatro Mario Del Monaco", "citta": { "it": "Treviso", "en": "Treviso" }, "nazione": "IT", "lat": 45.6634, "lng": 12.2444, "ordine": 2 },
+  { "id": "teatro-verdi-padova", "nome": "Teatro Verdi", "citta": { "it": "Padova", "en": "Padua" }, "nazione": "IT", "lat": 45.4093, "lng": 11.8713, "ordine": 3 },
+  { "id": "ponte-di-bassano", "nome": "Ponte di Bassano", "citta": { "it": "Bassano del Grappa", "en": "Bassano del Grappa" }, "nazione": "IT", "lat": 45.7675, "lng": 11.7313, "ordine": 4 },
+  { "id": "faro-di-bibione", "nome": "Spiaggia del Faro", "citta": { "it": "Bibione", "en": "Bibione" }, "nazione": "IT", "lat": 45.6363, "lng": 13.0975, "ordine": 5 },
+  { "id": "guangzhou", "nome": "Concerto di Natale, Guangzhou Symphony Orchestra", "citta": { "it": "Guangzhou", "en": "Guangzhou" }, "nazione": "CN", "lat": 23.13, "lng": 113.26, "ordine": 6 }
+]
