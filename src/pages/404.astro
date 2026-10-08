@@ -1,0 +1,58 @@
+---
+// 404 bilingue (ARCHITECTURE.md §5, §12): una sola pagina per entrambe le lingue, fuori dagli indici.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Testata from '../components/Testata.astro';
+import Pulsante from '../components/Pulsante.astro';
+import Footer from '../components/Footer.astro';
+import { localizedPath, t } from '../i18n/utils';
+
+const it = t('it').errore;
+const en = t('en').errore;
+---
+
+<BaseLayout title={`${it.titolo} · ${en.titolo} — Omaggio a Ennio Morricone`} description={`${it.testo} ${en.testo}`} noindex>
+  <Testata slot="testata" corrente={null} />
+  <section class="errore contenitore">
+    <p class="numero-data om-oro" aria-hidden="true">404</p>
+    <div class="errore__lingue">
+      <div>
+        <h1 class="titolo-l">{it.titolo}</h1>
+        <p class="corpo om-tenue">{it.testo}</p>
+        <Pulsante href={localizedPath('home', 'it')} variante="contorno">{it.home}</Pulsante>
+      </div>
+      <div lang="en">
+        <p class="titolo-l" role="heading" aria-level="2">{en.titolo}</p>
+        <p class="corpo om-tenue">{en.testo}</p>
+        <Pulsante href={localizedPath('home', 'en')} variante="contorno" lang="en">{en.home}</Pulsante>
+      </div>
+    </div>
+  </section>
+  <Footer slot="piede" />
+</BaseLayout>
+
+<style>
+  .errore {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-8);
+    padding-block: var(--spazio-16) var(--spazio-24);
+  }
+
+  .errore__lingue {
+    display: grid;
+    gap: var(--spazio-12);
+  }
+
+  .errore__lingue > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spazio-4);
+  }
+
+  @media (min-width: 900px) {
+    .errore__lingue {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

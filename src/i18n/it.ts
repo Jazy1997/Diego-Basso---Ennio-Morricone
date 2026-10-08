@@ -65,6 +65,10 @@ export const it = {
       'Per teatri, festival e grandi eventi: oltre vent’anni di storia, due versioni dello spettacolo, scheda tecnica, press kit e contatto booking.',
     contatti:
       'Contatti di Omaggio a Ennio Morricone: booking per teatri e festival, ufficio stampa e informazioni per il pubblico, con il modulo per scriverci.',
+    privacy:
+      'Informativa sulla privacy del sito Omaggio a Ennio Morricone: quali dati trattiamo con il modulo contatti, perché, per quanto tempo e quali sono i tuoi diritti.',
+    cookie:
+      'Il sito Omaggio a Ennio Morricone non usa cookie di profilazione né di statistica; YouTube e Spotify si caricano solo quando li avvii tu con un clic.',
   },
   home: {
     tutteDate: 'Tutte le date',
@@ -150,6 +154,16 @@ export const it = {
     grazieTitolo: 'Messaggio inviato',
     grazieTesto: 'Grazie, ti risponderemo il prima possibile.',
     torna: 'Torna alla home',
+  },
+  legale: {
+    titolare: 'Titolare del trattamento',
+    senzaTitolare: 'Per qualsiasi richiesta sui tuoi dati scrivici dalla pagina',
+    aggiornato: 'Ultimo aggiornamento: 8 ottobre 2026',
+  },
+  errore: {
+    titolo: 'Pagina non trovata',
+    testo: 'La pagina che cerchi non esiste o è stata spostata.',
+    home: 'Torna alla home',
   },
   contatto: { email: 'Email', tel: 'Telefono' },
   piede: {
