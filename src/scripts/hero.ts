@@ -1,13 +1,35 @@
-// Video dell'hero (ARCHITECTURE.md §7.2): parte da solo solo se consentito (niente reduced-motion
-// né Save-Data, deciso dallo script inline di HeroVideo con [data-anima]); pausa fuori viewport e con la
-// scheda nascosta; il pulsante pausa/play vince sempre sulla scelta automatica.
+// Video dell'hero (ARCHITECTURE.md §7.2), in streaming adattivo HLS.
+// - Parte da solo solo se consentito (niente reduced-motion né Save-Data: [data-anima] dallo script inline).
+// - La sorgente si collega solo quando il video deve partire: Safari/iOS leggono HLS da soli, gli altri
+//   browser caricano hls.js (build light) in quel momento, quindi non pesa sul primo caricamento.
+// - Pausa fuori viewport e con la scheda nascosta; in pausa hls.js smette anche di scaricare.
+// - Il pulsante pausa/play vince sempre sulla scelta automatica.
+import type Hls from 'hls.js/light';
+
 for (const hero of document.querySelectorAll<HTMLElement>('[data-hero]')) {
   const video = hero.querySelector('video');
-  const pulsante = hero.querySelector<HTMLButtonElement>('.om-hero__pausa');
-  if (!video || !pulsante) continue;
+  const pulsante = hero.querySelector<HTMLButtonElement>('.hero__pausa');
+  const sorgente = hero.dataset.sorgente;
+  if (!video || !pulsante || !sorgente) continue;
 
   let vuole = hero.hasAttribute('data-anima'); // riproduzione desiderata (automatica o scelta dall'utente)
   let visibile = false;
+  let hls: Hls | undefined;
+  let collegato: Promise<boolean> | undefined;
+
+  const collega = (): Promise<boolean> =>
+    (collegato ??= (async () => {
+      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = sorgente;
+        return true;
+      }
+      const { default: HlsJs } = await import('hls.js/light');
+      if (!HlsJs.isSupported()) return false;
+      hls = new HlsJs({ capLevelToPlayerSize: true, maxBufferLength: 20, startLevel: -1 });
+      hls.loadSource(sorgente);
+      hls.attachMedia(video);
+      return true;
+    })());
 
   const aggiorna = () => {
     const inPausa = video.paused;
@@ -15,14 +37,17 @@ for (const hero of document.querySelectorAll<HTMLElement>('[data-hero]')) {
     pulsante.setAttribute('aria-label', (inPausa ? pulsante.dataset.riproduci : pulsante.dataset.pausa) ?? '');
   };
 
-  const sincronizza = () => {
+  const sincronizza = async () => {
     if (vuole && visibile && !document.hidden) {
+      if (!(await collega())) return;
+      hls?.startLoad();
       video.play().catch(() => {
         vuole = false;
         aggiorna();
       });
-    } else if (!video.paused) {
-      video.pause();
+    } else {
+      if (!video.paused) video.pause();
+      hls?.stopLoad();
     }
   };
 
@@ -41,7 +66,7 @@ for (const hero of document.querySelectorAll<HTMLElement>('[data-hero]')) {
       sincronizza();
     },
     { threshold: 0.25 },
-  ).observe(video);
+  ).observe(hero);
 
   document.addEventListener('visibilitychange', sincronizza);
 

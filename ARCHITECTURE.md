@@ -138,42 +138,24 @@ Un solo pulsante oro per schermata (DS › Pulsante): in Hero "Prossime date"; i
 
 ## 7. Hero video
 
-### 7.1 Montaggio (scripts/video_*.sh)
-1. **Taglio**: scartare 0–12 s del sorgente → 92,3 s utili.
-2. **Analisi**: `ffmpeg -ss 12 -i SRC -vf "select='gt(scene,0.3)',showinfo"` per i cambi di scena + contact sheet (1 fotogramma ogni 2 s, `tile=6x8`) in `scripts/out/`.
-3. **Scelta** 4–5 inquadrature: orchestra intera con schermo (apertura e chiusura), Maestro che dirige, una sezione in dettaglio, controluce/pubblico. Escludere: fotogrammi dei film riconoscibili in primo piano sullo schermo, luci viola/verdi, mosso, loghi di altri eventi.
-4. **Montaggio ~10 s** (max 10,5): clip da 2–2,5 s, dissolvenze incrociate **700 ms** (`xfade=transition=fade`), l'ultima clip dissolve nella prima → **loop senza stacco**. Nessun effetto, nessuno zoom aggiunto.
-5. **Colore**: caldo e naturale; se necessario `eq`/`colorbalance` leggeri e desaturazione delle tinte viola/verdi (`hue`).
-6. **Export** (senza audio, `-an`):
-   - `hero-1920.mp4` — H.264 High, 1920×1080, CRF ~26, `-pix_fmt yuv420p -movflags +faststart`, ≤ 4 MB
-   - `hero-1280.mp4` — 1280×720, ≤ 2 MB (mobile)
-   - `hero.webm` — AV1 o VP9 (opzionale, se più leggero)
-   - `hero-poster.jpg` — primo fotogramma, 1920 px (→ AVIF/WebP via `<Picture>`)
-7. **Approvazione**: 1–2 varianti mostrate all'utente prima dell'integrazione.
+> **Revisione (ottobre 2026, decisione dell'utente):** hero a tutto schermo su desktop e mobile, con testata, logo e testi **sopra** il video (deroga al DS, che vuole il testo solo nelle bande). Si usa tutto il video, non più un montaggio di 10 s.
+
+### 7.1 Pipeline (`scripts/video_hero.sh`)
+1. **Taglio**: da 13,0 s (prima inquadratura dopo l'intro) a 99,5 s (prima della dissolvenza al nero) → loop di ~86 s.
+2. **Loop senza stacco**: gli ultimi 0,7 s dissolvono nei primi (`xfade`).
+3. **Pixel quadrati**: il sorgente dichiara SAR 540:409 (2,35:1) ma il contenuto è 16:9 → `setsar=1`, altrimenti i browser allargano l'immagine del 32%.
+4. **Colore** "caldo" approvato (T12): `selectivecolor` su ciano/blu, saturazione -15%.
+5. **Streaming adattivo HLS** (H.264 High, fMP4, segmenti 4 s, GOP 4 s): 480p (≤1,5 Mbit/s), 720p (≤3,5), 1080p (≤6), 2160p se il sorgente è 4K. CRF 20–22 con tetto `maxrate`.
+6. **Uscita** in `public/video/hero-AAAAMMGG-HHMM/` (cartella nuova a ogni esecuzione, perché `/video/*` ha cache immutabile); il nome va in `src/assets/video/hero.json`. Poster = primo fotogramma in `src/assets/video/hero-poster.jpg`.
+7. **Qualità**: il sorgente attuale è un export web a 1,5 Mbit/s. Per un risultato impeccabile serve il **master** del videomaker (ProRes o H.264/H.265 ad alto bitrate, meglio 4K): `bash scripts/video_hero.sh "/percorso/master.mov" [inizio] [fine]`.
 
 ### 7.2 Componente `HeroVideo`
-```html
-<figure class="om-cinemascope om-hero" data-hero>
-  <div class="om-cinemascope__banda">occhiello</div>
-  <div class="om-cinemascope__finestra">
-    <video muted loop playsinline autoplay preload="metadata" poster="…">
-      <source src="/video/hero-1280.mp4" type="video/mp4" media="(max-width: 1024px)">
-      <source src="/video/hero.webm" type="video/webm">
-      <source src="/video/hero-1920.mp4" type="video/mp4">
-    </video>
-    <span class="om-grana" aria-hidden="true"></span>
-    <button class="om-hero__pausa" aria-label="Metti in pausa il video">…</button>
-  </div>
-  <figcaption class="om-cinemascope__banda">logo + sottotitolo + pulsante</figcaption>
-</figure>
-```
-- Altezza: hero ≈ 100svh; la finestra è 2,39:1 a tutta larghezza, le bande `sala-000` occupano il resto (min `spazio-8`).
-- **Animazione firma**: al caricamento la finestra parte 16:9 e in **0,8 s** le bande la chiudono a 2,39:1 (`clip-path: inset()` animato, `cubic-bezier(.2,.7,.2,1)`). Unica animazione "firma" del sito.
-- `prefers-reduced-motion` **o** `navigator.connection.saveData`: niente autoplay, niente animazione bande → resta il poster.
-- `IntersectionObserver`: pausa fuori viewport; `visibilitychange`: pausa con tab nascosta.
-- Pulsante pausa/play visibile (WCAG 2.2.2), Lucide `pause`/`play`, `anello-focus`.
-- LCP = poster: `<link rel="preload" as="image" imagesrcset=…>` del poster AVIF.
-- Testo **mai** sopra il soggetto: solo nelle bande.
+- `section.hero` alta `max(100svh, 520px)`; poster (`<Picture>`, LCP precaricato con `precaricaPoster()`) e `<video muted loop playsinline preload="none">` a tutto schermo con `object-fit: cover`; grana; due veli sfumati (in alto per la testata trasparente, in basso per i testi).
+- In basso a sinistra: occhiello "DIEGO BASSO DIRIGE", logo verticale oro (`h1`, 240–360 px), sottotitolo, pulsante oro "Prossime date". Pausa/play in basso a destra (su mobile in alto a destra).
+- **Animazione firma**: all'apertura il video è una finestra 2,39:1 al centro (`clip-path: inset(max(0px, calc(50% - 20.92vw)) 0)`) che in 0,8 s si apre a tutto schermo; poi compaiono i testi. Sugli schermi più larghi di 2,39:1 l'effetto è nullo.
+- `prefers-reduced-motion` **o** Save-Data: niente animazione, niente video (resta il poster). Uno script inline decide prima del primo disegno (`data-anima`).
+- `src/scripts/hero.ts`: la sorgente si collega solo quando il video deve partire. Safari/iOS usano HLS nativo, gli altri browser caricano `hls.js/light` in quel momento (~110 KB gzip, chunk separato), con `capLevelToPlayerSize`. Pausa fuori viewport e con scheda nascosta, e in pausa smette anche il download (`stopLoad`).
+- **Hosting gratuito**: i file stanno su Vercel (`/video/…`). Se la banda del piano Hobby (100 GB/mese) diventasse stretta, la stessa cartella si sposta su Cloudflare R2 (nessun costo di uscita dati, 10 GB gratuiti) impostando `PUBLIC_VIDEO_BASE`.
 
 ---
 
@@ -274,9 +256,9 @@ Si usa `.om-grana` di `bundle.css` del DS (rumore SVG incorporato, nessun file i
 | --- | --- |
 | LCP (4G, mobile) | < 2,5 s (poster AVIF preload) |
 | CLS | < 0,05 (dimensioni esplicite ovunque) |
-| JS totale | < 30 KB gzip |
+| JS totale | < 30 KB gzip al caricamento (eccezione: `hls.js/light` ~110 KB, caricato solo quando parte il video dell'hero) |
 | CSS | < 40 KB gzip |
-| Video hero | ≤ 4 MB desktop, ≤ 2 MB mobile |
+| Video hero | HLS adattivo: si scaricano solo i segmenti riprodotti (1080p ≈ 3,2 Mbit/s medi, 480p ≈ 0,8) |
 | Font | ≤ 3 file preload (subset latin) |
 | Lighthouse mobile | ≥ 95 in tutte le categorie |
 
@@ -298,7 +280,7 @@ Cache (`vercel.json` › headers): `/_astro/*` e `/video/*` `max-age=31536000, i
 ## 15. Privacy e legale
 
 - Nessun cookie di profilazione → nessun banner cookie necessario (solo informativa).
-- Font self-hosted; YouTube solo al click (facade, `youtube-nocookie.com`); Spotify/Apple/Tidal solo link, niente embed.
+- Font self-hosted; YouTube solo al click (facade, `youtube-nocookie.com`); player Spotify solo al click (facade nella sezione Album); Apple Music/Tidal solo link.
 - Analytics: opzionale, cookieless (Vercel Web Analytics o Plausible).
 - Modulo: dati trattati da Vercel e Resend (USA) → indicarlo nell'informativa; titolare del trattamento **da fornire** (segnaposto).
 
