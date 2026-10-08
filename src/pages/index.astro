@@ -1,12 +1,14 @@
 ---
 // Pagina provvisoria con un campionario degli stili base: la Home vera arriva con T28.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Logo from '../components/Logo.astro';
 import Pulsante from '../components/Pulsante.astro';
 import Etichetta from '../components/Etichetta.astro';
 import Cinemascope from '../components/Cinemascope.astro';
+import HeroVideo from '../components/HeroVideo.astro';
+import { precaricaPoster } from '../lib/hero';
 import { prendi } from '../lib/contenuti';
 
+const poster = await precaricaPoster();
 const nomi = ['eventi', 'persone', 'luoghi', 'partner', 'contatti', 'link', 'foto'] as const;
 const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n)).length}`));
 ---
@@ -17,15 +19,8 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
   alternate={[{ lang: 'it', href: '/' }]}
   noindex
 >
-  <section class="sezione contenitore">
-    <Logo forma="verticale" larghezza={480} caricamento="eager" />
-    <div style="height: var(--spazio-12)"></div>
-    <div class="sezione__testa">
-      <p class="occhiello om-oro">Diego Basso dirige</p>
-      <h1 class="titolo-xl">Un concerto che diventa racconto</h1>
-    </div>
-    <p class="evocativo-xl">Musica e cinema in un unico grande spettacolo</p>
-  </section>
+  <link slot="head" rel="preload" as="image" fetchpriority="high" {...poster} />
+  <HeroVideo />
   <section class="sezione contenitore" data-reveal>
     <div class="sezione__testa">
       <p class="occhiello om-tenue">Sito in costruzione</p>

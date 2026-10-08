@@ -1,0 +1,29 @@
+---
+// Icona Lucide inline (DS › Il segno › Icone): tratto 1,5 px, colore del testo, decorativa per i lettori di schermo.
+import pause from 'lucide-static/icons/pause.svg?raw';
+import play from 'lucide-static/icons/play.svg?raw';
+import x from 'lucide-static/icons/x.svg?raw';
+import menu from 'lucide-static/icons/menu.svg?raw';
+import arrowUpRight from 'lucide-static/icons/arrow-up-right.svg?raw';
+
+const ICONE = { pause, play, x, menu, 'arrow-up-right': arrowUpRight } as const;
+export type NomeIcona = keyof typeof ICONE;
+
+interface Props {
+  nome: NomeIcona;
+  misura?: number;
+  class?: string;
+}
+
+const { nome, misura = 20, class: classe } = Astro.props;
+const svg = ICONE[nome]
+  .replace(/<!--.*?-->/s, '')
+  .replace(/class="[^"]*"/, `class="icona${classe ? ` ${classe}` : ''}"`)
+  .replace(/width="24"/, `width="${misura}"`)
+  .replace(/height="24"/, `height="${misura}"`)
+  .replace(/stroke-width="2"/, 'stroke-width="1.5" aria-hidden="true" focusable="false"')
+  .replace(/stroke-linecap="round"/, 'stroke-linecap="square"')
+  .replace(/stroke-linejoin="round"/, 'stroke-linejoin="miter"');
+---
+
+<Fragment set:html={svg} />
