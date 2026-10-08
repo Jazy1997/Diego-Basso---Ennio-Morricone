@@ -1,0 +1,65 @@
+---
+// Pulsante del DS (ARCHITECTURE.md §8, DS › Pulsante). Un solo oro per schermata.
+// Con href è un link, senza è un <button>. `esterno` apre una nuova scheda e lo annuncia ai lettori di schermo;
+// `disabilitato` (es. esaurito) toglie il link e mette aria-disabled.
+import type { HTMLAttributes } from 'astro/types';
+import type { Lingua } from './Seo.astro';
+
+interface Props {
+  href?: string;
+  variante?: 'oro' | 'contorno' | 'testo';
+  piccolo?: boolean;
+  esterno?: boolean;
+  disabilitato?: boolean;
+  tipo?: 'button' | 'submit';
+  lang?: Lingua;
+  class?: string;
+  attributi?: HTMLAttributes<'a'> & HTMLAttributes<'button'>;
+}
+
+const {
+  href,
+  variante = 'oro',
+  piccolo = false,
+  esterno = false,
+  disabilitato = false,
+  tipo = 'button',
+  lang = 'it',
+  class: classe,
+  attributi = {},
+} = Astro.props;
+
+const classi = [
+  'om-pulsante',
+  `om-pulsante--${variante}`,
+  piccolo && 'om-pulsante--piccolo',
+  classe,
+];
+const nuovaScheda = lang === 'it' ? '(si apre in una nuova scheda)' : '(opens in a new tab)';
+---
+
+{
+  disabilitato && href ? (
+    <a class:list={classi} role="link" aria-disabled="true">
+      <slot />
+    </a>
+  ) : disabilitato ? (
+    <button class:list={classi} type="button" aria-disabled="true">
+      <slot />
+    </button>
+  ) : href ? (
+    <a
+      class:list={classi}
+      href={href}
+      {...(esterno && { target: '_blank', rel: 'noopener' })}
+      {...attributi}
+    >
+      <slot />
+      {esterno && <span class="solo-lettori">{nuovaScheda}</span>}
+    </a>
+  ) : (
+    <button class:list={classi} type={tipo} {...attributi}>
+      <slot />
+    </button>
+  )
+}

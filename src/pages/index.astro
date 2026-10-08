@@ -2,6 +2,8 @@
 // Pagina provvisoria con un campionario degli stili base: la Home vera arriva con T28.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Logo from '../components/Logo.astro';
+import Pulsante from '../components/Pulsante.astro';
+import Etichetta from '../components/Etichetta.astro';
 ---
 
 <BaseLayout
@@ -41,13 +43,26 @@ import Logo from '../components/Logo.astro';
     <p class="evocativo">Nuovo Cinema Paradiso</p>
     <p class="crediti">Orchestra Ritmico Sinfonica Italiana</p>
     <p class="didascalia om-tenue">Esempio di stili: dati non reali</p>
-    <p style="margin-top: var(--spazio-6)">
-      <a class="om-pulsante om-pulsante--oro" href="#contenuto">
-        Prossime date
-      </a>
-      <a class="om-pulsante om-pulsante--contorno" href="#contenuto">
-        Scarica il press kit
-      </a>
-    </p>
+  </section>
+  <section class="sezione contenitore" data-reveal>
+    <div class="sezione__testa">
+      <p class="occhiello om-tenue">Campionario componenti</p>
+      <h2 class="titolo-l">Pulsanti ed etichette</h2>
+    </div>
+    <div class="om-riga">
+      <Pulsante href="#contenuto">Prossime date</Pulsante>
+      <Pulsante href="#contenuto" variante="contorno">Scarica il press kit</Pulsante>
+      <Pulsante href="#contenuto" variante="testo">Tutte le date</Pulsante>
+      <Pulsante href="https://www.example.com" variante="contorno" piccolo esterno>Biglietti</Pulsante>
+      <Pulsante href="#contenuto" piccolo disabilitato>Biglietti</Pulsante>
+    </div>
+    <div class="om-riga" style="margin-top: var(--spazio-6)">
+      <Etichetta tipo="nuova" />
+      <Etichetta tipo="ultimi" />
+      <Etichetta tipo="esaurito" />
+      <Etichetta tipo="proiezioni" />
+      <Etichetta tipo="nuova" lang="en" />
+      <Etichetta tipo="esaurito" lang="en" />
+    </div>
   </section>
 </BaseLayout>
