@@ -89,20 +89,21 @@ const jsonLd = [
   </Sezione>
 
   <!-- 4 · Il progetto -->
-  <Sezione id="progetto" occhiello={T.progetto} titolo={D.claim.sottotitolo} stileTitolo="evocativo-xl">
+  <Sezione id="progetto" occhiello={T.progetto} titolo={D.claim.sottotitolo} stileTitolo="evocativo-xl" affiancata>
     <div class="testo">
       {medio.map((p) => <p class="corpo" set:html={p} />)}
     </div>
+    <p class="home__link">
+      <Pulsante href={localizedPath('progetto', lang)} variante="testo" lang={lang}>{T.scopriProgetto}</Pulsante>
+    </p>
+  </Sezione>
+  <Sezione>
     <Cinemascope
-      class="home__cinemascope"
       foto="orchestra-schermo-03"
       lang={lang}
       sottotitolo={D.claim.proiezioni}
       sizes="(min-width: 1568px) 1440px, 92vw"
     />
-    <p class="home__link">
-      <Pulsante href={localizedPath('progetto', lang)} variante="testo" lang={lang}>{T.scopriProgetto}</Pulsante>
-    </p>
   </Sezione>
 
   <!-- 5 · Il repertorio -->
@@ -181,10 +182,6 @@ const jsonLd = [
 
   .home__link :global(.om-pulsante--testo) {
     padding-inline: 0;
-  }
-
-  .sezione :global(.home__cinemascope) {
-    margin-top: var(--spazio-12);
   }
 
   /* Il Maestro: ritratto verticale 4:5 accanto al testo; su mobile foto sopra, testo sotto. */

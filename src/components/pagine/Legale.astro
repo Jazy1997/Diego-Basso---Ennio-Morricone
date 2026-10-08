@@ -40,24 +40,26 @@ const titolare = pagina === 'privacy' ? (await prendi('contatti')).find((c) => c
   </TestaPagina>
 
   <Sezione>
-    {
-      pagina === 'privacy' && (
-        <div class:list={['legale__titolare', titolare?.data.segnaposto && 'segnaposto']}>
-          <h2 class="occhiello om-oro">{T.titolare}</h2>
-          {titolare ? (
-            <p class="corpo">
-              {titolare.data.nome} · <a href={`mailto:${titolare.data.email}`}>{titolare.data.email}</a>
-            </p>
-          ) : (
-            <p class="corpo">
-              {T.senzaTitolare} <a href={localizedPath('contatti', lang)}>{D.menu.contatti}</a>
-            </p>
-          )}
-        </div>
-      )
-    }
-    <div class="testo corpo legale">
-      <Content />
+    <div class="legale__colonna">
+      {
+        pagina === 'privacy' && (
+          <div class:list={['legale__titolare', titolare?.data.segnaposto && 'segnaposto']}>
+            <h2 class="occhiello om-oro">{T.titolare}</h2>
+            {titolare ? (
+              <p class="corpo">
+                {titolare.data.nome} · <a href={`mailto:${titolare.data.email}`}>{titolare.data.email}</a>
+              </p>
+            ) : (
+              <p class="corpo">
+                {T.senzaTitolare} <a href={localizedPath('contatti', lang)}>{D.menu.contatti}</a>
+              </p>
+            )}
+          </div>
+        )
+      }
+      <div class="testo corpo legale">
+        <Content />
+      </div>
     </div>
   </Sezione>
 
@@ -65,6 +67,12 @@ const titolare = pagina === 'privacy' ? (await prendi('contatti')).find((c) => c
 </BaseLayout>
 
 <style>
+  /* Pagine legali: una colonna di lettura centrata, senza vuoto a destra. */
+  .legale__colonna {
+    max-width: var(--colonna-testo);
+    margin-inline: auto;
+  }
+
   .legale__titolare {
     display: flex;
     flex-direction: column;
