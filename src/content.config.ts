@@ -97,6 +97,8 @@ const link = defineCollection({
     nome: z.string(),
     url: z.url(),
     youtubeId: z.string().optional(), // per il trailer (facade youtube-nocookie)
+    icona: z.enum(['spotify', 'applemusic', 'tidal', 'youtube', 'instagram', 'facebook']).optional(),
+    ordine: z.number().int().default(0),
     segnaposto,
   }),
 });

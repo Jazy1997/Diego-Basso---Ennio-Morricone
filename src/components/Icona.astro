@@ -1,13 +1,24 @@
 ---
-// Icona Lucide inline (DS › Il segno › Icone): tratto 1,5 px, colore del testo, decorativa per i lettori di schermo.
+// Icone inline, decorative per i lettori di schermo (il nome accessibile sta sul link o sul pulsante).
+// Interfaccia: Lucide (DS › Il segno › Icone), tratto 1,5 px, angoli vivi.
+// Marchi (social, piattaforme di ascolto): Simple Icons (CC0), pieni, nel colore del testo.
 import pause from 'lucide-static/icons/pause.svg?raw';
 import play from 'lucide-static/icons/play.svg?raw';
 import x from 'lucide-static/icons/x.svg?raw';
 import menu from 'lucide-static/icons/menu.svg?raw';
 import arrowUpRight from 'lucide-static/icons/arrow-up-right.svg?raw';
+import mail from 'lucide-static/icons/mail.svg?raw';
+import phone from 'lucide-static/icons/phone.svg?raw';
+import instagram from 'simple-icons/icons/instagram.svg?raw';
+import facebook from 'simple-icons/icons/facebook.svg?raw';
+import youtube from 'simple-icons/icons/youtube.svg?raw';
+import spotify from 'simple-icons/icons/spotify.svg?raw';
+import applemusic from 'simple-icons/icons/applemusic.svg?raw';
+import tidal from 'simple-icons/icons/tidal.svg?raw';
 
-const ICONE = { pause, play, x, menu, 'arrow-up-right': arrowUpRight } as const;
-export type NomeIcona = keyof typeof ICONE;
+const LUCIDE = { pause, play, x, menu, 'arrow-up-right': arrowUpRight, mail, phone } as const;
+const MARCHI = { instagram, facebook, youtube, spotify, applemusic, tidal } as const;
+export type NomeIcona = keyof typeof LUCIDE | keyof typeof MARCHI;
 
 interface Props {
   nome: NomeIcona;
@@ -16,14 +27,22 @@ interface Props {
 }
 
 const { nome, misura = 20, class: classe } = Astro.props;
-const svg = ICONE[nome]
-  .replace(/<!--.*?-->/s, '')
-  .replace(/class="[^"]*"/, `class="icona${classe ? ` ${classe}` : ''}"`)
-  .replace(/width="24"/, `width="${misura}"`)
-  .replace(/height="24"/, `height="${misura}"`)
-  .replace(/stroke-width="2"/, 'stroke-width="1.5" aria-hidden="true" focusable="false"')
-  .replace(/stroke-linecap="round"/, 'stroke-linecap="square"')
-  .replace(/stroke-linejoin="round"/, 'stroke-linejoin="miter"');
+const classi = `icona${classe ? ` ${classe}` : ''}`;
+const comuni = `width="${misura}" height="${misura}" class="${classi}" aria-hidden="true" focusable="false"`;
+
+const svg =
+  nome in MARCHI
+    ? MARCHI[nome as keyof typeof MARCHI]
+        .replace(/<title>.*?<\/title>/s, '')
+        .replace(/role="img"/, `${comuni} fill="currentColor"`)
+    : LUCIDE[nome as keyof typeof LUCIDE]
+        .replace(/<!--.*?-->/s, '')
+        .replace(/class="[^"]*"/, '')
+        .replace(/width="24"/, '')
+        .replace(/height="24"/, comuni)
+        .replace(/stroke-width="2"/, 'stroke-width="1.5"')
+        .replace(/stroke-linecap="round"/, 'stroke-linecap="square"')
+        .replace(/stroke-linejoin="round"/, 'stroke-linejoin="miter"');
 ---
 
 <Fragment set:html={svg} />

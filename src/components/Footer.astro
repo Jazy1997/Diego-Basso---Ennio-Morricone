@@ -6,6 +6,7 @@ import type { Lingua } from './Seo.astro';
 import Logo from './Logo.astro';
 import SchedaContatto from './SchedaContatto.astro';
 import FasciaPartner from './FasciaPartner.astro';
+import LinkIcona from './LinkIcona.astro';
 import { prendi } from '../lib/contenuti';
 import { localizedPath } from '../i18n/utils';
 
@@ -26,7 +27,6 @@ const T = {
     foto: 'Fotografie',
     privacy: 'Privacy',
     cookie: 'Cookie',
-    nuovaScheda: '(si apre in una nuova scheda)',
   },
   en: {
     contatti: 'Contacts',
@@ -38,7 +38,6 @@ const T = {
     foto: 'Photography',
     privacy: 'Privacy',
     cookie: 'Cookies',
-    nuovaScheda: '(opens in a new tab)',
   },
 }[lang];
 
@@ -48,12 +47,11 @@ const schede = (['booking', 'stampa', 'pubblico'] as const)
   .filter((c) => c !== undefined)
   .map((c) => ({ ...c.data, titolo: T[c.id as 'booking' | 'stampa' | 'pubblico'] }));
 
-const link = await prendi('link');
-// Ordine fisso (ARCHITECTURE.md §6): la collezione torna ordinata per id.
-const ORDINE = ['spotify', 'apple-music', 'tidal'];
-const streaming = link
-  .filter((l) => l.data.tipo === 'streaming')
-  .sort((a, b) => ORDINE.indexOf(a.id) - ORDINE.indexOf(b.id));
+const link = (await prendi('link'))
+  .filter((l) => l.data.icona)
+  .sort((a, b) => a.data.ordine - b.data.ordine);
+// "Ascolta": piattaforme dell'album + playlist YouTube; "Seguici": social.
+const ascolto = link.filter((l) => l.data.tipo !== 'social');
 const social = link.filter((l) => l.data.tipo === 'social');
 
 const crediti = [...new Set((await prendi('foto')).map((f) => f.data.credito))];
@@ -75,6 +73,7 @@ const anno = new Date().getFullYear();
               email={s.email}
               telefono={s.telefono}
               segnaposto={s.segnaposto}
+              lang={lang}
             />
           ))}
         </section>
@@ -87,38 +86,29 @@ const anno = new Date().getFullYear();
       </a>
       <div class="piede__link">
         {
-          streaming.length > 0 && (
-            <div>
-              <p class="occhiello om-tenue">{T.ascolta}</p>
-              <ul>
-                {streaming.map((l) => (
-                  <li>
-                    <a href={l.data.url} target="_blank" rel="noopener">
-                      {l.data.nome}
-                      <span class="solo-lettori">{T.nuovaScheda}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )
-        }
-        {
-          social.length > 0 && (
-            <div>
-              <p class="occhiello om-tenue">{T.seguici}</p>
-              <ul>
-                {social.map((l) => (
-                  <li class:list={[l.data.segnaposto && 'segnaposto']}>
-                    <a href={l.data.url} target="_blank" rel="noopener">
-                      {l.data.nome}
-                      <span class="solo-lettori">{T.nuovaScheda}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )
+          [
+            { titolo: T.ascolta, voci: ascolto },
+            { titolo: T.seguici, voci: social },
+          ]
+            .filter((g) => g.voci.length > 0)
+            .map((g) => (
+              <div>
+                <p class="occhiello om-tenue">{g.titolo}</p>
+                <ul>
+                  {g.voci.map((l) => (
+                    <li class:list={[l.data.segnaposto && 'segnaposto']}>
+                      <LinkIcona
+                        href={l.data.url}
+                        icona={l.data.icona!}
+                        etichetta={l.data.nome}
+                        esterno
+                        lang={lang}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
         }
       </div>
     </div>
@@ -182,21 +172,11 @@ const anno = new Date().getFullYear();
 
   .piede__link ul {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: var(--spazio-2);
     margin: var(--spazio-3) 0 0;
     padding: 0;
     list-style: none;
-  }
-
-  .piede__link a {
-    color: var(--avorio);
-    text-decoration: none;
-  }
-
-  .piede__link a:hover {
-    color: var(--oro);
-    text-decoration: underline;
   }
 
   .piede__legale {

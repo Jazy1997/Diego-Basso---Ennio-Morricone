@@ -1,0 +1,49 @@
+---
+// Link solo icona (contatti, social, piattaforme): area di tocco 44 px, nome accessibile in `etichetta`
+// (anche come tooltip), link esterni in nuova scheda annunciati ai lettori di schermo.
+import type { Lingua } from './Seo.astro';
+import Icona, { type NomeIcona } from './Icona.astro';
+
+interface Props {
+  href: string;
+  icona: NomeIcona;
+  etichetta: string;
+  esterno?: boolean;
+  lang?: Lingua;
+  misura?: number;
+}
+
+const { href, icona, etichetta, esterno = false, lang = 'it', misura = 22 } = Astro.props;
+const nuovaScheda = lang === 'it' ? 'si apre in una nuova scheda' : 'opens in a new tab';
+const nome = esterno ? `${etichetta} (${nuovaScheda})` : etichetta;
+---
+
+<a
+  class="link-icona"
+  href={href}
+  aria-label={nome}
+  title={etichetta}
+  {...esterno && { target: '_blank', rel: 'noopener' }}
+>
+  <Icona nome={icona} misura={misura} />
+</a>
+
+<style>
+  .link-icona {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--linea);
+    border-radius: var(--raggio-1);
+    color: var(--avorio);
+    transition:
+      color 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .link-icona:hover {
+    border-color: var(--oro);
+    color: var(--oro);
+  }
+</style>
