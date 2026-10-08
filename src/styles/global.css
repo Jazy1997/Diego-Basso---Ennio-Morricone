@@ -89,7 +89,8 @@ a {
   text-underline-offset: 0.2em;
 }
 
-a:hover {
+/* I pulsanti-link hanno i loro colori di hover (bundle DS): qui solo i link di testo. */
+a:not(.om-pulsante):hover {
   color: var(--oro-luce);
 }
 
