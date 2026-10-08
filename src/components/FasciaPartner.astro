@@ -1,0 +1,69 @@
+---
+// Fascia dei loghi partner (DS › FasciaPartner, › Partner e co-branding): gruppi con etichetta nell'ordine
+// istituzioni → organizzazione → partner, loghi alti 40 px, quelli solo a colori in un riquadro `carta`.
+// Senza voci non si mostra; i segnaposto escono da prendi() in produzione.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import type { Lingua } from './Seo.astro';
+import { prendi } from '../lib/contenuti';
+
+type Gruppo = CollectionEntry<'partner'>['data']['gruppo'];
+
+interface Props {
+  lang?: Lingua;
+  /** Voci da mostrare (es. i partner di una data); predefinite: tutta la collezione. */
+  partner?: CollectionEntry<'partner'>[];
+}
+
+const { lang = 'it', partner = await prendi('partner') } = Astro.props;
+
+const GRUPPI: { id: Gruppo; it: string; en: string }[] = [
+  { id: 'patrocinio', it: 'Con il patrocinio di', en: 'Under the patronage of' },
+  { id: 'collaborazione', it: 'In collaborazione con', en: 'In collaboration with' },
+  { id: 'organizzazione', it: 'Organizzazione', en: 'Organised by' },
+  { id: 'main', it: 'Main partner', en: 'Main partner' },
+];
+const nuovaScheda = lang === 'it' ? '(si apre in una nuova scheda)' : '(opens in a new tab)';
+
+const gruppi = GRUPPI.map((g) => ({
+  etichetta: g[lang],
+  voci: partner.filter((p) => p.data.gruppo === g.id),
+})).filter((g) => g.voci.length > 0);
+---
+
+{
+  gruppi.length > 0 && (
+    <div class="om-partner">
+      {gruppi.map((g) => (
+        <div class="om-partner__gruppo">
+          <p class="om-partner__etichetta">{g.etichetta}</p>
+          <div class="om-partner__loghi">
+            {g.voci.map(({ data: p }) => {
+              const logo = p.logo ? (
+                <Image src={p.logo} alt={p.nome} height={40} densities={[1, 2]} format="webp" />
+              ) : (
+                <span class="om-partner__segnaposto">{p.nome}</span>
+              );
+              const contenuto =
+                p.logo && p.colori ? <span class="om-partner__riquadro">{logo}</span> : logo;
+              return p.url ? (
+                <a class="partner__link" href={p.url} target="_blank" rel="noopener">
+                  {contenuto}
+                  <span class="solo-lettori">{nuovaScheda}</span>
+                </a>
+              ) : (
+                contenuto
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .partner__link {
+    display: block;
+  }
+</style>
