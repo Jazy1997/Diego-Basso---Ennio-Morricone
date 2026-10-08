@@ -164,6 +164,10 @@ export const it = {
     testo: 'La pagina che cerchi non esiste o è stata spostata.',
     home: 'Torna alla home',
   },
+  repertorio: {
+    citazione:
+      'Alcune delle colonne sonore più amate di Ennio Morricone, da <em>Nuovo Cinema Paradiso</em> a <em>The Mission</em>, da <em>La leggenda del pianista sull’oceano</em> a <em>C’era una volta in America</em>, fino ai grandi western di Sergio Leone.',
+  },
   contatto: { email: 'Email', tel: 'Telefono' },
   piede: {
     contatti: 'Contatti',

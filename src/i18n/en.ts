@@ -165,6 +165,10 @@ export const en: Dizionario = {
     testo: 'The page you are looking for does not exist or has been moved.',
     home: 'Back to the home page',
   },
+  repertorio: {
+    citazione:
+      'Some of Ennio Morricone’s best-loved film scores, from <em>Cinema Paradiso</em> to <em>The Mission</em>, from <em>The Legend of 1900</em> to <em>Once Upon a Time in America</em>, all the way to the great westerns of Sergio Leone.',
+  },
   contatto: { email: 'Email', tel: 'Phone' },
   piede: {
     contatti: 'Contacts',

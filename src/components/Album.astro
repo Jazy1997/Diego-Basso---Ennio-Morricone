@@ -109,9 +109,13 @@ const T = t(lang).album;
   }
 
   /* Stessa altezza del player di Spotify (352 px): nessuno spostamento al click */
+  /* Il player di Spotify ha angoli arrotondati di 12 px che non si possono togliere: il riquadro prende
+     lo stesso raggio e taglia il contenuto, così facciata e player hanno un solo profilo. */
   .album__player {
     container-type: inline-size;
     height: 352px;
+    border-radius: 12px;
+    overflow: hidden;
     background: var(--sala-200);
   }
 

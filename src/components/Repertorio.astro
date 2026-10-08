@@ -1,89 +1,31 @@
 ---
-// Il repertorio come i titoli di coda (ARCHITECTURE.md §6, DS › Tono › Come si scrivono i nomi):
-// film in `evocativo` corsivo in una colonna centrata; sotto il film, il suo tema tra “ ” in `citazione`.
-// Titoli esatti, mai tradotti; `lang` segnala ai lettori di schermo i titoli in una lingua diversa dalla pagina.
+// Il repertorio in una frase (decisione dell'utente, ott. 2026: niente scaletta completa).
+// Titoli dei film in corsivo; in EN i titoli dell'edizione inglese, come nei testi (DS › Tono).
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 
 interface Props {
   lang?: Lingua;
 }
 
 const { lang = 'it' } = Astro.props;
-
-interface Titolo {
-  titolo: string;
-  lingua: Lingua;
-}
-
-// Abbinamenti tema → film confermati dall'utente.
-const FILM: (Titolo & { tema?: Titolo })[] = [
-  { titolo: 'Nuovo Cinema Paradiso', lingua: 'it' },
-  { titolo: 'Malèna', lingua: 'it' },
-  { titolo: 'The Mission', lingua: 'en', tema: { titolo: 'Gabriel’s Oboe', lingua: 'en' } },
-  {
-    titolo: 'La leggenda del pianista sull’oceano',
-    lingua: 'it',
-    tema: { titolo: 'Playing Love', lingua: 'en' },
-  },
-  { titolo: 'Sacco e Vanzetti', lingua: 'it' },
-  { titolo: 'Maddalena', lingua: 'it', tema: { titolo: 'Chi mai', lingua: 'it' } },
-  { titolo: 'C’era una volta in America', lingua: 'it' },
-  { titolo: 'C’era una volta il West', lingua: 'it' },
-  {
-    titolo: 'Il buono, il brutto, il cattivo',
-    lingua: 'it',
-    tema: { titolo: 'L’estasi dell’oro', lingua: 'it' },
-  },
-  { titolo: 'Giù la testa', lingua: 'it' },
-  { titolo: 'Per un pugno di dollari', lingua: 'it' },
-  { titolo: 'Per qualche dollaro in più', lingua: 'it' },
-];
-
-const lingua = (l: Lingua) => (l === lang ? undefined : l);
 ---
 
-<ul class="repertorio">
-  {
-    FILM.map((f, i) => (
-      <li data-reveal style={`--i: ${i}`}>
-        <span class="evocativo" lang={lingua(f.lingua)}>
-          {f.titolo}
-        </span>
-        {f.tema && (
-          <span class="citazione repertorio__tema" lang={lingua(f.tema.lingua)}>
-            “{f.tema.titolo}”
-          </span>
-        )}
-      </li>
-    ))
-  }
-</ul>
+<blockquote class="repertorio">
+  <p class="evocativo-xl" set:html={t(lang).repertorio.citazione} />
+</blockquote>
 
 <style>
   .repertorio {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spazio-4);
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    max-width: 900px;
+    margin: 0 auto;
     text-align: center;
     color: var(--avorio);
   }
 
-  .repertorio li {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spazio-1);
-  }
-
-  /* Comparsa leggera in sequenza, come i titoli di coda */
-  .repertorio [data-reveal] {
-    transition-delay: calc(var(--i) * 60ms);
-  }
-
-  .repertorio__tema {
-    color: var(--avorio-tenue);
+  /* Frase in tondo, titoli dei film in corsivo; niente oro (DS: oro ≤ 10%). */
+  .repertorio p {
+    margin: 0;
+    font-style: normal;
   }
 </style>

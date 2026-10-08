@@ -114,8 +114,7 @@ const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
     margin: var(--spazio-12) 0 var(--spazio-6);
   }
 
-  .promoter__luoghi,
-  .promoter__versioni {
+  .promoter__luoghi {
     display: grid;
     gap: var(--spazio-6);
     margin: 0;
@@ -123,8 +122,7 @@ const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
     list-style: none;
   }
 
-  .promoter__luoghi li,
-  .promoter__versioni li {
+  .promoter__luoghi li {
     display: flex;
     flex-direction: column;
     gap: var(--spazio-2);
@@ -143,28 +141,6 @@ const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
     border-top: 1px solid var(--oro);
   }
 
-  .promoter__scheda {
-    display: grid;
-    gap: var(--spazio-6) var(--spazio-8);
-    margin: 0;
-  }
-
-  .promoter__scheda div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spazio-2);
-    padding-top: var(--spazio-4);
-    border-top: 1px solid var(--linea);
-  }
-
-  .promoter__scheda dd {
-    margin: 0;
-  }
-
-  .promoter__nota {
-    margin-top: var(--spazio-6);
-  }
-
   .promoter__booking {
     display: flex;
     flex-direction: column;
@@ -177,20 +153,13 @@ const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
   }
 
   @media (min-width: 720px) {
-    .promoter__luoghi,
-    .promoter__scheda {
+    .promoter__luoghi {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .promoter__versioni {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--spazio-8);
     }
   }
 
   @media (min-width: 1100px) {
-    .promoter__luoghi,
-    .promoter__scheda {
+    .promoter__luoghi {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
