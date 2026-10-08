@@ -26,7 +26,7 @@ export const it = {
     date: 'Prossime date',
     pausa: 'Metti in pausa il video',
   },
-  date: { vuoto: 'Nuove date in arrivo', contatti: 'Scrivici' },
+  date: { vuoto: 'Nuove date in arrivo', contatti: 'Scrivici', archivio: 'Archivio' },
   etichette: {
     nuova: 'Nuova data',
     ultimi: 'Ultimi posti',
@@ -60,6 +60,7 @@ export const it = {
       'Il progetto ideato nel 2004 dal Maestro Diego Basso: orchestra, voce e grande schermo in un viaggio sinfonico nella musica per il cinema di Ennio Morricone.',
     maestro:
       'Diego Basso, direttore e trascrittore: la sua visione del repertorio di Ennio Morricone, le collaborazioni con Alessandroni e Griminelli e la formazione.',
+    date: 'Le prossime date di Omaggio a Ennio Morricone con Diego Basso e l’Orchestra Ritmico Sinfonica Italiana: città, teatri, orari, biglietti e archivio dei concerti.',
   },
   home: {
     tutteDate: 'Tutte le date',
