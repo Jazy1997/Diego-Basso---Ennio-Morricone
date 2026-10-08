@@ -1,7 +1,7 @@
 ---
 // Testata del sito (DS › Testata, ARCHITECTURE.md §5–§6): logo orizzontale oro 280 px, 5 voci, IT/EN, "Biglietti".
 // `trasparente`: sopra l'hero resta trasparente e fissa; dopo lo scorrimento passa a sala-100 con il filetto.
-// Sotto 1080 px le voci vanno in un pannello a tutto schermo (<dialog> modale: focus intrappolato, Esc chiude).
+// Sotto 1200 px (DS: 1080, vedi stile) le voci vanno in un pannello a tutto schermo (<dialog> modale: focus intrappolato, Esc chiude).
 import type { Lingua } from './Seo.astro';
 import Logo from './Logo.astro';
 import Pulsante from './Pulsante.astro';
@@ -178,7 +178,13 @@ const date = localizedPath('date', lang);
     color: var(--oro);
   }
 
-  @media (max-width: 1080px) {
+  /* Il DS chiude il menu sotto 1080 px, ma logo 280 + 5 voci + lingua + Biglietti richiedono ~1190 px:
+     sotto 1200 px si passa al pulsante "Menu" per non far traboccare la barra. */
+  @media (max-width: 1199px) {
+    .om-testata__nav {
+      display: none;
+    }
+
     .testata__menu {
       display: inline-flex;
     }

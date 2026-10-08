@@ -35,6 +35,6 @@ if (pannello && apri) {
   pannello.querySelectorAll('a').forEach((a) => a.addEventListener('click', chiudi));
 
   window
-    .matchMedia('(min-width: 1081px)')
+    .matchMedia('(min-width: 1200px)')
     .addEventListener('change', (e) => e.matches && pannello.open && chiudi());
 }
