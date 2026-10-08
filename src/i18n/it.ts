@@ -50,6 +50,45 @@ export const it = {
     organizzazione: 'Organizzazione',
     main: 'Main partner',
   },
+  seo: {
+    home: {
+      title: 'Omaggio a Ennio Morricone — Diego Basso, Orchestra Ritmico Sinfonica Italiana',
+      description:
+        'Il progetto ideato nel 2004 dal Maestro Diego Basso: l’Orchestra Ritmico Sinfonica Italiana e il soprano Claudia Sasso nella musica per il cinema di Ennio Morricone.',
+    },
+  },
+  home: {
+    tutteDate: 'Tutte le date',
+    progetto: 'Il progetto',
+    scopriProgetto: 'Scopri il progetto',
+    repertorio: 'Il repertorio',
+    repertorioTitolo: 'Un viaggio nella musica per il cinema',
+    maestro: 'Il Maestro',
+    maestroTitolo: 'La visione del Maestro Diego Basso',
+    scopriMaestro: 'Scopri il Maestro',
+    formazione: 'Formazione',
+    video: 'Video',
+    promoter: 'Promoter e venue',
+    promoterTitolo: 'Uno spettacolo per teatri, festival e grandi spazi',
+    argomenti: [
+      {
+        titolo: '46 elementi',
+        testo: 'Una vera orchestra sinfonica, l’Orchestra Ritmico Sinfonica Italiana, con il soprano lirico Claudia Sasso.',
+      },
+      {
+        titolo: 'Oltre vent’anni di storia',
+        testo: 'Dal 2004 in teatri, piazze e luoghi di particolare valore, fino alla Guangzhou Symphony Orchestra in Cina.',
+      },
+      {
+        titolo: 'Due versioni',
+        testo: 'Con le proiezioni sul grande schermo oppure in concerto, per adattarsi a ogni spazio.',
+      },
+    ],
+    pressKit: 'Scarica il press kit',
+    pressKitInArrivo: 'Press kit in arrivo',
+    booking: 'Contatta il booking',
+    scopriPromoter: 'Tutto per promoter e venue',
+  },
   contatto: { email: 'Email', tel: 'Telefono' },
   piede: {
     contatti: 'Contatti',
@@ -65,5 +104,9 @@ export const it = {
 };
 
 /** Forma del dizionario: stesse chiavi in ogni lingua, valori stringa. */
-type Forma<T> = { [K in keyof T]: T[K] extends string ? string : Forma<T[K]> };
+type Forma<T> = T extends string
+  ? string
+  : T extends readonly (infer V)[]
+    ? Forma<V>[]
+    : { [K in keyof T]: Forma<T[K]> };
 export type Dizionario = Forma<typeof it>;

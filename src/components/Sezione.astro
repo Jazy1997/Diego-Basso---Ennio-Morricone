@@ -1,0 +1,47 @@
+---
+// Sezione di pagina (ARCHITECTURE.md §6, §8): spaziatura DS, occhiello oro + titolo h2, comparsa con Reveal.
+// `contenitore` (predefinito) limita la larghezza e applica i margini web; senza, la sezione va a tutta larghezza.
+interface Props {
+  id?: string;
+  occhiello?: string;
+  titolo?: string;
+  /** Classe tipografica del titolo: `titolo-l` (predefinita) o `evocativo-xl` per un claim. */
+  stileTitolo?: 'titolo-l' | 'evocativo-xl';
+  centrato?: boolean;
+  contenitore?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  occhiello,
+  titolo,
+  stileTitolo = 'titolo-l',
+  centrato = false,
+  contenitore = true,
+  class: classe,
+} = Astro.props;
+---
+
+<section
+  class:list={['sezione', contenitore && 'contenitore', centrato && 'sezione--centrata', classe]}
+  id={id}
+  data-reveal
+>
+  {
+    (occhiello || titolo) && (
+      <div class="sezione__testa">
+        {occhiello && <p class="occhiello om-oro">{occhiello}</p>}
+        {titolo && <h2 class={stileTitolo}>{titolo}</h2>}
+      </div>
+    )
+  }
+  <slot />
+</section>
+
+<style>
+  .sezione--centrata .sezione__testa {
+    align-items: center;
+    text-align: center;
+  }
+</style>
