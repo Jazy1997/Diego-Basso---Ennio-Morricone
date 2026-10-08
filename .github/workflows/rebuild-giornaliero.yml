@@ -1,0 +1,18 @@
+# Ricostruisce il sito ogni notte, così le date passate finiscono in Archivio (ARCHITECTURE.md §9).
+name: Rebuild giornaliero
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # 02:00 UTC = 03:00/04:00 ora italiana
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chiama il Deploy Hook di Vercel
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "Secret VERCEL_DEPLOY_HOOK mancante: salto."; exit 0; fi
+          curl -fsS -X POST "$HOOK"
