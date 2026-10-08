@@ -6,6 +6,7 @@ import Etichetta from '../components/Etichetta.astro';
 import Cinemascope from '../components/Cinemascope.astro';
 import HeroVideo from '../components/HeroVideo.astro';
 import Testata from '../components/Testata.astro';
+import Crediti from '../components/Crediti.astro';
 import { precaricaPoster } from '../lib/hero';
 import { prendi } from '../lib/contenuti';
 
@@ -85,5 +86,13 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
         <p class="coordinate om-tenue">45.4093° N · 11.8713° E</p>
       </Fragment>
     </Cinemascope>
+  </section>
+  <section class="sezione contenitore" data-reveal>
+    <div class="sezione__testa">
+      <p class="occhiello om-oro">Formazione</p>
+    </div>
+    <Crediti />
+    <div style="height: var(--spazio-12)"></div>
+    <Crediti lang="en" centrato />
   </section>
 </BaseLayout>
