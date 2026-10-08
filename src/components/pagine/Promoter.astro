@@ -1,7 +1,7 @@
 ---
 // Promoter e venue (ARCHITECTURE.md §5): tutto ciò che serve a un teatro per scegliere lo spettacolo.
 // "Oltre vent'anni di storia" dal docx + luoghi con città e coordinate (Guangzhou a parte, all'estero) ·
-// due versioni · scheda tecnica dallo stage plot · press kit · contatto booking.
+// press kit · contatto booking (versioni e scheda tecnica tolte: arriveranno come download press kit e rider).
 import { render } from 'astro:content';
 import type { Lingua } from '../Seo.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -81,35 +81,6 @@ const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
   <section class="sezione" data-reveal>
     <Cinemascope foto="luogo-castello-01" lang={lang} />
   </section>
-
-  <!-- Due versioni -->
-  <Sezione id="versioni" titolo={T.versioni}>
-    <ul class="promoter__versioni">
-      {
-        [T.conProiezioni, T.inConcerto].map((v) => (
-          <li>
-            <h3 class="titolo-m">{v.titolo}</h3>
-            <p class="corpo om-tenue">{v.testo}</p>
-          </li>
-        ))
-      }
-    </ul>
-  </Sezione>
-
-  <!-- Scheda tecnica -->
-  <Sezione id="scheda" titolo={T.scheda}>
-    <dl class="promoter__scheda">
-      {
-        T.voci.map((v) => (
-          <div>
-            <dt class="occhiello om-tenue">{v.nome}</dt>
-            <dd class="corpo">{v.valore}</dd>
-          </div>
-        ))
-      }
-    </dl>
-    <p class="didascalia om-tenue promoter__nota">{T.schedaNota}</p>
-  </Sezione>
 
   <!-- Booking -->
   <Sezione id="booking" titolo={T.booking}>

@@ -23,7 +23,6 @@ export const en: Dizionario = {
     chiusura: 'A journey into the memory of cinema through the power of live music.',
   },
   hero: {
-    occhiello: 'Diego Basso conducts',
     date: 'Upcoming dates',
     pausa: 'Pause the video',
   },

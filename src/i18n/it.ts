@@ -22,7 +22,6 @@ export const it = {
     chiusura: 'Un viaggio nella memoria del cinema attraverso la forza della musica dal vivo.',
   },
   hero: {
-    occhiello: 'Diego Basso dirige',
     date: 'Prossime date',
     pausa: 'Metti in pausa il video',
   },
