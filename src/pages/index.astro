@@ -7,6 +7,7 @@ import Cinemascope from '../components/Cinemascope.astro';
 import HeroVideo from '../components/HeroVideo.astro';
 import Testata from '../components/Testata.astro';
 import Crediti from '../components/Crediti.astro';
+import Repertorio from '../components/Repertorio.astro';
 import { precaricaPoster } from '../lib/hero';
 import { prendi } from '../lib/contenuti';
 
@@ -94,5 +95,12 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
     <Crediti />
     <div style="height: var(--spazio-12)"></div>
     <Crediti lang="en" centrato />
+  </section>
+  <section class="sezione contenitore">
+    <div class="sezione__testa" style="align-items: center; text-align: center">
+      <p class="occhiello om-oro">Il repertorio</p>
+      <h2 class="titolo-l">Un viaggio nella musica per il cinema</h2>
+    </div>
+    <Repertorio />
   </section>
 </BaseLayout>
