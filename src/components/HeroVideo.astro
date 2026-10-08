@@ -5,6 +5,7 @@
 // che in 0,8 s si apre a tutto schermo. Con reduced-motion o Save-Data niente animazione e niente video: resta il poster.
 import { Picture } from 'astro:assets';
 import type { Lingua } from './Seo.astro';
+import { localizedPath, t } from '../i18n/utils';
 import Logo from './Logo.astro';
 import Pulsante from './Pulsante.astro';
 import Icona from './Icona.astro';
@@ -17,24 +18,9 @@ interface Props {
   titolo?: boolean;
 }
 
-const { lang = 'it', hrefDate = lang === 'it' ? '/date/' : '/en/dates/', titolo = true } = Astro.props;
+const { lang = 'it', hrefDate = localizedPath('date', lang), titolo = true } = Astro.props;
 
-const T = {
-  it: {
-    occhiello: 'Diego Basso dirige',
-    sottotitolo: 'Musica e cinema in un unico grande spettacolo',
-    date: 'Prossime date',
-    pausa: 'Metti in pausa il video',
-    riproduci: 'Riproduci il video',
-  },
-  en: {
-    occhiello: 'Diego Basso conducts',
-    sottotitolo: 'Music and cinema in one great show',
-    date: 'Upcoming dates',
-    pausa: 'Pause the video',
-    riproduci: 'Play the video',
-  },
-}[lang];
+const T = { ...t(lang).hero, riproduci: t(lang).comune.riproduciVideo };
 const Titolo = titolo ? 'h1' : 'div';
 ---
 

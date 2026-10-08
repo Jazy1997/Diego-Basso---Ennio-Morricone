@@ -5,6 +5,7 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 import { prendi } from '../lib/contenuti';
 
 type Gruppo = CollectionEntry<'partner'>['data']['gruppo'];
@@ -17,17 +18,12 @@ interface Props {
 
 const { lang = 'it', partner = await prendi('partner') } = Astro.props;
 
-const GRUPPI: { id: Gruppo; it: string; en: string }[] = [
-  { id: 'patrocinio', it: 'Con il patrocinio di', en: 'Under the patronage of' },
-  { id: 'collaborazione', it: 'In collaborazione con', en: 'In collaboration with' },
-  { id: 'organizzazione', it: 'Organizzazione', en: 'Organised by' },
-  { id: 'main', it: 'Main partner', en: 'Main partner' },
-];
-const nuovaScheda = lang === 'it' ? '(si apre in una nuova scheda)' : '(opens in a new tab)';
+const GRUPPI: Gruppo[] = ['patrocinio', 'collaborazione', 'organizzazione', 'main'];
+const nuovaScheda = `(${t(lang).comune.nuovaScheda})`;
 
 const gruppi = GRUPPI.map((g) => ({
-  etichetta: g[lang],
-  voci: partner.filter((p) => p.data.gruppo === g.id),
+  etichetta: t(lang).partner[g],
+  voci: partner.filter((p) => p.data.gruppo === g),
 })).filter((g) => g.voci.length > 0);
 ---
 

@@ -2,6 +2,7 @@
 // Scheda di un contatto (ARCHITECTURE.md §8): riquadro sala-200 ad angoli vivi.
 // Email e telefono come icone (scelta dell'utente): l'indirizzo è nel nome accessibile e nel tooltip.
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 import LinkIcona from './LinkIcona.astro';
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
 
 const { titolo, nome, email, telefono, segnaposto = false, lang = 'it' } = Astro.props;
 const tel = telefono?.replace(/[^\d+]/g, '');
-const T = lang === 'it' ? { email: 'Email', tel: 'Telefono' } : { email: 'Email', tel: 'Phone' };
+const T = t(lang).contatto;
 ---
 
 <div class:list={['scheda-contatto', segnaposto && 'segnaposto']}>

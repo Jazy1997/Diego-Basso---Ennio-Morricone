@@ -4,6 +4,7 @@
 // Passata: niente pulsante, numero e città in avorio-tenue. Ogni riga porta il suo JSON-LD MusicEvent.
 import type { CollectionEntry } from 'astro:content';
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 import Etichetta from './Etichetta.astro';
 import Pulsante from './Pulsante.astro';
 import { coordinate, dataEstesa, isoRoma, numeroData, oggiRoma, rigaData } from '../i18n/date';
@@ -20,7 +21,7 @@ const inizio = isoRoma(e.data, e.ora);
 const passata = e.data < oggiRoma();
 const esaurito = e.stato === 'esaurito';
 const etichetta = e.stato === 'nessuno' ? undefined : e.stato;
-const biglietti = lang === 'it' ? 'Biglietti' : 'Tickets';
+const biglietti = t(lang).comune.biglietti;
 const sito = Astro.site ?? Astro.url;
 
 const jsonLd = {

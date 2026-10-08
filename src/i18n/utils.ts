@@ -1,5 +1,7 @@
 // Slug tradotti e percorsi localizzati (ARCHITECTURE.md §5): italiano alla radice, inglese su /en/.
 import type { Alternativa, Lingua } from '../components/Seo.astro';
+import { it, type Dizionario } from './it';
+import { en } from './en';
 
 export const LINGUE: Lingua[] = ['it', 'en'];
 
@@ -26,4 +28,11 @@ export function localizedPath(pagina: Pagina, lang: Lingua): string {
 /** Le versioni della stessa pagina in tutte le lingue (selettore lingua e hreflang). */
 export function alternate(pagina: Pagina): Alternativa[] {
   return LINGUE.map((lang) => ({ lang, href: localizedPath(pagina, lang) }));
+}
+
+const DIZIONARI: Record<Lingua, Dizionario> = { it, en };
+
+/** Dizionario UI della lingua, es. `const T = t(lang).piede`. */
+export function t(lang: Lingua): Dizionario {
+  return DIZIONARI[lang];
 }

@@ -3,6 +3,7 @@
 // niente cookie di Spotify prima) e icone per tutte le piattaforme da link.json.
 import { Image } from 'astro:assets';
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 import Icona from './Icona.astro';
 import LinkIcona from './LinkIcona.astro';
 import copertina from '../assets/album/copertina.jpg';
@@ -20,26 +21,7 @@ const link = (await prendi('link'))
 const spotify = link.find((l) => l.id === 'spotify');
 const albumId = spotify?.data.url.match(/album\/([A-Za-z0-9]+)/)?.[1];
 
-const T = {
-  it: {
-    occhiello: 'Ascolta l’album',
-    crediti: 'Orchestra Ritmico Sinfonica Italiana, Coro lirico Opera House, Coro pop Art Voice Academy. Diego Basso, direttore.',
-    ascolta: 'Ascolta qui',
-    nota: 'Il player di Spotify si carica al click.',
-    etichetta: 'Ascolta l’album qui con il player di Spotify',
-    piattaforme: 'Anche su',
-    titoloPlayer: 'Player Spotify: Omaggio a Ennio Morricone',
-  },
-  en: {
-    occhiello: 'Listen to the album',
-    crediti: 'Orchestra Ritmico Sinfonica Italiana, Coro lirico Opera House, Coro pop Art Voice Academy. Diego Basso, conductor.',
-    ascolta: 'Listen here',
-    nota: 'The Spotify player loads when you click.',
-    etichetta: 'Listen to the album here with the Spotify player',
-    piattaforme: 'Also on',
-    titoloPlayer: 'Spotify player: Omaggio a Ennio Morricone',
-  },
-}[lang];
+const T = t(lang).album;
 ---
 
 <div class="album">

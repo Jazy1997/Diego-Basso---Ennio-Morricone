@@ -4,6 +4,7 @@
 import '../styles/global.css';
 import FontPreload from '../components/FontPreload.astro';
 import Seo, { type Alternativa, type Lingua } from '../components/Seo.astro';
+import { t } from '../i18n/utils';
 
 interface Props {
   title: string;
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const { lang = 'it', ...seo } = Astro.props;
-const salta = lang === 'it' ? 'Vai al contenuto' : 'Skip to content';
+const salta = t(lang).comune.saltaContenuto;
 ---
 
 <!doctype html>

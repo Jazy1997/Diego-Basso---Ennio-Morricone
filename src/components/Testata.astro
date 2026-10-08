@@ -6,7 +6,7 @@ import type { Lingua } from './Seo.astro';
 import Logo from './Logo.astro';
 import Pulsante from './Pulsante.astro';
 import Icona from './Icona.astro';
-import { localizedPath, type Pagina } from '../i18n/utils';
+import { LINGUE, localizedPath, t, type Pagina } from '../i18n/utils';
 
 interface Props {
   lang?: Lingua;
@@ -16,28 +16,20 @@ interface Props {
 
 const { lang = 'it', corrente = 'home', trasparente = false } = Astro.props;
 
-const VOCI: { pagina: Pagina; it: string; en: string }[] = [
-  { pagina: 'progetto', it: 'Il progetto', en: 'The project' },
-  { pagina: 'maestro', it: 'Il Maestro', en: 'The Maestro' },
-  { pagina: 'date', it: 'Date', en: 'Dates' },
-  { pagina: 'promoter', it: 'Promoter e venue', en: 'Promoters & venues' },
-  { pagina: 'contatti', it: 'Contatti', en: 'Contacts' },
-];
+const VOCI = ['progetto', 'maestro', 'date', 'promoter', 'contatti'] as const satisfies Pagina[];
 
-const T = {
-  it: { nav: 'Principale', menu: 'Menu', chiudi: 'Chiudi', biglietti: 'Biglietti' },
-  en: { nav: 'Main', menu: 'Menu', chiudi: 'Close', biglietti: 'Tickets' },
-}[lang];
+const D = t(lang);
+const T = { ...D.testata, biglietti: D.comune.biglietti };
 
-const voci = VOCI.map((v) => ({
-  href: localizedPath(v.pagina, lang),
-  testo: v[lang],
-  corrente: v.pagina === corrente,
+const voci = VOCI.map((pagina) => ({
+  href: localizedPath(pagina, lang),
+  testo: D.menu[pagina],
+  corrente: pagina === corrente,
 }));
-const lingue = (['it', 'en'] as const).map((l) => ({
+const lingue = LINGUE.map((l) => ({
   lang: l,
   href: localizedPath(corrente, l),
-  nome: l === 'it' ? 'Italiano' : 'English',
+  nome: D.lingue[l],
 }));
 const home = localizedPath('home', lang);
 const date = localizedPath('date', lang);

@@ -2,6 +2,7 @@
 // Crediti in stile locandina (DS › Crediti): contenuto e ordine fissi, nomi mai abbreviati.
 // `centrato` solo dentro una banda Cinemascope a tutta larghezza.
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 
 interface Props {
   lang?: Lingua;
@@ -10,10 +11,11 @@ interface Props {
 
 const { lang = 'it', centrato = false } = Astro.props;
 
+const T = t(lang).crediti;
 const VOCI = [
-  { ruolo: { it: 'Direttore', en: 'Conductor' }, nome: 'Diego Basso' },
-  { ruolo: { it: 'Soprano', en: 'Soprano' }, nome: 'Claudia Sasso' },
-  { ruolo: { it: '46 elementi', en: '46 musicians' }, nome: 'Orchestra Ritmico Sinfonica Italiana' },
+  { ruolo: T.direttore, nome: 'Diego Basso' },
+  { ruolo: T.soprano, nome: 'Claudia Sasso' },
+  { ruolo: T.orchestra, nome: 'Orchestra Ritmico Sinfonica Italiana' },
 ];
 ---
 
@@ -21,7 +23,7 @@ const VOCI = [
   {
     VOCI.map((v) => (
       <div class="om-crediti__voce">
-        <dt>{v.ruolo[lang]}</dt>
+        <dt>{v.ruolo}</dt>
         <dd>{v.nome}</dd>
       </div>
     ))

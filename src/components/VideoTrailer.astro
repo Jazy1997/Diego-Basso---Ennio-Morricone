@@ -4,6 +4,7 @@
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 import Icona from './Icona.astro';
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
 }
 
 const { youtubeId, titolo, poster, lang = 'it' } = Astro.props;
-const etichetta = `${lang === 'it' ? 'Riproduci il video' : 'Play the video'}: ${titolo}`;
+const etichetta = `${t(lang).comune.riproduciVideo}: ${titolo}`;
 ---
 
 <div class="trailer" data-trailer data-id={youtubeId} data-titolo={titolo}>

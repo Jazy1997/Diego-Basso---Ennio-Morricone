@@ -2,6 +2,7 @@
 // Link solo icona (contatti, social, piattaforme): area di tocco 44 px, nome accessibile in `etichetta`
 // (anche come tooltip), link esterni in nuova scheda annunciati ai lettori di schermo.
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 import Icona, { type NomeIcona } from './Icona.astro';
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
 }
 
 const { href, icona, etichetta, esterno = false, lang = 'it', misura = 22 } = Astro.props;
-const nuovaScheda = lang === 'it' ? 'si apre in una nuova scheda' : 'opens in a new tab';
+const nuovaScheda = t(lang).comune.nuovaScheda;
 const nome = esterno ? `${etichetta} (${nuovaScheda})` : etichetta;
 ---
 

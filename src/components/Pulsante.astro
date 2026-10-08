@@ -4,6 +4,7 @@
 // `disabilitato` (es. esaurito) toglie il link e mette aria-disabled.
 import type { HTMLAttributes } from 'astro/types';
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 
 interface Props {
   href?: string;
@@ -35,7 +36,7 @@ const classi = [
   piccolo && 'om-pulsante--piccolo',
   classe,
 ];
-const nuovaScheda = lang === 'it' ? '(si apre in una nuova scheda)' : '(opens in a new tab)';
+const nuovaScheda = `(${t(lang).comune.nuovaScheda})`;
 ---
 
 {

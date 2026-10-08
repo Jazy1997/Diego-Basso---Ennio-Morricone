@@ -10,5 +10,7 @@ export default defineConfig({
   build: { format: 'directory' },
   // La compressione di Astro 7 elimina lo spazio tra testo e tag su righe diverse ("di<em>…").
   compressHTML: false,
+  // Italiano alla radice, inglese su /en/ (ARCHITECTURE.md §5); slug tradotti in src/i18n/utils.ts.
+  i18n: { defaultLocale: 'it', locales: ['it', 'en'], routing: { prefixDefaultLocale: false } },
   adapter: vercel(),
 });
