@@ -66,6 +66,10 @@ export const en: Dizionario = {
       'For theatres, festivals and major events: more than twenty years of history, two versions of the show, technical rider, press kit and booking contact.',
     contatti:
       'Contacts for Omaggio a Ennio Morricone: booking for theatres and festivals, press office and audience information, with a form to write to us.',
+    privacy:
+      'Privacy notice for the Omaggio a Ennio Morricone website: what data we process through the contact form, why, for how long and what your rights are.',
+    cookie:
+      'The Omaggio a Ennio Morricone website uses no profiling or analytics cookies; YouTube and Spotify load only when you start them with a click.',
   },
   home: {
     tutteDate: 'All dates',
@@ -151,6 +155,16 @@ export const en: Dizionario = {
     grazieTitolo: 'Message sent',
     grazieTesto: 'Thank you, we will get back to you as soon as possible.',
     torna: 'Back to the home page',
+  },
+  legale: {
+    titolare: 'Data controller',
+    senzaTitolare: 'For any request about your data, write to us from the page',
+    aggiornato: 'Last updated: 8 October 2026',
+  },
+  errore: {
+    titolo: 'Page not found',
+    testo: 'The page you are looking for does not exist or has been moved.',
+    home: 'Back to the home page',
   },
   contatto: { email: 'Email', tel: 'Phone' },
   piede: {

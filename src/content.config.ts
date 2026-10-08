@@ -39,8 +39,8 @@ const testi = defineCollection({
     titolo: z.string(),
     ordine: z.number().int(),
     lang: z.enum(['it', 'en']),
-    // lungo: dal docx alla lettera; breve (≈50 parole) e medio (≈100) dal DS › Tono.
-    tipo: z.enum(['lungo', 'breve', 'medio']).default('lungo'),
+    // lungo: dal docx alla lettera; breve (≈50 parole) e medio (≈100) dal DS › Tono; legale: Privacy e Cookie.
+    tipo: z.enum(['lungo', 'breve', 'medio', 'legale']).default('lungo'),
   }),
 });
 
@@ -84,7 +84,7 @@ const partner = defineCollection({
 const contatti = defineCollection({
   loader: file('src/content/contatti.json'),
   schema: z.object({
-    // id: booking | stampa | pubblico
+    // id: booking | stampa | pubblico | titolare (titolare del trattamento, pagina Privacy)
     nome: z.string().optional(),
     email: z.email(),
     telefono: z.string().optional(),

@@ -1,0 +1,92 @@
+---
+// Privacy e Cookie (ARCHITECTURE.md §15): testi in content/testi/{it,en}/{privacy,cookie}.md (tipo legale).
+// Il titolare del trattamento viene da contatti.json (id "titolare"): finché è segnaposto, in produzione non
+// compare e l'informativa rimanda ai contatti del sito.
+import { render } from 'astro:content';
+import type { Lingua } from '../Seo.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Testata from '../Testata.astro';
+import TestaPagina from '../TestaPagina.astro';
+import Sezione from '../Sezione.astro';
+import Footer from '../Footer.astro';
+import { prendi } from '../../lib/contenuti';
+import { testo } from '../../lib/testi';
+import { alternate, localizedPath, t } from '../../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+  pagina: 'privacy' | 'cookie';
+}
+
+const { lang, pagina } = Astro.props;
+const D = t(lang);
+const T = D.legale;
+
+const voce = await testo(pagina, lang);
+const { Content } = await render(voce);
+const titolare = pagina === 'privacy' ? (await prendi('contatti')).find((c) => c.id === 'titolare') : undefined;
+---
+
+<BaseLayout
+  title={`${voce.data.titolo} — Omaggio a Ennio Morricone`}
+  description={D.seo[pagina]}
+  lang={lang}
+  alternate={alternate(pagina)}
+  noindex
+>
+  <Testata slot="testata" lang={lang} corrente={pagina} />
+  <TestaPagina titolo={voce.data.titolo}>
+    <p class="didascalia om-tenue">{T.aggiornato}</p>
+  </TestaPagina>
+
+  <Sezione>
+    {
+      pagina === 'privacy' && (
+        <div class:list={['legale__titolare', titolare?.data.segnaposto && 'segnaposto']}>
+          <h2 class="occhiello om-oro">{T.titolare}</h2>
+          {titolare ? (
+            <p class="corpo">
+              {titolare.data.nome} · <a href={`mailto:${titolare.data.email}`}>{titolare.data.email}</a>
+            </p>
+          ) : (
+            <p class="corpo">
+              {T.senzaTitolare} <a href={localizedPath('contatti', lang)}>{D.menu.contatti}</a>
+            </p>
+          )}
+        </div>
+      )
+    }
+    <div class="testo corpo legale">
+      <Content />
+    </div>
+  </Sezione>
+
+  <Footer slot="piede" lang={lang} />
+</BaseLayout>
+
+<style>
+  .legale__titolare {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-2);
+    max-width: var(--colonna-testo);
+    margin-bottom: var(--spazio-12);
+    padding: var(--spazio-6);
+    background: var(--sala-200);
+  }
+
+  .legale :global(h2) {
+    margin-top: var(--spazio-12);
+    font: 800 22px/1.2 var(--font-display);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .legale :global(ul) {
+    padding-left: 1.2em;
+  }
+
+  .legale :global(li + li) {
+    margin-top: var(--spazio-2);
+  }
+</style>

@@ -10,7 +10,8 @@ import { LINGUE, localizedPath, t, type Pagina } from '../i18n/utils';
 
 interface Props {
   lang?: Lingua;
-  corrente?: Pagina;
+  /** Pagina del menu evidenziata; null = nessuna (es. 404): la lingua porta alla Home. */
+  corrente?: Pagina | null;
   trasparente?: boolean;
 }
 
@@ -28,7 +29,7 @@ const voci = VOCI.map((pagina) => ({
 }));
 const lingue = LINGUE.map((l) => ({
   lang: l,
-  href: localizedPath(corrente, l),
+  href: localizedPath(corrente ?? 'home', l),
   nome: D.lingue[l],
 }));
 const home = localizedPath('home', lang);
