@@ -1,43 +1,53 @@
 ---
-// Scheda di un contatto (ARCHITECTURE.md §8): riquadro sala-200 ad angoli vivi, email e telefono cliccabili.
+// Scheda di un contatto (ARCHITECTURE.md §8): riquadro sala-200 ad angoli vivi.
+// Email e telefono come icone (scelta dell'utente): l'indirizzo è nel nome accessibile e nel tooltip.
+import type { Lingua } from './Seo.astro';
+import LinkIcona from './LinkIcona.astro';
+
 interface Props {
   titolo: string;
   nome?: string;
   email: string;
   telefono?: string;
   segnaposto?: boolean;
+  lang?: Lingua;
 }
 
-const { titolo, nome, email, telefono, segnaposto = false } = Astro.props;
+const { titolo, nome, email, telefono, segnaposto = false, lang = 'it' } = Astro.props;
 const tel = telefono?.replace(/[^\d+]/g, '');
+const T = lang === 'it' ? { email: 'Email', tel: 'Telefono' } : { email: 'Email', tel: 'Phone' };
 ---
 
 <div class:list={['scheda-contatto', segnaposto && 'segnaposto']}>
   <h3 class="occhiello om-tenue">{titolo}</h3>
   {nome && <p class="scheda-contatto__nome">{nome}</p>}
-  <p><a href={`mailto:${email}`}>{email}</a></p>
-  {telefono && <p><a href={`tel:${tel}`}>{telefono}</a></p>}
+  <div class="scheda-contatto__azioni">
+    <LinkIcona href={`mailto:${email}`} icona="mail" etichetta={`${T.email} ${titolo}: ${email}`} />
+    {
+      telefono && (
+        <LinkIcona href={`tel:${tel}`} icona="phone" etichetta={`${T.tel} ${titolo}: ${telefono}`} />
+      )
+    }
+  </div>
 </div>
 
 <style>
   .scheda-contatto {
     display: flex;
     flex-direction: column;
-    gap: var(--spazio-2);
+    gap: var(--spazio-3);
     padding: var(--spazio-6);
     background: var(--sala-200);
     border-radius: var(--raggio-0);
-  }
-
-  .scheda-contatto h3 {
-    margin-bottom: var(--spazio-2);
   }
 
   .scheda-contatto__nome {
     color: var(--avorio);
   }
 
-  .scheda-contatto a {
-    overflow-wrap: anywhere;
+  .scheda-contatto__azioni {
+    display: flex;
+    gap: var(--spazio-3);
+    margin-top: auto;
   }
 </style>
