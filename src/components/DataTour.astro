@@ -1,0 +1,97 @@
+---
+// Una data del calendario (DS › DataTour, ARCHITECTURE.md §8, §12): GG.MM in oro, giorno · anno · ora,
+// città, sede, coordinate, etichetta di stato e "Biglietti" (biglietteria esterna, nuova scheda).
+// Passata: niente pulsante, numero e città in avorio-tenue. Ogni riga porta il suo JSON-LD MusicEvent.
+import type { CollectionEntry } from 'astro:content';
+import type { Lingua } from './Seo.astro';
+import Etichetta from './Etichetta.astro';
+import Pulsante from './Pulsante.astro';
+import { coordinate, dataEstesa, isoRoma, numeroData, oggiRoma, rigaData } from '../i18n/date';
+
+interface Props {
+  evento: CollectionEntry<'eventi'>;
+  lang?: Lingua;
+}
+
+const { evento, lang = 'it' } = Astro.props;
+const e = evento.data;
+
+const inizio = isoRoma(e.data, e.ora);
+const passata = e.data < oggiRoma();
+const esaurito = e.stato === 'esaurito';
+const etichetta = e.stato === 'nessuno' ? undefined : e.stato;
+const biglietti = lang === 'it' ? 'Biglietti' : 'Tickets';
+const sito = Astro.site ?? Astro.url;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'MusicEvent',
+  name: `Omaggio a Ennio Morricone — ${e.citta}`,
+  startDate: inizio,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  image: new URL('/og/default.jpg', sito).href,
+  location: {
+    '@type': 'Place',
+    name: e.sede,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: e.indirizzo,
+      postalCode: e.cap,
+      addressLocality: e.citta,
+      addressCountry: e.nazione,
+    },
+    geo: { '@type': 'GeoCoordinates', latitude: e.lat, longitude: e.lng },
+  },
+  performer: [
+    { '@type': 'PerformingGroup', name: 'Orchestra Ritmico Sinfonica Italiana' },
+    { '@type': 'Person', name: 'Diego Basso' },
+    { '@type': 'Person', name: 'Claudia Sasso' },
+  ],
+  ...(e.biglietti && {
+    offers: {
+      '@type': 'Offer',
+      url: e.biglietti,
+      availability: esaurito ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
+    },
+  }),
+};
+---
+
+<li class:list={['om-data', passata && 'om-data--passata', e.segnaposto && 'segnaposto']}>
+  <div class="om-data__giorno">
+    <time class="om-data__numero" datetime={inizio} aria-hidden="true">{numeroData(e.data)}</time>
+    <span class="om-data__anno" aria-hidden="true">{rigaData(e.data, e.ora, lang)}</span>
+    <span class="solo-lettori">{dataEstesa(e.data, e.ora, lang)}</span>
+  </div>
+  <div class="om-data__luogo">
+    <h3 class="om-data__citta">{e.citta}</h3>
+    <p class="om-data__sede">{e.sede}</p>
+    <p class="om-data__coordinate">{coordinate(e.lat, e.lng)}</p>
+  </div>
+  {
+    !passata && (etichetta || e.biglietti) && (
+      <div class="om-data__azione">
+        {etichetta && <Etichetta tipo={etichetta} lang={lang} />}
+        {e.biglietti && (
+          <Pulsante href={e.biglietti} piccolo esterno disabilitato={esaurito} lang={lang}>
+            {biglietti}
+          </Pulsante>
+        )}
+      </div>
+    )
+  }
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</li>
+
+<style>
+  @media (max-width: 720px) {
+    .om-data__azione {
+      flex-wrap: wrap;
+    }
+
+    .om-data__azione :global(.om-pulsante) {
+      flex: 1 0 100%;
+    }
+  }
+</style>
