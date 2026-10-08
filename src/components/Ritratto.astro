@@ -1,9 +1,9 @@
 ---
 // Ritratto verticale 4:5 ritagliato da una foto orizzontale di foto.json (le foto del concerto sono tutte 16:10).
-// `posizione` sceglie il punto del ritaglio; massimo 480 px quando sta da solo in colonna.
+// `posizione` sceglie il punto del ritaglio; massimo 480 px di larghezza.
 import { Picture } from 'astro:assets';
 import type { Lingua } from './Seo.astro';
-import { foto } from '../lib/foto';
+import { LARGHEZZE, QUALITA, foto } from '../lib/foto';
 
 interface Props {
   foto: string; // id in foto.json
@@ -12,7 +12,9 @@ interface Props {
   sizes?: string;
 }
 
-const { foto: id, posizione, lang = 'it', sizes = '(min-width: 900px) 40vw, 92vw' } = Astro.props;
+// `sizes` è la larghezza dell'immagine intera, non del riquadro: in 4:5 una foto 16:10 si allarga di ~2 volte
+// (riquadro max 480 px → immagine ~980 px; su mobile riquadro 92vw → immagine ~190vw).
+const { foto: id, posizione, lang = 'it', sizes = '(min-width: 900px) 980px, 190vw' } = Astro.props;
 const immagine = await foto(id, lang);
 ---
 
@@ -20,7 +22,8 @@ const immagine = await foto(id, lang);
   class="ritratto"
   src={immagine.src}
   alt={immagine.alt}
-  widths={[480, 720, 960, 1280]}
+  widths={LARGHEZZE.filter((l) => l <= immagine.src.width)}
+  quality={QUALITA}
   sizes={sizes}
   formats={['avif', 'webp']}
   style={`object-position: ${posizione}`}

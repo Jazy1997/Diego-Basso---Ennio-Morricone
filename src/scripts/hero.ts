@@ -25,7 +25,13 @@ for (const hero of document.querySelectorAll<HTMLElement>('[data-hero]')) {
       }
       const { default: HlsJs } = await import('hls.js/light');
       if (!HlsJs.isSupported()) return false;
-      hls = new HlsJs({ capLevelToPlayerSize: true, maxBufferLength: 20, startLevel: -1 });
+      // Stima iniziale 6 Mbit/s (predefinita 0,5): il primo segmento non parte a 480p su una buona connessione.
+      hls = new HlsJs({
+        capLevelToPlayerSize: true,
+        maxBufferLength: 20,
+        startLevel: -1,
+        abrEwmaDefaultEstimate: 6_000_000,
+      });
       hls.loadSource(sorgente);
       hls.attachMedia(video);
       return true;

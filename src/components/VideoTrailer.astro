@@ -2,6 +2,7 @@
 // Trailer 16:9 con facciata (ARCHITECTURE.md §8, §15): finché non si clicca nessuna richiesta a YouTube.
 // È un link al video (funziona anche senza JS); lo script lo sostituisce con l'iframe youtube-nocookie in autoplay.
 import { Picture } from 'astro:assets';
+import { QUALITA } from '../lib/foto';
 import type { ImageMetadata } from 'astro';
 import type { Lingua } from './Seo.astro';
 import { t } from '../i18n/utils';
@@ -25,6 +26,7 @@ const etichetta = `${t(lang).comune.riproduciVideo}: ${titolo}`;
     aria-label={etichetta}
   >
     <Picture
+      quality={QUALITA}
       src={poster}
       alt=""
       formats={['avif', 'webp']}
