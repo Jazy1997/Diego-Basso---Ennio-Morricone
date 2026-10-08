@@ -8,7 +8,7 @@ import DataTour from './DataTour.astro';
 import Pulsante from './Pulsante.astro';
 import { prendi } from '../lib/contenuti';
 import { oggiRoma } from '../i18n/date';
-import { localizedPath } from '../i18n/utils';
+import { localizedPath, t } from '../i18n/utils';
 
 interface Props {
   lang?: Lingua;
@@ -26,10 +26,7 @@ const scelti = eventi
   .sort((a, b) => (archivio ? -1 : 1) * chiave(a).localeCompare(chiave(b)))
   .slice(0, limite);
 
-const T = {
-  it: { vuoto: 'Nuove date in arrivo', contatti: 'Scrivici' },
-  en: { vuoto: 'New dates coming soon', contatti: 'Get in touch' },
-}[lang];
+const T = t(lang).date;
 ---
 
 {

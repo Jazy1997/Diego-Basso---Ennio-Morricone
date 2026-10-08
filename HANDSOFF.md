@@ -1,10 +1,11 @@
-# HANDSOFF — 2026-10-08 · sessione 2: M3 completata + revisione dell'utente (PR #59–#77)
+# HANDSOFF — 2026-10-08 · sessione 3: M4 avviata (T25 i18n)
 
 **Stato**: M0–M3 completate · campionario su `/` (provvisoria `noindex`) · prod: https://diegobassoenniomorricone.vercel.app
 **Revisione fatta**: hover pulsanti oro · Repertorio con temi sotto i film (+ *Maddalena*) · contatti/social/piattaforme solo icone (`LinkIcona`, Simple Icons) · sezione Album con player Spotify al click (T73) · hero a tutto schermo, video intero in HLS adattivo (T75, ARCHITECTURE §7 riscritto).
 **In attesa dall'utente**: (1) **master video** dal videomaker (ProRes/alto bitrate, meglio 4K) → `bash scripts/video_hero.sh "/percorso/master.mov" [inizio] [fine]`; (2) **loghi corretti** dal grafico: nei 4 PNG originali la "O" di OMAGGIO è tagliata dritta a sinistra (difetto del file, non nostro) → poi `python scripts/loghi.py`; (3) T40: date, contatti, social, partner, titolare privacy, fotografo.
 **Da verificare a mano**: video hero su Safari/iOS (HLS nativo) sulla preview.
-**Prossimo**: M4: T25 (config i18n + `it.ts`/`en.ts`; `src/i18n/utils.ts` esiste già), T26 testi IT, T27 EN. Poi M5 (T28 Home: cablare `Testata trasparente`, `Footer`, `Album`, preload `precaricaPoster()`).
+**T25 fatto**: config i18n Astro (`it` senza prefisso), dizionario UI in `src/i18n/{it,en}.ts` (tipo `Dizionario`: stesse chiavi), helper `t(lang)` in `utils.ts`; tutti i componenti leggono da lì (niente più tabelle `{it,en}[lang]` sparse). Le pagine `/en/…` nascono con T28+ (il selettore punta già a `localizedPath(corrente, …)`).
+**Prossimo**: M4: T26 testi IT dal docx, T27 EN. Poi M5 (T28 Home: cablare `Testata trasparente`, `Footer`, `Album`, preload `precaricaPoster()`).
 **Decisioni**: dati via `prendi()` (segnaposto esclusi solo con `VERCEL_ENV=production`) · menu Testata sotto 1200 px · hero: deroga DS (testo sopra il video), animazione "sipario" 2,39:1 → tutto schermo · sorgente video con SAR errato → `setsar=1` · HLS su Vercel in cartella versionata (`/video/*` immutabile), spostabile su Cloudflare R2 con `PUBLIC_VIDEO_BASE` · `hls.js/light` caricato solo quando parte il video.
 **Flusso**: branch → PR (`Closes #n`) → check Vercel → squash merge autonomo. Numero issue = numero ticket (le issue nuove si rititolano `Tnn`).
 **Comandi**: `npm run dev|build|check` · test prod `VERCEL_ENV=production npx astro build` · `python scripts/{tokens,loghi,foto}.py` · `bash scripts/video_hero.sh`

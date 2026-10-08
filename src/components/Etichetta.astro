@@ -1,6 +1,7 @@
 ---
 // Etichetta di stato (DS › Etichetta): una sola per data, testi fissi IT/EN.
 import type { Lingua } from './Seo.astro';
+import { t } from '../i18n/utils';
 
 export type TipoEtichetta = 'nuova' | 'ultimi' | 'esaurito' | 'proiezioni';
 
@@ -10,13 +11,6 @@ interface Props {
 }
 
 const { tipo, lang = 'it' } = Astro.props;
-
-const TESTI: Record<TipoEtichetta, Record<Lingua, string>> = {
-  nuova: { it: 'Nuova data', en: 'New date' },
-  ultimi: { it: 'Ultimi posti', en: 'Last tickets' },
-  esaurito: { it: 'Esaurito', en: 'Sold out' },
-  proiezioni: { it: 'Con proiezioni', en: 'With projections' },
-};
 ---
 
 <span
@@ -26,5 +20,5 @@ const TESTI: Record<TipoEtichetta, Record<Lingua, string>> = {
     tipo === 'esaurito' && 'om-etichetta--esaurito',
   ]}
 >
-  {TESTI[tipo][lang]}
+  {t(lang).etichette[tipo]}
 </span>

@@ -8,7 +8,7 @@ import SchedaContatto from './SchedaContatto.astro';
 import FasciaPartner from './FasciaPartner.astro';
 import LinkIcona from './LinkIcona.astro';
 import { prendi } from '../lib/contenuti';
-import { localizedPath } from '../i18n/utils';
+import { localizedPath, t } from '../i18n/utils';
 
 interface Props {
   lang?: Lingua;
@@ -16,30 +16,7 @@ interface Props {
 
 const { lang = 'it' } = Astro.props;
 
-const T = {
-  it: {
-    contatti: 'Contatti',
-    booking: 'Booking',
-    stampa: 'Stampa',
-    pubblico: 'Informazioni per il pubblico',
-    ascolta: 'Ascolta l’album',
-    seguici: 'Seguici',
-    foto: 'Fotografie',
-    privacy: 'Privacy',
-    cookie: 'Cookie',
-  },
-  en: {
-    contatti: 'Contacts',
-    booking: 'Booking',
-    stampa: 'Press',
-    pubblico: 'Audience information',
-    ascolta: 'Listen to the album',
-    seguici: 'Follow us',
-    foto: 'Photography',
-    privacy: 'Privacy',
-    cookie: 'Cookies',
-  },
-}[lang];
+const T = t(lang).piede;
 
 const contatti = await prendi('contatti');
 const schede = (['booking', 'stampa', 'pubblico'] as const)
