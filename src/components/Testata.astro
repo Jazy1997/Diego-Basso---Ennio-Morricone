@@ -1,0 +1,266 @@
+---
+// Testata del sito (DS › Testata, ARCHITECTURE.md §5–§6): logo orizzontale oro 280 px, 5 voci, IT/EN, "Biglietti".
+// `trasparente`: sopra l'hero resta trasparente e fissa; dopo lo scorrimento passa a sala-100 con il filetto.
+// Sotto 1080 px le voci vanno in un pannello a tutto schermo (<dialog> modale: focus intrappolato, Esc chiude).
+import type { Lingua } from './Seo.astro';
+import Logo from './Logo.astro';
+import Pulsante from './Pulsante.astro';
+import Icona from './Icona.astro';
+import { localizedPath, type Pagina } from '../i18n/utils';
+
+interface Props {
+  lang?: Lingua;
+  corrente?: Pagina;
+  trasparente?: boolean;
+}
+
+const { lang = 'it', corrente = 'home', trasparente = false } = Astro.props;
+
+const VOCI: { pagina: Pagina; it: string; en: string }[] = [
+  { pagina: 'progetto', it: 'Il progetto', en: 'The project' },
+  { pagina: 'maestro', it: 'Il Maestro', en: 'The Maestro' },
+  { pagina: 'date', it: 'Date', en: 'Dates' },
+  { pagina: 'promoter', it: 'Promoter e venue', en: 'Promoters & venues' },
+  { pagina: 'contatti', it: 'Contatti', en: 'Contacts' },
+];
+
+const T = {
+  it: { nav: 'Principale', menu: 'Menu', chiudi: 'Chiudi', biglietti: 'Biglietti' },
+  en: { nav: 'Main', menu: 'Menu', chiudi: 'Close', biglietti: 'Tickets' },
+}[lang];
+
+const voci = VOCI.map((v) => ({
+  href: localizedPath(v.pagina, lang),
+  testo: v[lang],
+  corrente: v.pagina === corrente,
+}));
+const lingue = (['it', 'en'] as const).map((l) => ({
+  lang: l,
+  href: localizedPath(corrente, l),
+  nome: l === 'it' ? 'Italiano' : 'English',
+}));
+const home = localizedPath('home', lang);
+const date = localizedPath('date', lang);
+---
+
+<header
+  class:list={['om-testata', 'testata', trasparente && 'testata--sopra-hero']}
+  data-testata
+>
+  <a class="om-testata__logo" href={home} aria-current={corrente === 'home' ? 'page' : undefined}>
+    <Logo forma="orizzontale" larghezza={280} caricamento="eager" />
+  </a>
+  <nav class="om-testata__nav" aria-label={T.nav}>
+    {
+      voci.map((v) => (
+        <a href={v.href} aria-current={v.corrente ? 'page' : undefined}>
+          {v.testo}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="om-testata__azioni">
+    <p class="om-lingua testata__lingua">
+      {
+        lingue.map((l, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true"> / </span>}
+            <a
+              href={l.href}
+              lang={l.lang}
+              hreflang={l.lang}
+              aria-current={l.lang === lang ? 'true' : undefined}
+            >
+              <span aria-hidden="true">{l.lang.toUpperCase()}</span>
+              <span class="solo-lettori">{l.nome}</span>
+            </a>
+          </>
+        ))
+      }
+    </p>
+    <Pulsante href={date} piccolo class="testata__biglietti" lang={lang}>{T.biglietti}</Pulsante>
+    <button
+      class="testata__menu"
+      type="button"
+      aria-expanded="false"
+      aria-controls="testata-pannello"
+      data-apri-menu
+    >
+      {T.menu}
+    </button>
+  </div>
+</header>
+
+<dialog class="testata__pannello" id="testata-pannello" aria-label={T.menu} data-pannello>
+  <div class="testata__pannello-testa">
+    <button class="testata__menu" type="button" data-chiudi-menu>
+      {T.chiudi}
+      <Icona nome="x" misura={18} />
+    </button>
+  </div>
+  <nav class="testata__pannello-nav" aria-label={T.nav}>
+    {
+      voci.map((v) => (
+        <a class="titolo-m" href={v.href} aria-current={v.corrente ? 'page' : undefined}>
+          {v.testo}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="testata__pannello-piede">
+    <p class="om-lingua">
+      {
+        lingue.map((l, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true"> / </span>}
+            <a
+              href={l.href}
+              lang={l.lang}
+              hreflang={l.lang}
+              aria-current={l.lang === lang ? 'true' : undefined}
+            >
+              {l.nome}
+            </a>
+          </>
+        ))
+      }
+    </p>
+    <Pulsante href={date} lang={lang}>{T.biglietti}</Pulsante>
+  </div>
+</dialog>
+
+<script>
+  import '../scripts/testata.ts';
+</script>
+
+<style>
+  .testata {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  /* Sopra l'hero la testata è fissa (l'hero le scorre sotto) e trasparente finché non si scorre.
+     Senza JS resta piena: la classe .js arriva da BaseLayout prima del primo disegno. */
+  .testata--sopra-hero {
+    position: fixed;
+    inset: 0 0 auto;
+  }
+
+  :global(.js) .testata--sopra-hero:not(.is-scorsa) {
+    background: transparent;
+    border-bottom-color: transparent;
+  }
+
+  .om-testata__logo {
+    flex: none;
+  }
+
+  .testata__lingua a {
+    padding: var(--spazio-2) 2px;
+  }
+
+  .testata__menu {
+    display: none;
+    align-items: center;
+    gap: var(--spazio-2);
+    min-height: 44px;
+    font: 600 12px/16px var(--font-display);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--avorio);
+  }
+
+  .testata__menu:hover {
+    color: var(--oro);
+  }
+
+  @media (max-width: 1080px) {
+    .testata__menu {
+      display: inline-flex;
+    }
+
+    .testata__lingua,
+    .testata :global(.testata__biglietti) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .om-testata,
+    .testata__pannello-testa {
+      gap: var(--spazio-1);
+      padding-inline: var(--spazio-4);
+    }
+  }
+
+  /* ---------- Pannello mobile ---------- */
+  .testata__pannello {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--sala-100);
+    color: var(--avorio);
+  }
+
+  .testata__pannello[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .testata__pannello::backdrop {
+    background: var(--sala-100);
+  }
+
+  /* Stessa altezza della testata: il pulsante "Chiudi" cade dove stava "Menu". */
+  .testata__pannello-testa {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: var(--altezza-testata);
+    padding: 0 var(--margine-web);
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .testata__pannello-testa .testata__menu {
+    display: inline-flex;
+  }
+
+  .testata__pannello-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-2);
+    padding: var(--spazio-8) var(--margine-web);
+  }
+
+  .testata__pannello-nav a {
+    padding-block: var(--spazio-2);
+    color: var(--avorio);
+    text-decoration: none;
+  }
+
+  .testata__pannello-nav a:hover,
+  .testata__pannello-nav a[aria-current] {
+    color: var(--oro);
+  }
+
+  .testata__pannello-piede {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-6);
+    margin-top: auto;
+    padding: var(--spazio-8) var(--margine-web);
+    border-top: 1px solid var(--linea);
+  }
+
+  .testata__pannello-piede .om-lingua a {
+    padding: var(--spazio-2) 0;
+  }
+</style>

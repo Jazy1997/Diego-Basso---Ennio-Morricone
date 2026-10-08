@@ -6,6 +6,11 @@
 @import './ds/tipografia.css';
 @import './ds/bundle.css';
 
+/* Altezza della Testata (padding spazio-6 × 2 + logo 280 px alto 41 + filetto): l'hero la lascia libera. */
+:root {
+  --altezza-testata: 90px;
+}
+
 /* ---------- Reset ---------- */
 *,
 *::before,
