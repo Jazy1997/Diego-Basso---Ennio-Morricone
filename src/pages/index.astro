@@ -5,6 +5,7 @@ import Pulsante from '../components/Pulsante.astro';
 import Etichetta from '../components/Etichetta.astro';
 import Cinemascope from '../components/Cinemascope.astro';
 import HeroVideo from '../components/HeroVideo.astro';
+import Testata from '../components/Testata.astro';
 import { precaricaPoster } from '../lib/hero';
 import { prendi } from '../lib/contenuti';
 
@@ -20,6 +21,7 @@ const conteggi = await Promise.all(nomi.map(async (n) => `${n} ${(await prendi(n
   noindex
 >
   <link slot="head" rel="preload" as="image" fetchpriority="high" {...poster} />
+  <Testata slot="testata" trasparente />
   <HeroVideo />
   <section class="sezione contenitore" data-reveal>
     <div class="sezione__testa">
