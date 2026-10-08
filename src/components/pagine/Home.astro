@@ -16,11 +16,12 @@ import VideoTrailer from '../VideoTrailer.astro';
 import Album from '../Album.astro';
 import Pulsante from '../Pulsante.astro';
 import Ritratto from '../Ritratto.astro';
+import PulsantePressKit from '../PulsantePressKit.astro';
 import Footer from '../Footer.astro';
 import posterTrailer from '../../assets/video/trailer-poster.jpg';
 import immagineAlbum from '../../assets/album/copertina.jpg';
 import { precaricaPoster } from '../../lib/hero';
-import { mostraSegnaposto, prendi } from '../../lib/contenuti';
+import { prendi } from '../../lib/contenuti';
 import { paragrafi, testo } from '../../lib/testi';
 import { alternate, localizedPath, t } from '../../i18n/utils';
 
@@ -36,9 +37,6 @@ const poster = await precaricaPoster();
 const medio = paragrafi((await testo('medio', lang)).body ?? '');
 const visione = paragrafi((await testo('visione', lang)).body ?? '')[0];
 const trailer = await getEntry('link', 'trailer');
-
-// Press kit: il pulsante compare quando lo zip è in public/presskit (T32); prima solo come segnaposto fuori produzione.
-const pressKit = Object.keys(import.meta.glob('/public/presskit/*.zip'))[0]?.replace('/public', '');
 
 // JSON-LD (ARCHITECTURE.md §12): l'orchestra con direttore e soprano, e l'album con le piattaforme.
 const sito = Astro.site ?? Astro.url;
@@ -166,21 +164,7 @@ const jsonLd = [
       }
     </ul>
     <div class="om-riga home__azioni">
-      {
-        pressKit ? (
-          <Pulsante href={pressKit} lang={lang}>
-            {T.pressKit}
-          </Pulsante>
-        ) : (
-          mostraSegnaposto && (
-            <span class="segnaposto">
-              <Pulsante disabilitato lang={lang}>
-                {T.pressKitInArrivo}
-              </Pulsante>
-            </span>
-          )
-        )
-      }
+      <PulsantePressKit lang={lang} />
       <Pulsante href={localizedPath('contatti', lang)} variante="contorno" lang={lang}>{T.booking}</Pulsante>
       <Pulsante href={localizedPath('promoter', lang)} variante="testo" lang={lang}>{T.scopriPromoter}</Pulsante>
     </div>

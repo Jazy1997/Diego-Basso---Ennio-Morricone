@@ -61,6 +61,8 @@ export const it = {
     maestro:
       'Diego Basso, direttore e trascrittore: la sua visione del repertorio di Ennio Morricone, le collaborazioni con Alessandroni e Griminelli e la formazione.',
     date: 'Le prossime date di Omaggio a Ennio Morricone con Diego Basso e l’Orchestra Ritmico Sinfonica Italiana: città, teatri, orari, biglietti e archivio dei concerti.',
+    promoter:
+      'Per teatri, festival e grandi eventi: oltre vent’anni di storia, due versioni dello spettacolo, scheda tecnica, press kit e contatto booking.',
   },
   home: {
     tutteDate: 'Tutte le date',
@@ -95,6 +97,31 @@ export const it = {
     scopriPromoter: 'Tutto per promoter e venue',
   },
   maestro: { collaborazioni: 'Collaborazioni' },
+  promoter: {
+    luoghi: 'Dove è andato in scena',
+    internazionale: 'All’estero',
+    versioni: 'Due versioni',
+    conProiezioni: {
+      titolo: 'Con proiezioni',
+      testo: 'Le immagini dei film sul grande schermo dialogano con l’orchestra dal vivo: per teatri e spazi che possono ospitare uno schermo.',
+    },
+    inConcerto: {
+      titolo: 'In concerto',
+      testo: 'L’orchestra, la voce e il repertorio senza schermo: per teatri, piazze e luoghi all’aperto di ogni dimensione.',
+    },
+    scheda: 'Scheda tecnica',
+    schedaNota: 'Dallo stage plot della versione standard. Per esigenze diverse scrivi al booking.',
+    voci: [
+      { nome: 'Palco', valore: '10 × 10 m' },
+      { nome: 'Pedane', valore: '10 × 2 m e 8 × 2 m, altezza 40 cm' },
+      { nome: 'Organico', valore: '46 elementi, soprano e direttore' },
+      { nome: 'Canali audio', valore: '54' },
+      { nome: 'Leggii', valore: '30' },
+      { nome: 'Sedute', valore: '37, più sgabelli per batteria, contrabbasso (alto) e tastiere' },
+    ],
+    booking: 'Booking',
+    scrivi: 'Scrivi al booking',
+  },
   contatto: { email: 'Email', tel: 'Telefono' },
   piede: {
     contatti: 'Contatti',

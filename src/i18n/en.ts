@@ -62,6 +62,8 @@ export const en: Dizionario = {
     maestro:
       'Diego Basso, conductor and transcriber: his vision of Ennio Morricone’s repertoire, his work with Alessandroni and Griminelli, and the line-up.',
     date: 'Upcoming dates of Omaggio a Ennio Morricone with Diego Basso and the Orchestra Ritmico Sinfonica Italiana: cities, venues, times, tickets and past concerts.',
+    promoter:
+      'For theatres, festivals and major events: more than twenty years of history, two versions of the show, technical rider, press kit and booking contact.',
   },
   home: {
     tutteDate: 'All dates',
@@ -96,6 +98,31 @@ export const en: Dizionario = {
     scopriPromoter: 'Everything for promoters & venues',
   },
   maestro: { collaborazioni: 'Collaborations' },
+  promoter: {
+    luoghi: 'Where it has been performed',
+    internazionale: 'Abroad',
+    versioni: 'Two versions',
+    conProiezioni: {
+      titolo: 'With projections',
+      testo: 'Images from the films on the big screen in dialogue with the live orchestra: for theatres and venues that can host a screen.',
+    },
+    inConcerto: {
+      titolo: 'In concert',
+      testo: 'The orchestra, the voice and the repertoire without a screen: for theatres, squares and open-air venues of any size.',
+    },
+    scheda: 'Technical rider',
+    schedaNota: 'From the stage plot of the standard version. For different requirements, contact booking.',
+    voci: [
+      { nome: 'Stage', valore: '10 × 10 m' },
+      { nome: 'Risers', valore: '10 × 2 m and 8 × 2 m, 40 cm high' },
+      { nome: 'Line-up', valore: '46 musicians, soprano and conductor' },
+      { nome: 'Audio channels', valore: '54' },
+      { nome: 'Music stands', valore: '30' },
+      { nome: 'Seats', valore: '37, plus stools for drums, double bass (high) and keyboards' },
+    ],
+    booking: 'Booking',
+    scrivi: 'Contact booking',
+  },
   contatto: { email: 'Email', tel: 'Phone' },
   piede: {
     contatti: 'Contacts',
