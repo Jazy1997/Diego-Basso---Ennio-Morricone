@@ -4,8 +4,8 @@
 **Fatto in sessione**: T25 dizionario UI `t(lang)` in `src/i18n/{it,en}.ts` · T26 `scripts/testi.py` docx → `content/testi/it/` · T27 `content/testi/en/` · loghi da `Logo Morricone.svg` (`node scripts/loghi-svg.mjs && python scripts/loghi.py`, `Logo` usa gli SVG: la "O" tagliata era il WebP ricampionato, non il file) · T28 Home: `components/pagine/Home.astro` (+ `Sezione`, `lib/testi.ts`), file sottili `pages/index.astro` e `pages/en/index.astro`; il campionario è stato rimosso (resta in git).
 **Da far approvare all'utente**: testi EN medio/lunghi (madrelingua) · testi nuovi della Home in `t(lang).home` (sezione Promoter: titolo e 3 argomenti) · docx vs DS su *Il buono, il brutto e il cattivo* / “Chi Mai” (tenuto il docx).
 **In attesa dall'utente**: master video (`bash scripts/video_hero.sh …`) · T40 dati reali · zip press kit in `public/presskit/` (il pulsante oro compare da solo).
-**T29 fatto**: `pagine/Progetto.astro` + `TestaPagina` (h1 delle pagine interne).
-**Prossimo**: M5: T30 Il Maestro, T31 Date, T32 Promoter, T33 Contatti (+ Resend, azione utente), T34 Privacy/Cookie/404, T35 verifica EN. Schema: componente in `src/components/pagine/` con prop `lang` + due file sottili IT/EN.
+**T29–T30 fatti**: `pagine/Progetto.astro`, `pagine/Maestro.astro` + `TestaPagina` (h1 delle pagine interne) e `Ritratto` (4:5 da foto orizzontale).
+**Prossimo**: M5: T31 Date, T32 Promoter, T33 Contatti (+ Resend, azione utente), T34 Privacy/Cookie/404, T35 verifica EN. Schema: componente in `src/components/pagine/` con prop `lang` + due file sottili IT/EN.
 **Decisioni**: dati via `prendi()` (segnaposto esclusi con `VERCEL_ENV=production`) · menu Testata sotto 1200 px · hero: deroga DS (testo sopra il video) · titoli film EN nell'edizione inglese, `Repertorio` resta coi titoli originali · oro del logo = `#e7ad54`.
 **Flusso**: branch → PR (`Closes #n`) → check Vercel → squash merge autonomo. Numero issue = numero ticket.
 **Comandi**: `npm run dev|build|check` · test prod `VERCEL_ENV=production npx astro build` · `python scripts/{tokens,foto,testi}.py` · `bash scripts/video_hero.sh`

@@ -1,0 +1,37 @@
+---
+// Ritratto verticale 4:5 ritagliato da una foto orizzontale di foto.json (le foto del concerto sono tutte 16:10).
+// `posizione` sceglie il punto del ritaglio; massimo 480 px quando sta da solo in colonna.
+import { Picture } from 'astro:assets';
+import type { Lingua } from './Seo.astro';
+import { foto } from '../lib/foto';
+
+interface Props {
+  foto: string; // id in foto.json
+  posizione: string; // object-position, es. "55% 30%"
+  lang?: Lingua;
+  sizes?: string;
+}
+
+const { foto: id, posizione, lang = 'it', sizes = '(min-width: 900px) 40vw, 92vw' } = Astro.props;
+const immagine = await foto(id, lang);
+---
+
+<Picture
+  class="ritratto"
+  src={immagine.src}
+  alt={immagine.alt}
+  widths={[480, 720, 960, 1280]}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  style={`object-position: ${posizione}`}
+/>
+
+<style>
+  .ritratto {
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 4 / 5;
+    height: auto;
+    object-fit: cover;
+  }
+</style>

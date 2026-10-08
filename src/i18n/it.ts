@@ -58,6 +58,8 @@ export const it = {
     },
     progetto:
       'Il progetto ideato nel 2004 dal Maestro Diego Basso: orchestra, voce e grande schermo in un viaggio sinfonico nella musica per il cinema di Ennio Morricone.',
+    maestro:
+      'Diego Basso, direttore e trascrittore: la sua visione del repertorio di Ennio Morricone, le collaborazioni con Alessandroni e Griminelli e la formazione.',
   },
   home: {
     tutteDate: 'Tutte le date',
@@ -91,6 +93,7 @@ export const it = {
     booking: 'Contatta il booking',
     scopriPromoter: 'Tutto per promoter e venue',
   },
+  maestro: { collaborazioni: 'Collaborazioni' },
   contatto: { email: 'Email', tel: 'Telefono' },
   piede: {
     contatti: 'Contatti',
