@@ -9,6 +9,8 @@
 /* Altezza della Testata (padding spazio-6 × 2 + logo 280 px alto 41 + filetto): l'hero la lascia libera. */
 :root {
   --altezza-testata: 90px;
+  /* Errori dei moduli: il DS non ha un colore di stato; corallo caldo, 6,7:1 su sala-100 (mai verde/viola). */
+  --errore: #e0796b;
 }
 
 /* ---------- Reset ---------- */

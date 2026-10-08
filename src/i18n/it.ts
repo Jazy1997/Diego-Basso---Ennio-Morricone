@@ -63,6 +63,8 @@ export const it = {
     date: 'Le prossime date di Omaggio a Ennio Morricone con Diego Basso e l’Orchestra Ritmico Sinfonica Italiana: città, teatri, orari, biglietti e archivio dei concerti.',
     promoter:
       'Per teatri, festival e grandi eventi: oltre vent’anni di storia, due versioni dello spettacolo, scheda tecnica, press kit e contatto booking.',
+    contatti:
+      'Contatti di Omaggio a Ennio Morricone: booking per teatri e festival, ufficio stampa e informazioni per il pubblico, con il modulo per scriverci.',
   },
   home: {
     tutteDate: 'Tutte le date',
@@ -121,6 +123,33 @@ export const it = {
     ],
     booking: 'Booking',
     scrivi: 'Scrivi al booking',
+  },
+  modulo: {
+    titolo: 'Scrivici',
+    nome: 'Nome e cognome',
+    email: 'Email',
+    motivo: 'Motivo',
+    motivi: { booking: 'Booking', stampa: 'Stampa', pubblico: 'Informazioni' },
+    messaggio: 'Messaggio',
+    privacy: 'Ho letto l’informativa sulla privacy e acconsento al trattamento dei dati per ricevere una risposta.',
+    informativa: 'Leggi l’informativa',
+    obbligatori: 'Tutti i campi sono obbligatori.',
+    invia: 'Invia',
+    invio: 'Invio in corso…',
+    riepilogo: 'Controlla i campi indicati:',
+    errori: {
+      nome: 'Scrivi il tuo nome.',
+      email: 'Scrivi un indirizzo email valido.',
+      motivo: 'Scegli un motivo.',
+      messaggio: 'Scrivi un messaggio di almeno 10 caratteri.',
+      privacy: 'Serve il consenso per poterti rispondere.',
+      frequenza: 'Hai inviato troppi messaggi: riprova tra qualche minuto.',
+      invio: 'Il messaggio non è partito. Riprova o scrivici direttamente via email.',
+      configurazione: 'Il modulo non è ancora attivo. Scrivici direttamente via email.',
+    },
+    grazieTitolo: 'Messaggio inviato',
+    grazieTesto: 'Grazie, ti risponderemo il prima possibile.',
+    torna: 'Torna alla home',
   },
   contatto: { email: 'Email', tel: 'Telefono' },
   piede: {

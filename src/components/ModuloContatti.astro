@@ -1,0 +1,197 @@
+---
+// Modulo contatti (ARCHITECTURE.md §8): POST a /api/contatti/, funziona anche senza JS.
+// Senza JS: il browser controlla i campi (required, type, minlength); gli errori del server arrivano su un'ancora
+// (#errore-…) e il riquadro compare con :target. Con JS: invio in fetch, errori per campo collegati con
+// aria-describedby e riepilogo in una regione live; il primo campo errato riceve il focus.
+import type { Lingua } from './Seo.astro';
+import Pulsante from './Pulsante.astro';
+import { LIMITI, MOTIVI } from '../lib/modulo';
+import { localizedPath, t } from '../i18n/utils';
+
+interface Props {
+  lang?: Lingua;
+}
+
+const { lang = 'it' } = Astro.props;
+const T = t(lang).modulo;
+const generali = ['campi', 'frequenza', 'invio', 'configurazione'] as const;
+const testoGenerale = (c: (typeof generali)[number]) => (c === 'campi' ? T.riepilogo : T.errori[c]);
+---
+
+<form
+  class="modulo"
+  id="modulo"
+  method="post"
+  action="/api/contatti/"
+  data-modulo
+  data-grazie={localizedPath('grazie', lang)}
+  novalidate={false}
+>
+  <input type="hidden" name="lang" value={lang} />
+
+  <div class="modulo__avvisi" role="alert" aria-live="assertive" data-riepilogo>
+    {
+      generali.map((c) => (
+        <p class="modulo__avviso" id={`errore-${c}`}>
+          {testoGenerale(c)}
+        </p>
+      ))
+    }
+  </div>
+
+  <p class="didascalia om-tenue">{T.obbligatori}</p>
+
+  <div class="modulo__campo">
+    <label for="m-nome">{T.nome}</label>
+    <input id="m-nome" name="nome" type="text" autocomplete="name" required maxlength={LIMITI.nome} aria-describedby="m-nome-e" />
+    <p class="modulo__errore" id="m-nome-e" data-errore="nome" hidden>{T.errori.nome}</p>
+  </div>
+
+  <div class="modulo__campo">
+    <label for="m-email">{T.email}</label>
+    <input id="m-email" name="email" type="email" autocomplete="email" required maxlength={LIMITI.email} aria-describedby="m-email-e" />
+    <p class="modulo__errore" id="m-email-e" data-errore="email" hidden>{T.errori.email}</p>
+  </div>
+
+  <div class="modulo__campo">
+    <label for="m-motivo">{T.motivo}</label>
+    <select id="m-motivo" name="motivo" required aria-describedby="m-motivo-e">
+      {MOTIVI.map((m) => <option value={m}>{T.motivi[m]}</option>)}
+    </select>
+    <p class="modulo__errore" id="m-motivo-e" data-errore="motivo" hidden>{T.errori.motivo}</p>
+  </div>
+
+  <div class="modulo__campo">
+    <label for="m-messaggio">{T.messaggio}</label>
+    <textarea id="m-messaggio" name="messaggio" rows="7" required minlength="10" maxlength={LIMITI.messaggio} aria-describedby="m-messaggio-e"></textarea>
+    <p class="modulo__errore" id="m-messaggio-e" data-errore="messaggio" hidden>{T.errori.messaggio}</p>
+  </div>
+
+  <!-- Honeypot: fuori schermo e fuori dal tab, i bot lo compilano -->
+  <div class="modulo__esca" aria-hidden="true">
+    <label for="m-sito">Sito web</label>
+    <input id="m-sito" name="sito" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="modulo__consenso">
+    <input id="m-privacy" name="privacy" type="checkbox" value="si" required aria-describedby="m-privacy-e" />
+    <label for="m-privacy">
+      {T.privacy} <a href={localizedPath('privacy', lang)}>{T.informativa}</a>
+    </label>
+    <p class="modulo__errore" id="m-privacy-e" data-errore="privacy" hidden>{T.errori.privacy}</p>
+  </div>
+
+  <Pulsante tipo="submit" lang={lang} attributi={{ 'data-invia': true, 'data-testo-invio': T.invio }}>{T.invia}</Pulsante>
+</form>
+
+<script>
+  import '../scripts/modulo.ts';
+</script>
+
+<style>
+  .modulo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-6);
+    max-width: var(--colonna-testo);
+  }
+
+  .modulo__campo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spazio-2);
+  }
+
+  label {
+    font: 600 12px/16px var(--font-testo);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--avorio-tenue);
+  }
+
+  input:not([type='checkbox']),
+  select,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: var(--spazio-3) var(--spazio-4);
+    border: 1px solid var(--linea-forte);
+    border-radius: 0;
+    background: var(--sala-300);
+    color: var(--avorio);
+    font: inherit;
+    font-size: 16px; /* niente zoom automatico su iOS */
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    border-color: var(--oro);
+  }
+
+  [aria-invalid='true'] {
+    border-color: var(--errore) !important;
+  }
+
+  .modulo__consenso {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--spazio-2) var(--spazio-3);
+    align-items: start;
+  }
+
+  .modulo__consenso input {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--oro);
+  }
+
+  .modulo__consenso label {
+    font: 400 14px/20px var(--font-testo);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--avorio);
+  }
+
+  .modulo__consenso .modulo__errore {
+    grid-column: 2;
+  }
+
+  .modulo__errore,
+  .modulo__avviso {
+    margin: 0;
+    font: 500 14px/20px var(--font-testo);
+    color: var(--errore);
+  }
+
+  /* Avvisi generali: nascosti, visibili con :target (senza JS) o con .is-attivo (JS). */
+  .modulo__avviso {
+    display: none;
+    padding: var(--spazio-4);
+    border: 1px solid currentColor;
+    scroll-margin-top: calc(var(--altezza-testata) + var(--spazio-4));
+  }
+
+  .modulo__avviso:target,
+  .modulo__avviso.is-attivo {
+    display: block;
+  }
+
+  .modulo__esca {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .modulo :global(.om-pulsante) {
+    align-self: flex-start;
+  }
+</style>

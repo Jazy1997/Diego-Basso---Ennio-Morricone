@@ -1,0 +1,77 @@
+---
+// Contatti (ARCHITECTURE.md §5, §8): schede Booking / Stampa / Pubblico e modulo (POST a /api/contatti).
+// I contatti segnaposto escono da prendi() in produzione; il modulo resta (senza indirizzi risponde con
+// l'avviso "non ancora attivo").
+import type { Lingua } from '../Seo.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Testata from '../Testata.astro';
+import TestaPagina from '../TestaPagina.astro';
+import Sezione from '../Sezione.astro';
+import SchedaContatto from '../SchedaContatto.astro';
+import ModuloContatti from '../ModuloContatti.astro';
+import Footer from '../Footer.astro';
+import { prendi } from '../../lib/contenuti';
+import { MOTIVI } from '../../lib/modulo';
+import { alternate, t } from '../../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+}
+
+const { lang } = Astro.props;
+const D = t(lang);
+
+const contatti = await prendi('contatti');
+const schede = MOTIVI.map((id) => contatti.find((c) => c.id === id))
+  .filter((c) => c !== undefined)
+  .map((c) => ({ ...c.data, titolo: D.piede[c.id as (typeof MOTIVI)[number]] }));
+---
+
+<BaseLayout
+  title={`${D.menu.contatti} — Omaggio a Ennio Morricone`}
+  description={D.seo.contatti}
+  lang={lang}
+  alternate={alternate('contatti')}
+  noindex
+>
+  <Testata slot="testata" lang={lang} corrente="contatti" />
+  <TestaPagina occhiello="Omaggio a Ennio Morricone" titolo={D.menu.contatti} />
+
+  {
+    schede.length > 0 && (
+      <Sezione>
+        <div class="contatti__schede">
+          {schede.map((s) => (
+            <SchedaContatto
+              titolo={s.titolo}
+              nome={s.nome}
+              email={s.email}
+              telefono={s.telefono}
+              segnaposto={s.segnaposto}
+              lang={lang}
+            />
+          ))}
+        </div>
+      </Sezione>
+    )
+  }
+
+  <Sezione titolo={D.modulo.titolo}>
+    <ModuloContatti lang={lang} />
+  </Sezione>
+
+  <Footer slot="piede" lang={lang} />
+</BaseLayout>
+
+<style>
+  .contatti__schede {
+    display: grid;
+    gap: var(--spazio-4);
+  }
+
+  @media (min-width: 900px) {
+    .contatti__schede {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

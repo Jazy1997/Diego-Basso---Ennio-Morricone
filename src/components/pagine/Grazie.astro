@@ -1,0 +1,39 @@
+---
+// Conferma dell'invio del modulo contatti (ARCHITECTURE.md §8): pagina statica, fuori dagli indici.
+import type { Lingua } from '../Seo.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Testata from '../Testata.astro';
+import TestaPagina from '../TestaPagina.astro';
+import Pulsante from '../Pulsante.astro';
+import Footer from '../Footer.astro';
+import { alternate, localizedPath, t } from '../../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+}
+
+const { lang } = Astro.props;
+const D = t(lang);
+---
+
+<BaseLayout
+  title={`${D.modulo.grazieTitolo} — Omaggio a Ennio Morricone`}
+  description={D.modulo.grazieTesto}
+  lang={lang}
+  alternate={alternate('grazie')}
+  noindex
+>
+  <Testata slot="testata" lang={lang} corrente="grazie" />
+  <TestaPagina occhiello={D.menu.contatti} titolo={D.modulo.grazieTitolo} lead={D.modulo.grazieTesto}>
+    <p class="grazie__azione">
+      <Pulsante href={localizedPath('home', lang)} variante="contorno" lang={lang}>{D.modulo.torna}</Pulsante>
+    </p>
+  </TestaPagina>
+  <Footer slot="piede" lang={lang} />
+</BaseLayout>
+
+<style>
+  .grazie__azione {
+    margin-top: var(--spazio-8);
+  }
+</style>
