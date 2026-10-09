@@ -335,6 +335,13 @@ const jsonLd = [
     inset: 0;
   }
 
+  /* <Picture> avvolge l'img: senza display: contents l'altezza al 100 % non arriva alla cornice. */
+  .panoramica__immagine :global(picture),
+  .maestro__immagine :global(picture),
+  .coda__fondo :global(picture) {
+    display: contents;
+  }
+
   .panoramica__immagine :global(img),
   .maestro__immagine :global(img),
   .coda__fondo :global(img) {
@@ -447,7 +454,7 @@ const jsonLd = [
   .maestro {
     display: grid;
     gap: var(--spazio-12);
-    align-items: end;
+    align-items: center;
   }
 
   .maestro__titolo {
@@ -498,7 +505,7 @@ const jsonLd = [
   /* Titoli di coda: ruolo in mono a sinistra, nome a destra, sulla stessa linea di base. */
   .formazione__voce {
     display: grid;
-    grid-template-columns: minmax(7rem, 2fr) minmax(0, 7fr);
+    grid-template-columns: 8.5rem minmax(0, 1fr);
     align-items: baseline;
     gap: var(--spazio-6);
     padding-block: clamp(28px, 5vh, 56px);
@@ -526,7 +533,9 @@ const jsonLd = [
       gap: var(--spazio-2);
     }
 
+    /* Su mobile il ruolo segue il nome, non gli sta sopra. */
     .formazione__voce dt {
+      order: 2;
       text-align: left;
     }
   }
@@ -537,6 +546,7 @@ const jsonLd = [
     font-stretch: 125%;
     text-transform: uppercase;
     letter-spacing: -0.015em;
+    text-wrap: balance;
   }
 
   .formazione__foto {
@@ -551,7 +561,7 @@ const jsonLd = [
     .formazione__foto {
       position: sticky;
       top: 20vh;
-      display: grid;
+      display: block;
       aspect-ratio: 4 / 5;
       overflow: hidden;
       background: var(--sala-000);
@@ -562,7 +572,8 @@ const jsonLd = [
     }
 
     .formazione__foto :global(.formazione__scatto) {
-      grid-area: 1 / 1;
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
