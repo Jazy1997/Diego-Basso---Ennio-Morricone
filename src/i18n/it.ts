@@ -72,6 +72,7 @@ export const it = {
       'Il sito Omaggio a Ennio Morricone non usa cookie di profilazione né di statistica; YouTube e Spotify si caricano solo quando li avvii tu con un clic.',
   },
   home: {
+    nastro: ['Orchestra', 'Voce', 'Cinema'],
     tutteDate: 'Tutte le date',
     progetto: 'Il progetto',
     scopriProgetto: 'Scopri il progetto',

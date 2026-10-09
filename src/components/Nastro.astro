@@ -1,0 +1,84 @@
+---
+// Nastro (revisione 2026): una fascia di parole giganti che scorre in orizzontale legata allo scroll, come una
+// striscia di pellicola che passa nel proiettore. Riempie lo stacco tra due scene con movimento invece che con nero.
+// Decorativo (aria-hidden): le parole ripetono contenuti già presenti nella pagina.
+// `contorno`: lettere solo profilate; `direzione`: -1 verso sinistra, 1 verso destra (regia.ts › data-nastro).
+interface Props {
+  voci: string[];
+  contorno?: boolean;
+  direzione?: 1 | -1;
+  class?: string;
+}
+
+const { voci, contorno = false, direzione = -1, class: classe } = Astro.props;
+// Due copie identiche: la traccia scorre di metà della sua larghezza senza mai mostrare un bordo vuoto.
+const giro = [...voci, ...voci, ...voci];
+---
+
+<div
+  class:list={['nastro', contorno && 'nastro--contorno', classe]}
+  data-nastro
+  data-direzione={direzione}
+  aria-hidden="true"
+>
+  <div class="nastro__traccia">
+    {
+      [0, 1].map(() => (
+        <span class="nastro__giro">
+          {giro.map((v) => (
+            <>
+              <span class="nastro__voce">{v}</span>
+              <span class="nastro__punto" />
+            </>
+          ))}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .nastro {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(12px, 2.5vh, 32px);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .nastro__traccia {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .nastro__giro {
+    display: flex;
+    align-items: center;
+    flex: none;
+  }
+
+  .nastro__voce {
+    padding-inline: 0.28em;
+    font: 200 clamp(3.5rem, 11vw, 11rem) / 1 var(--font-display);
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    color: var(--avorio);
+  }
+
+  .nastro--contorno .nastro__voce {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--linea-forte);
+  }
+
+  .nastro__punto {
+    flex: none;
+    width: clamp(10px, 1.2vw, 18px);
+    aspect-ratio: 1;
+    margin-inline: 0.4em;
+    border-radius: 50%;
+    background: var(--oro);
+  }
+</style>
