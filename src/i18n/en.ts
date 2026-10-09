@@ -104,6 +104,7 @@ export const en: Dizionario = {
   },
   maestro: { collaborazioni: 'Collaborations' },
   promoter: {
+    schedaTecnica: 'Download the technical rider',
     luoghi: 'Where it has been performed',
     internazionale: 'Abroad',
     versioni: 'Two versions',

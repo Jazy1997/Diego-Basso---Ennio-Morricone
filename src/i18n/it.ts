@@ -103,6 +103,7 @@ export const it = {
   },
   maestro: { collaborazioni: 'Collaborazioni' },
   promoter: {
+    schedaTecnica: 'Scarica la scheda tecnica',
     luoghi: 'Dove è andato in scena',
     internazionale: 'All’estero',
     versioni: 'Due versioni',

@@ -1,0 +1,22 @@
+---
+// "Scarica la scheda tecnica" (pulsante a contorno): compare solo quando il PDF è in public/scheda-tecnica/.
+// Nessun segnaposto: finché il file non c'è, il pulsante non esiste.
+import type { Lingua } from './Seo.astro';
+import Pulsante from './Pulsante.astro';
+import { t } from '../i18n/utils';
+
+interface Props {
+  lang?: Lingua;
+}
+
+const { lang = 'it' } = Astro.props;
+const pdf = Object.keys(import.meta.glob('/public/scheda-tecnica/*.pdf'))[0]?.replace('/public', '');
+---
+
+{
+  pdf && (
+    <Pulsante href={pdf} variante="contorno" lang={lang}>
+      {t(lang).promoter.schedaTecnica}
+    </Pulsante>
+  )
+}
