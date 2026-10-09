@@ -11,3 +11,6 @@ scripts/out/
 Thumbs.db
 public/fonts/
 graphify-out/
+
+# Dati forniti dal cliente (può contenere chiavi e dati personali: solo in locale)
+DATI-DA-FORNIRE.md

@@ -1,7 +1,7 @@
 ---
 // Promoter e venue (ARCHITECTURE.md §5): tutto ciò che serve a un teatro per scegliere lo spettacolo.
 // "Oltre vent'anni di storia" dal docx + luoghi con città e coordinate (Guangzhou a parte, all'estero) ·
-// press kit · contatto booking (versioni e scheda tecnica tolte: arriveranno come download press kit e rider).
+// press kit e scheda tecnica (pulsanti che compaiono con i file) · contatto booking.
 import { render } from 'astro:content';
 import type { Lingua } from '../Seo.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -11,6 +11,7 @@ import Sezione from '../Sezione.astro';
 import Cinemascope from '../Cinemascope.astro';
 import SchedaContatto from '../SchedaContatto.astro';
 import PulsantePressKit from '../PulsantePressKit.astro';
+import PulsanteSchedaTecnica from '../PulsanteSchedaTecnica.astro';
 import Pulsante from '../Pulsante.astro';
 import Footer from '../Footer.astro';
 import { prendi } from '../../lib/contenuti';
@@ -45,6 +46,7 @@ const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
   <TestaPagina occhiello={D.menu.promoter} titolo={D.home.promoterTitolo}>
     <div class="om-riga promoter__azioni">
       <PulsantePressKit lang={lang} />
+      <PulsanteSchedaTecnica lang={lang} />
       <Pulsante href="#booking" variante="contorno" lang={lang}>{T.scrivi}</Pulsante>
     </div>
   </TestaPagina>
