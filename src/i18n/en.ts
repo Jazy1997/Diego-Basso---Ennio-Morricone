@@ -73,6 +73,7 @@ export const en: Dizionario = {
       'The Omaggio a Ennio Morricone website uses no profiling or analytics cookies; YouTube and Spotify load only when you start them with a click.',
   },
   home: {
+    nastro: ['Orchestra', 'Voice', 'Cinema'],
     tutteDate: 'All dates',
     progetto: 'The project',
     scopriProgetto: 'Discover the project',

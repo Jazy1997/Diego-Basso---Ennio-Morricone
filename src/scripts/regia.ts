@@ -7,6 +7,8 @@
 //   data-conta      numero che conta fino al suo valore (una volta)
 //   data-accendi    elemento che prende la classe .is-acceso quando passa al centro dello schermo
 //   data-sequenza   scena fermata (pin) i cui [data-passo] si accendono uno alla volta scorrendo
+//   data-nastro     fascia di parole che scorre in orizzontale con lo scroll (Nastro.astro)
+//   data-allarga    riquadro che si apre fino ai bordi dello schermo arrivando al centro
 // Con prefers-reduced-motion niente di tutto questo: lo stato iniziale visibile è quello finale.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -156,10 +158,12 @@ if (!ridotto) {
     );
   }
 
-  // Sequenza: la scena si ferma e i passi si accendono uno alla volta mentre si scorre
-  // (Formazione: la cornice della foto resta ferma e cambia immagine a ogni voce).
+  // Sequenza: la scena si ferma e scorre come un piano sequenza, sempre in movimento sotto la rotella.
+  // Ogni passo [data-passo] ha la sua foto [data-scatto]: la foto avanza piano (Ken Burns), la successiva entra
+  // con una tendina dal basso, il filo d'oro [data-filo] della voce si riempie mentre si scorre.
   for (const el of document.querySelectorAll<HTMLElement>('[data-sequenza]')) {
     const passi = [...el.querySelectorAll<HTMLElement>('[data-passo]')];
+    const scatti = [...el.querySelectorAll<HTMLElement>('[data-scatto]')];
     if (passi.length === 0) continue;
     let attivo = -1;
     const accendi = (i: number) => {
@@ -168,15 +172,76 @@ if (!ridotto) {
       passi.forEach((p, j) => p.classList.toggle('is-acceso', j === i));
     };
     accendi(0);
-    ScrollTrigger.create({
-      trigger: el,
-      start: () => (window.innerHeight > el.offsetHeight ? `top ${(window.innerHeight - el.offsetHeight) / 2}px` : 'top top'),
-      end: () => `+=${window.innerHeight * 0.7 * passi.length}`,
-      pin: true,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (st) => accendi(Math.min(passi.length - 1, Math.floor(st.progress * passi.length))),
+    const n = passi.length;
+    const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: el,
+        start: () => (window.innerHeight > el.offsetHeight ? `top ${(window.innerHeight - el.offsetHeight) / 2}px` : 'top top'),
+        end: () => `+=${window.innerHeight * 0.8 * n}`,
+        pin: true,
+        scrub: 0.6,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (st) => accendi(Math.min(n - 1, Math.floor(st.progress * n))),
+      },
     });
+    scatti.forEach((scatto, i) => {
+      const img = scatto.querySelector('img') ?? scatto;
+      // Ken Burns su tutta la durata in cui la foto è visibile.
+      tl.fromTo(img, { scale: 1.18, yPercent: -4 }, { scale: 1, yPercent: 4, duration: i === 0 ? 1 : 1.5 }, Math.max(0, i - 0.5));
+      if (i > 0) {
+        tl.fromTo(
+          scatto,
+          { clipPath: 'inset(100% 0% 0% 0%)' },
+          { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.5, ease: 'power2.inOut' },
+          i - 0.5,
+        );
+      }
+    });
+    passi.forEach((passo, i) => {
+      const filo = passo.querySelector('[data-filo]');
+      if (filo) tl.fromTo(filo, { scaleX: 0 }, { scaleX: 1, duration: 1 }, i);
+      const nome = passo.querySelector('dd');
+      if (nome) tl.fromTo(nome, { x: 0 }, { x: 18, duration: 0.5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, i);
+    });
+  }
+
+  // Nastro: la traccia scorre in orizzontale mentre la fascia attraversa lo schermo; con la velocità dello
+  // scroll le lettere si inclinano appena, come la pellicola che corre.
+  for (const el of document.querySelectorAll<HTMLElement>('[data-nastro]')) {
+    const traccia = el.querySelector<HTMLElement>('.nastro__traccia');
+    if (!traccia) continue;
+    const verso = Number(el.dataset.direzione ?? -1);
+    const inclina = gsap.quickTo(traccia, 'skewX', { duration: 0.5, ease: 'power3.out' });
+    gsap.fromTo(
+      traccia,
+      { xPercent: verso < 0 ? 0 : -50 },
+      {
+        xPercent: verso < 0 ? -50 : 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 0.4,
+          onUpdate: (st) => inclina(gsap.utils.clamp(-8, 8, st.getVelocity() / -300)),
+        },
+      },
+    );
+  }
+
+  // Allarga: il riquadro parte stretto e si apre fino ai bordi dello schermo mentre arriva al centro.
+  for (const el of document.querySelectorAll<HTMLElement>('[data-allarga]')) {
+    gsap.fromTo(
+      el,
+      { clipPath: 'inset(6% 14% 6% 14%)' },
+      {
+        clipPath: 'inset(0% 0% 0% 0%)',
+        ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top 95%', end: 'center 55%', scrub: 0.5 },
+      },
+    );
   }
 
   for (const el of document.querySelectorAll<HTMLElement>('[data-conta]')) {

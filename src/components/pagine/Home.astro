@@ -15,6 +15,7 @@ import Album from '../Album.astro';
 import Pulsante from '../Pulsante.astro';
 import PulsantePressKit from '../PulsantePressKit.astro';
 import Footer from '../Footer.astro';
+import Nastro from '../Nastro.astro';
 import posterTrailer from '../../assets/video/trailer-poster.jpg';
 import immagineAlbum from '../../assets/album/copertina.jpg';
 import { precaricaPoster } from '../../lib/hero';
@@ -47,6 +48,12 @@ const film = [...D.repertorio.citazione.matchAll(/<em>(.*?)<\/em>/g)].map((m) =>
 const coda = [...film, D.repertorio.leone];
 
 const panoramica = await foto('orchestra-schermo-03', lang);
+const fondoManifesto = await foto('quinte-01', lang);
+const fondoChiusura = await foto('saluti-01', lang);
+const fondoPromoter = await foto('luogo-castello-01', lang);
+
+// Nastro delle città: dove lo spettacolo è andato in scena (date reali, senza segnaposto in produzione).
+const citta = [...new Set((await prendi('eventi')).map((e) => e.data.citta))];
 const fondoCoda = await foto('orchestra-schermo-02', lang);
 const ritratto = await foto('maestro-01', lang);
 const formazione = [
@@ -102,6 +109,17 @@ const jsonLd = [
 
   <!-- Manifesto: il progetto in una frase che si accende -->
   <section class="scena manifesto contenitore" id="progetto" aria-labelledby="manifesto-titolo">
+    <div class="sfondo" data-parallasse aria-hidden="true">
+      <Picture
+        src={fondoManifesto.src}
+        alt=""
+        formats={['avif', 'webp']}
+        widths={fondoManifesto.larghezze}
+        quality={QUALITA}
+        sizes="100vw"
+        style={`object-position: ${fondoManifesto.posizione}`}
+      />
+    </div>
     <h2 class="solo-lettori" id="manifesto-titolo">{T.progetto}</h2>
     <p class="manifesto__frase" data-illumina>{manifesto}</p>
     <div class="manifesto__seguito">
@@ -112,6 +130,8 @@ const jsonLd = [
       <Pulsante href={localizedPath('progetto', lang)} variante="testo" lang={lang}>{T.scopriProgetto}</Pulsante>
     </div>
   </section>
+
+  <Nastro voci={T.nastro} />
 
   <!-- Panoramica: la sala, nella finestra 2,39:1 -->
   <figure class="scena panoramica">
@@ -166,6 +186,7 @@ const jsonLd = [
 
   <!-- Il Maestro -->
   <section class="scena maestro contenitore" id="maestro" aria-labelledby="maestro-titolo">
+    <Nastro voci={['Diego Basso']} contorno direzione={1} class="maestro__nastro" />
     <h2 class="titolo-l maestro__titolo" id="maestro-titolo" data-righe>{T.maestroTitolo}</h2>
     <div class="maestro__ritratto" data-sipario>
       <div class="maestro__immagine" data-parallasse>
@@ -193,8 +214,8 @@ const jsonLd = [
     <div class="formazione__foto" aria-hidden="true">
       {
         formazione.map((v, i) => (
+          <div class="formazione__scatto" data-scatto>
           <Picture
-            class={`formazione__scatto formazione__scatto--${i}`}
             src={v.foto.src}
             alt=""
             formats={['avif', 'webp']}
@@ -203,6 +224,7 @@ const jsonLd = [
             sizes="(min-width: 900px) 60vh, 100vw"
             style={`object-position: ${v.foto.posizione}`}
           />
+          </div>
         ))
       }
     </div>
@@ -212,6 +234,7 @@ const jsonLd = [
           <div class:list={['formazione__voce', `formazione__voce--${i}`]} data-passo>
             <dt class="misura">{v.ruolo}</dt>
             <dd>{v.nome}</dd>
+            <span class="formazione__filo" data-filo aria-hidden="true"></span>
           </div>
         ))
       }
@@ -221,8 +244,8 @@ const jsonLd = [
   <!-- Trailer -->
   {
     trailer?.data.youtubeId && (
-      <section class="scena trailer-scena contenitore" aria-label={T.video}>
-        <div data-sipario>
+      <section class="scena trailer-scena" aria-label={T.video}>
+        <div class="trailer-scena__riquadro" data-allarga>
           <VideoTrailer
             youtubeId={trailer.data.youtubeId}
             titolo={trailer.data.nome}
@@ -234,6 +257,8 @@ const jsonLd = [
     )
   }
 
+  {citta.length > 0 && <Nastro voci={citta} contorno direzione={1} />}
+
   <!-- Prossime date -->
   <section class="scena date contenitore" id="date" aria-labelledby="date-titolo">
     <div class="date__testa">
@@ -244,12 +269,26 @@ const jsonLd = [
   </section>
 
   <!-- Album -->
-  <section class="scena contenitore" id="album" aria-label={D.album.occhiello}>
+  <section class="scena album-scena contenitore" id="album" aria-label={D.album.occhiello}>
+    <div class="sfondo sfondo--album" data-parallasse aria-hidden="true">
+      <Picture src={immagineAlbum} alt="" formats={['avif', 'webp']} widths={[640]} quality={60} sizes="640px" />
+    </div>
     <Album lang={lang} />
   </section>
 
   <!-- Promoter e venue: un argomento per riga -->
   <section class="scena promoter contenitore" id="promoter" aria-labelledby="promoter-titolo">
+    <div class="sfondo" data-parallasse aria-hidden="true">
+      <Picture
+        src={fondoPromoter.src}
+        alt=""
+        formats={['avif', 'webp']}
+        widths={fondoPromoter.larghezze}
+        quality={QUALITA}
+        sizes="100vw"
+        style={`object-position: ${fondoPromoter.posizione}`}
+      />
+    </div>
     <h2 class="titolo-l promoter__titolo" id="promoter-titolo" data-righe>{T.promoterTitolo}</h2>
     <ul class="promoter__righe">
       {
@@ -270,6 +309,17 @@ const jsonLd = [
 
   <!-- Chiusura -->
   <section class="scena chiusura contenitore" aria-label={D.claim.chiusura}>
+    <div class="sfondo sfondo--chiusura" data-parallasse aria-hidden="true">
+      <Picture
+        src={fondoChiusura.src}
+        alt=""
+        formats={['avif', 'webp']}
+        widths={fondoChiusura.larghezze}
+        quality={QUALITA}
+        sizes="100vw"
+        style={`object-position: ${fondoChiusura.posizione}`}
+      />
+    </div>
     <p class="chiusura__frase" data-illumina>{D.claim.chiusura}</p>
   </section>
 
@@ -280,7 +330,57 @@ const jsonLd = [
   /* ---------- Ritmo delle scene ---------- */
   .scena {
     position: relative;
-    padding-block: clamp(96px, 16vh, 200px);
+    padding-block: clamp(56px, 9vh, 120px);
+  }
+
+  /* Foto in penombra dietro una scena di testo: niente nero vuoto, la sala resta sempre presente. */
+  .sfondo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .sfondo :global(picture) {
+    display: contents;
+  }
+
+  .sfondo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.28;
+  }
+
+  .sfondo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, var(--sala-100) 0, rgba(11, 9, 8, 0.55) 22%, rgba(11, 9, 8, 0.55) 78%, var(--sala-100) 100%),
+      linear-gradient(to right, rgba(11, 9, 8, 0.75) 0, transparent 70%);
+  }
+
+  .sfondo--chiusura :global(img) {
+    opacity: 0.4;
+  }
+
+  .manifesto,
+  .chiusura,
+  .album-scena,
+  .promoter {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  /* L'album: la sua copertina, sfocata e ingrandita, colora la scena. */
+  .sfondo--album :global(img) {
+    opacity: 0.45;
+    filter: blur(48px) saturate(1.2);
+  }
+
+  .album-scena {
+    padding-block: clamp(96px, 16vh, 180px);
   }
 
   .scena :global(.om-pulsante--testo) {
@@ -396,8 +496,10 @@ const jsonLd = [
   .coda__testa {
     position: relative;
     display: grid;
+    justify-items: center;
     gap: var(--spazio-6);
-    padding-top: clamp(120px, 22vh, 240px);
+    padding-top: clamp(72px, 14vh, 160px);
+    text-align: center;
   }
 
   .coda__frase {
@@ -413,7 +515,7 @@ const jsonLd = [
   .coda__titoli {
     position: relative;
     margin: 0;
-    padding-block: clamp(96px, 30vh, 320px) clamp(120px, 35vh, 360px);
+    padding-block: clamp(48px, 12vh, 140px) clamp(64px, 18vh, 200px);
     list-style: none;
     text-align: center;
   }
@@ -423,7 +525,7 @@ const jsonLd = [
     flex-direction: column;
     align-items: center;
     gap: var(--spazio-3);
-    padding-block: clamp(40px, 9vh, 96px);
+    padding-block: clamp(28px, 7vh, 80px);
     font: italic 400 clamp(2.5rem, 6.4vw, 6rem) / 1 var(--font-accento);
     letter-spacing: -0.015em;
     color: var(--avorio);
@@ -455,6 +557,19 @@ const jsonLd = [
     display: grid;
     gap: var(--spazio-12);
     align-items: center;
+  }
+
+  .maestro {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  /* Il nome gigante, solo profilato, scorre dietro il ritratto. */
+  .maestro :global(.maestro__nastro) {
+    position: absolute;
+    inset: 50% 0 auto;
+    z-index: -1;
+    transform: translateY(-50%);
   }
 
   .maestro__titolo {
@@ -547,31 +662,35 @@ const jsonLd = [
     background: var(--sala-000);
   }
 
-  .formazione__foto :global(picture) {
+  .formazione__scatto {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .formazione__scatto :global(picture) {
     display: contents;
   }
 
-  /* Le foto sono sovrapposte: quella della voce accesa entra in dissolvenza con un respiro di scala. */
-  .formazione__foto :global(.formazione__scatto) {
-    position: absolute;
-    inset: 0;
+  .formazione__scatto :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
-    transform: scale(1.06);
-    transition:
-      opacity 0.8s var(--ease-uscita),
-      transform 1.6s var(--ease-uscita);
-    will-change: opacity, transform;
+    will-change: transform;
   }
 
-  .formazione:not(:has(:global(.is-acceso))) :global(.formazione__scatto--0),
-  .formazione:has(.formazione__voce--0:global(.is-acceso)) :global(.formazione__scatto--0),
-  .formazione:has(.formazione__voce--1:global(.is-acceso)) :global(.formazione__scatto--1),
-  .formazione:has(.formazione__voce--2:global(.is-acceso)) :global(.formazione__scatto--2) {
-    opacity: 1;
-    transform: none;
+  /* Filo d'oro della voce: si riempie scorrendo (regia.ts). */
+  .formazione__voce {
+    position: relative;
+  }
+
+  .formazione__filo {
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 1px;
+    background: var(--oro);
+    transform: scaleX(0);
+    transform-origin: left center;
   }
 
   @media (max-width: 600px) {
@@ -598,6 +717,11 @@ const jsonLd = [
       height: min(74svh, 760px);
       aspect-ratio: 4 / 5;
     }
+  }
+
+  /* ---------- Trailer: a tutta larghezza, si apre ai bordi arrivando al centro ---------- */
+  .trailer-scena__riquadro {
+    overflow: hidden;
   }
 
   /* ---------- Date ---------- */
@@ -678,7 +802,9 @@ const jsonLd = [
 
   /* ---------- Chiusura ---------- */
   .chiusura {
-    padding-block: clamp(120px, 24vh, 280px);
+    display: grid;
+    place-items: center;
+    min-height: 90svh;
   }
 
   .chiusura__frase {

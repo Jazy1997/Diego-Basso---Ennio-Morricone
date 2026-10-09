@@ -113,9 +113,9 @@ a:not(.om-pulsante):hover {
 }
 
 /* ---------- Layout ---------- */
+/* Tutta la larghezza dello schermo, solo i margini (revisione 2026: niente colonna centrale da 1440 px). */
 .contenitore {
   width: 100%;
-  max-width: calc(1440px + 2 * var(--margine-web));
   margin-inline: auto;
   padding-inline: var(--margine-web);
 }

@@ -450,11 +450,6 @@ html.lenis body {
     visibility 0.5s;
 }
 
-/* ---------- Larghezza: la pagina occupa tutto lo schermo, solo i margini restano ---------- */
-.contenitore {
-  max-width: none;
-}
-
 /* ---------- Titoli grandi che non si tagliano mai ----------
    La misura segue la larghezza del loro contenitore (cqi), non solo dello schermo: nelle colonne strette
    (sezioni affiancate, pagine interne) la parola più lunga resta intera dentro la maschera delle righe. */
@@ -477,4 +472,16 @@ html.lenis body {
 .titolo-xl {
   overflow-wrap: normal;
   hyphens: manual;
+}
+
+/* La pellicola occupa i 26 px a destra da 900 px: la pagina si centra nello spazio che resta,
+   così i contenuti centrati (titoli di coda, chiusura) lo sono davvero. */
+@media (min-width: 900px) {
+  body {
+    padding-right: 26px;
+  }
+
+  body .testata.testata--sopra-hero {
+    right: 26px;
+  }
 }
