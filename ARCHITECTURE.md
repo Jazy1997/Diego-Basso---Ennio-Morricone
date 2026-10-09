@@ -1,7 +1,7 @@
 # ARCHITECTURE — Sito "Omaggio a Ennio Morricone"
 
 > Documento di riferimento tecnico e funzionale. Si legge **per sezioni**: ogni ticket indica quali.
-> In caso di conflitto vince il **Design System** (DS): https://claude.ai/artifact/RoM5dV4WD9VgpbCGJG5nxs
+> Identità visiva: dal 9/10/2026 vale la revisione **"La pellicola in sala"** (`src/styles/tema.css`, `PRODUCT.md`, `.impeccable/surfaces/`), che sostituisce colori e font del vecchio Design System (https://claude.ai/artifact/RoM5dV4WD9VgpbCGJG5nxs). Del DS restano logo, tono di voce e i file in `src/styles/ds/` (non si toccano: `tema.css` ne sovrascrive i valori).
 
 ---
 
@@ -44,7 +44,8 @@ Sezioni DS più usate: `05-segno` (Cinemascope, coordinate, grana, icone), `06-i
 | Framework | **Astro 7**, output statico, TypeScript `strict` | HTML puro, zero JS di default, i18n nativo, ottimizzazione immagini |
 | Stili | CSS puro + custom properties | Token e classi `om-` del DS sono già CSS; niente Tailwind |
 | Immagini | `astro:assets` (`<Picture>`, sharp) → AVIF + WebP + fallback JPG | Formati e misure generati in build |
-| Font | `@fontsource-variable/nunito-sans`, `@fontsource-variable/source-sans-3`, `@fontsource/cormorant-garamond` (500, 500 italic, 600 italic) | Self-hosted: niente Google Fonts remoto (GDPR) |
+| Font | `@fontsource-variable/archivo` (larghezza 62–125 %, peso 100–900), `@fontsource-variable/bodoni-moda` (corsivo), `@fontsource-variable/jetbrains-mono` (solo misure) | Self-hosted: niente Google Fonts remoto (GDPR) |
+| Motion | `gsap` (ScrollTrigger, SplitText) + `lenis` (scroll fluido) in `src/scripts/regia.ts`; View Transitions cross-document in CSS | Regia di scroll richiesta dall'utente (ott. 2026) |
 | Sitemap | `@astrojs/sitemap` con i18n | SEO |
 | Icone | `lucide-static` (SVG inline, tratto 1,5) | Regola DS |
 | Qualità | Prettier + `prettier-plugin-astro`, `astro check` | Coerenza |
@@ -118,25 +119,28 @@ Lingua predefinita **italiano** alla radice, **inglese** su `/en/`. Configurazio
 
 ---
 
-## 6. Home, sezione per sezione
+## 6. Home, scena per scena
 
-Spazio tra sezioni `spazio-24` (desktop) / `spazio-16` (mobile); margini `margine-web`; testo max `colonna-testo`. Ogni sezione compare con `Reveal` (dissolvenza 600 ms + salita 12 px, una volta; niente parallasse).
+Revisione "La pellicola in sala" (ottobre 2026): la home è una sequenza di scene legate allo scroll, orchestrate da `src/scripts/regia.ts` tramite attributi `data-*` (§8). Spazio tra le scene `clamp(56px, 9vh, 120px)`; niente nero vuoto: ogni stacco ha una foto in penombra (`.sfondo` + `data-parallasse`) o un `Nastro`. Niente occhielli sopra i titoli.
 
-| # | Sezione | Componente | Contenuto | Mobile |
-| --- | --- | --- | --- | --- |
-| 1 | Testata | `Testata` | Logo orizzontale oro 280 px, menu, IT/EN, "Biglietti". Trasparente sopra l'hero, `sala-100` + filetto `linea` dopo lo scorrimento | < 1080 px: pulsante "Menu" → pannello a tutto schermo, voci `titolo-m` |
-| 2 | Hero | `HeroVideo` | Finestra Cinemascope a tutta larghezza, video muto in loop (§7). Niente occhiello (decisione dell'utente, ott. 2026). Banda bassa: logo **verticale oro** (≥ 240 px) + sottotitolo *Musica e cinema in un unico grande spettacolo* (`evocativo`) + pulsante oro "Prossime date" | Bande più alte, logo 240 px, pulsante a tutta larghezza |
-| 3 | Prossime date | `ListaDate` (3 `DataTour`) | Prime 3 date future + link "Tutte le date". Nessuna data: "Nuove date in arrivo" + link contatti | Righe impilate |
-| 4 | Il progetto | `Sezione` + `Cinemascope` | Occhiello "IL PROGETTO", `lead` = sottotitolo, testo medio (DS › Tono), foto orchestra+schermo 2,39:1, link "Scopri il progetto" | — |
-| 5 | Il repertorio | `Repertorio` | Titoli dei film in `evocativo`, colonna centrata come titoli di coda; temi in `citazione` | Una colonna |
-| 6 | Il Maestro | `Sezione` | Ritratto verticale Diego Basso + estratto "La visione del Maestro" + link | Foto sopra, testo sotto |
-| 7 | Formazione | `Crediti` | Direttore — Diego Basso · Soprano — Claudia Sasso · 46 elementi — Orchestra Ritmico Sinfonica Italiana | Voci impilate |
-| 8 | Video | `VideoTrailer` | Trailer 16:9, play rotondo, facade youtube-nocookie | — |
-| 9 | Ascolta l'album | `Streaming` | "Omaggio a Ennio Morricone" — Spotify · Apple Music · Tidal (`om-pulsante--contorno`, nuova scheda) | Pulsanti a tutta larghezza |
-| 10 | Promoter e venue | `Sezione` | 3 argomenti (organico 46 elementi · oltre vent'anni di storia · due versioni), "Scarica il press kit" (oro), contatto booking | — |
-| 11 | Piè di pagina | `Footer` | Schede Booking/Stampa/Pubblico, social, `FasciaPartner`, crediti fotografici, Privacy/Cookie, © | Impilato |
+| # | Scena | Contenuto | Movimento |
+| --- | --- | --- | --- |
+| 1 | Hero | Video a tutto schermo, logo verticale (h1), prossima data reale con "Biglietti" | Ouverture 3‑2‑1 (una volta per sessione); scorrendo la scena si ferma e il video si richiude in finestra 2,39:1 (1,6:1 su mobile) con il claim sopra e sotto (§7.2) |
+| 2 | Manifesto | Prima frase del testo medio + resto in colonna, "Scopri il progetto" | Frase che si accende parola per parola; foto `quinte-01` in penombra |
+| 3 | Nastro | ORCHESTRA · VOCE · CINEMA | Scorre in orizzontale con lo scroll |
+| 4 | Panoramica | `orchestra-schermo-03` in 2,39:1 + "Un viaggio tra proiezioni e musica." | Sipario + parallasse |
+| 5 | Repertorio | Titolo, frase approvata, poi i film come titoli di coda (Bodoni corsivo) | Il titolo al centro si accende d'oro; foto di sala ferma dietro |
+| 6 | Il Maestro | Titolo a tutta larghezza, ritratto, estratto "visione" | Nome "DIEGO BASSO" profilato che scorre dietro; sipario sul ritratto |
+| 7 | Formazione | Direttore / Soprano / 46 elementi come crediti su una riga | Scena ferma (`data-sequenza`): zoom lento della foto, tendina verso la successiva, filo d'oro per voce |
+| 8 | Trailer | Facciata 2,39:1 (torna 16:9 al play) | Si apre fino ai bordi arrivando al centro (`data-allarga`) |
+| 9 | Nastro città | Città reali degli eventi | Scorre verso destra |
+| 10 | Prossime date | Titolo gigante + 3 righe `DataTour` | Righe con filo d'oro al passaggio del mouse |
+| 11 | Album | Player Spotify con facciata, piattaforme | Copertina sfocata come fondo |
+| 12 | Promoter e venue | 3 argomenti "un colpo per riga", press kit, booking | Filo che si disegna; foto `luogo-castello-01` in penombra |
+| 13 | Chiusura | Claim di chiusura in Bodoni | Si accende parola per parola; foto `saluti-01` dietro |
+| 14 | Piè di pagina | Contatti, ascolto, social, crediti foto, "Fine" gigante | — |
 
-Un solo pulsante oro per schermata (DS › Pulsante): in Hero "Prossime date"; in Testata il "Biglietti" è `piccolo` e sta fuori dalla stessa schermata dell'hero grazie al contrasto di scala (accettato dal DS, che lo prevede in Testata).
+Pellicola (`Pellicola.astro`): bordo perforato a destra da 900 px con contatore di fotogrammi e timecode (filo d'oro in alto su mobile); il body lascia 26 px a destra perché la pagina resti centrata. Testata: si ritira scendendo, torna risalendo; in home il suo logo compare solo quando quello dell'hero sparisce.
 
 ---
 
@@ -153,13 +157,13 @@ Un solo pulsante oro per schermata (DS › Pulsante): in Hero "Prossime date"; i
 6. **Uscita** in `public/video/hero-AAAAMMGG-HHMM/` (cartella nuova a ogni esecuzione, perché `/video/*` ha cache immutabile); il nome va in `src/assets/video/hero.json`. Poster = primo fotogramma in `src/assets/video/hero-poster.jpg`.
 7. **Qualità**: il sorgente attuale è un export web a 1,5 Mbit/s. Per un risultato impeccabile serve il **master** del videomaker (ProRes o H.264/H.265 ad alto bitrate, meglio 4K): `bash scripts/video_hero.sh "/percorso/master.mov" [inizio] [fine]`.
 
-### 7.2 Componente `HeroVideo`
-- `section.hero` alta `max(100svh, 520px)`; poster (`<Picture>`, LCP precaricato con `precaricaPoster()`) e `<video muted loop playsinline preload="none">` a tutto schermo con `object-fit: cover`; grana; due veli sfumati (in alto per la testata trasparente, in basso per i testi).
-- In basso a sinistra: logo verticale oro (senza occhiello) (`h1`, 240–360 px), sottotitolo, pulsante oro "Prossime date". Pausa/play in basso a destra (su mobile in alto a destra).
-- **Animazione firma**: all'apertura il video è una finestra 2,39:1 al centro (`clip-path: inset(max(0px, calc(50% - 20.92vw)) 0)`) che in 0,8 s si apre a tutto schermo; poi compaiono i testi. Sugli schermi più larghi di 2,39:1 l'effetto è nullo.
-- `prefers-reduced-motion` **o** Save-Data: niente animazione, niente video (resta il poster). Uno script inline decide prima del primo disegno (`data-anima`).
-- `src/scripts/hero.ts`: la sorgente si collega solo quando il video deve partire. Safari/iOS usano HLS nativo, gli altri browser caricano `hls.js/light` in quel momento (~110 KB gzip, chunk separato), con `capLevelToPlayerSize`. Pausa fuori viewport e con scheda nascosta, e in pausa smette anche il download (`stopLoad`).
-- **Hosting gratuito**: i file stanno su Vercel (`/video/…`). Se la banda del piano Hobby (100 GB/mese) diventasse stretta, la stessa cartella si sposta su Cloudflare R2 (nessun costo di uscita dati, 10 GB gratuiti) impostando `PUBLIC_VIDEO_BASE`.
+### 7.2 Componente `HeroVideo` (+ `src/scripts/hero-regia.ts`)
+- `.hero__scena` alta `max(100svh, 560px)`; poster (`<Picture>`, LCP precaricato) e `<video>` HLS a tutto schermo; grana e veli. In basso a sinistra il logo verticale (h1), in basso a destra la prossima data (da `eventi`) con "Biglietti" oro e "Prossime date".
+- **Ouverture**: leader 3‑2‑1 in CSS (~1,4 s), poi due ante che si aprono; salta con il pulsante. Una volta per sessione (`sessionStorage`), mai con reduced-motion.
+- **Scena di scroll** (GSAP, `pin` + `scrub`, `refreshPriority: 1`): il video si richiude in una finestra panoramica (80 % della larghezza, mai più alta del 48 % della scena); il claim entra sopra ("Musica e cinema") e sotto (da desktop in due righe esatte, misura limitata dallo spazio sotto la finestra: `--scena-h`, `--finestra-h`, `--finestra-l` impostate dallo script). Misure "2,39 : 1" e coordinate della prossima data sulla finestra.
+- `prefers-reduced-motion` **o** Save-Data: niente video né ouverture; con reduced-motion niente scena di scroll e il claim è un sottotitolo statico. `.regia-attiva` è decisa nel `<head>`.
+- `src/scripts/hero.ts`: sorgente collegata solo quando il video parte (HLS nativo su Safari, `hls.js/light` altrove), pausa fuori viewport e a scheda nascosta.
+- **Hosting gratuito**: i file stanno su Vercel (`/video/…`); se la banda diventasse stretta, Cloudflare R2 con `PUBLIC_VIDEO_BASE`.
 
 ---
 
@@ -183,11 +187,13 @@ Ogni componente usa le classi `om-` di `src/styles/ds/bundle.css` (copiato dal D
 | `SchedaContatto` | — (`sala-200`, `raggio-0`) | `titolo`, `nome`, `email`, `telefono` | `mailto:`/`tel:` |
 | `ModuloContatti` | campi `sala-300`, bordo `linea-forte` | `lang` | POST a `/api/contatti` (validazione Zod lato server, invio via Resend), honeypot + limite di frequenza, motivo (Booking/Stampa/Info), consenso privacy obbligatorio, pagina di conferma |
 | `Footer` | `om-partner` | `lang` | Crediti fotografici aggregati da `foto.json` |
-| `Reveal` | — | slot | `IntersectionObserver` aggiunge `.is-visibile`; disattivo con reduced-motion |
-| `Sezione` | — | `id`, `occhiello`, `titolo` | `h2` + occhiello, spaziatura DS |
+| Regia (`src/scripts/regia.ts`) | — | attributi | Lenis + GSAP. `data-righe` (titolo riga per riga), `data-illumina` (parole che si accendono), `data-sipario`, `data-parallasse`, `data-conta`, `data-accendi`, `data-sequenza`/`data-passo`/`data-scatto`/`data-filo` (scena ferma), `data-nastro`, `data-allarga`, `data-reveal`. Mai due animazioni sulla stessa immagine. Reduced-motion: niente regia, tutto visibile |
+| `Nastro` | — | `voci`, `contorno`, `direzione` | Parole giganti che scorrono con lo scroll; `aria-hidden` |
+| `Pellicola` | — | — | Avanzamento della pagina; `aria-hidden` |
+| `Sezione` | — | `id`, `occhiello`, `titolo` | `h2` riga per riga; l'occhiello si mostra solo se manca il titolo (allora è il titolo) |
 | `Seo` | — | `title`, `description`, `og`, `lang`, `alternate` | Dentro BaseLayout |
 
-`BaseLayout.astro`: `<html lang>`, meta, `Seo`, preload font e poster, skip link "Vai al contenuto", `Testata`, `<main id="contenuto">`, `Footer`, script globali (Testata, Reveal).
+`BaseLayout.astro`: `<html lang>`, meta, `Seo`, preload font e poster, skip link "Vai al contenuto", `Testata`, `<main id="contenuto">`, `Footer`, script globali (Testata, regia), `Pellicola`; `.js` e `.regia-attiva` decise nel `<head>`.
 
 ---
 
@@ -262,7 +268,7 @@ Si usa `.om-grana` di `bundle.css` del DS (rumore SVG incorporato, nessun file i
 | --- | --- |
 | LCP (4G, mobile) | < 2,5 s (poster AVIF preload) |
 | CLS | < 0,05 (dimensioni esplicite ovunque) |
-| JS totale | < 30 KB gzip al caricamento (eccezione: `hls.js/light` ~110 KB, caricato solo quando parte il video dell'hero) |
+| JS totale | ~53 KB gzip al caricamento (GSAP + ScrollTrigger + SplitText + Lenis: budget alzato dall'utente, ott. 2026); `hls.js/light` ~110 KB solo quando parte il video dell'hero |
 | CSS | < 40 KB gzip |
 | Video hero | HLS adattivo: si scaricano solo i segmenti riprodotti (1080p ≈ 3,2 Mbit/s medi, 480p ≈ 0,8) |
 | Font | ≤ 3 file preload (subset latin) |
