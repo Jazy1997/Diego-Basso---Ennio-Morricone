@@ -1,12 +1,12 @@
-# HANDSOFF — 2026-10-08 · sessione 3: M4–M5 completate, revisione dell'utente, M6 fino a T38
+# HANDSOFF — 2026-10-09 · sessione 4: T39 checklist regole d'oro DS completata; resto bloccato su azioni dell'utente
 
 **Stato**: tutte le pagine IT/EN online su https://diegobassoenniomorricone.vercel.app (`noindex` finché `PUBLIC_INDICIZZA` non è `true`) · aperti solo T33 (invio Resend), T39, T40, T41.
 **Pagine**: componente in `src/components/pagine/` con prop `lang` + due file sottili IT/EN · `Sezione` (`affiancata`: titolo a sinistra sticky da 1100 px; senza titolo l'occhiello è l'h2) · `TestaPagina` (h1) · `Ritratto` (4:5) · `PulsantePressKit` · `ModuloContatti` + `/api/contatti/`.
 **Dati**: date reali in `content/eventi/` (Fenice 7/11/2026 + archivio 2013–2026 da diegobasso.com) · testi in `content/testi/{it,en}` (`python scripts/testi.py` dal docx) · UI e SEO in `src/i18n/{it,en}.ts` → `t(lang)`.
-**Qualità (T36–T38)**: OG per pagina `python scripts/og.py` · sitemap con alternate dalle routes · Lighthouse mobile prod: perf 97–100, a11y 98→100, BP 100 (SEO 69 solo per noindex) · JS 3,4 KB, CSS 6 KB · axe: 0 violazioni su 19 pagine · reduced-motion verificato con Chrome headless.
+**Qualità (T36–T39)**: OG per pagina `python scripts/og.py` · sitemap con alternate dalle routes · Lighthouse mobile prod: perf 97–100, a11y 98→100, BP 100 (SEO 69 solo per noindex) · JS 3,4 KB, CSS 6 KB · axe: 0 violazioni su 19 pagine · reduced-motion verificato con Chrome headless · regole d'oro DS verificate su 17 pagine × 3 larghezze (oro max 7,6%, commento in #39).
 **Da far approvare all'utente**: informativa Privacy/Cookie (bozza, + titolare in `contatti.json` id `titolare`) · testi EN medio/lunghi (madrelingua) · testi nuovi in `t(lang).home` (sezione Promoter) e `t(lang).repertorio`.
 **In attesa dall'utente**: Resend (`RESEND_API_KEY`, `RESEND_FROM`, indirizzi veri) · master video · dati T40 · zip press kit e rider (pulsanti in Promoter) · foto/poster/copertina a risoluzione più alta.
-**Prossimo**: T39 QA cross-device + checklist DS (prova con screen reader reale: non automatizzabile da qui) · T40 · T41 go-live (`PUBLIC_INDICIZZA=true`, Rich Results Test, dominio in `astro.config.mjs` › `SITO`).
+**Prossimo**: T39 resta aperto solo per le prove sui dispositivi dell'utente (iPhone, Android, Mac Safari/Firefox, screen reader reale) e l'invio reale del modulo · T40 · T41 go-live (`PUBLIC_INDICIZZA=true`, Rich Results Test, dominio in `astro.config.mjs` › `SITO`).
 **Decisioni**: segnaposto esclusi con `VERCEL_ENV=production` · hero: deroga DS (testo sopra il video, senza occhiello) · `QUALITA = 82` per AVIF/WebP, grana 0,035 · logo da SVG (oro `#e7ad54`) · titoli film EN nell'edizione inglese.
 **Flusso**: branch → PR (`Closes #n`) → check Vercel → squash merge autonomo. Numero issue = numero ticket.
 **Comandi**: `npm run dev|build|check` · `VERCEL_ENV=production npx astro build && python scripts/verifica_en.py` · `python scripts/{foto,testi,og,loghi}.py` · `node scripts/loghi-svg.mjs` · `bash scripts/video_hero.sh`.
