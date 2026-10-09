@@ -26,6 +26,7 @@ if (hero && scena && !ridotto) {
     const v = Math.max(0, (scena.clientHeight - h) / 2);
     scena.style.setProperty('--finestra-l', `${l}px`);
     scena.style.setProperty('--finestra-h', `${h}px`);
+    scena.style.setProperty('--scena-h', `${scena.clientHeight}px`);
     return `inset(${v}px ${lato}px ${v}px ${lato}px)`;
   };
 

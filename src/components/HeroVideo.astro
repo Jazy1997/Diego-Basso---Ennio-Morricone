@@ -38,6 +38,10 @@ const Titolo = titolo ? 'h1' : 'div';
 // Il claim si divide in due: le prime tre parole sopra la finestra, il resto sotto.
 const parole = D.claim.sottotitolo.split(' ');
 const claim = [parole.slice(0, 3).join(' '), parole.slice(3).join(' ')];
+// Da desktop la seconda parte va in due righe fisse ("in un unico" / "grande spettacolo"), mai tre.
+const resto = parole.slice(3);
+const meta = Math.ceil(resto.length / 2);
+const claimGiu = [resto.slice(0, meta).join(' '), resto.slice(meta).join(' ')];
 
 const oggi = oggiRoma();
 const prossima = (await prendi('eventi'))
@@ -66,7 +70,9 @@ const prossima = (await prendi('eventi'))
 
     <p class="hero__claim titolo-xl" data-claim>
       <span class="hero__claim-riga hero__claim-riga--su"><span>{claim[0]}</span></span>
-      <span class="hero__claim-riga hero__claim-riga--giu"><span>{claim[1]}</span></span>
+      <span class="hero__claim-riga hero__claim-riga--giu"
+        ><span><span class="hero__claim-pezzo">{claimGiu[0]}</span> <span class="hero__claim-pezzo">{claimGiu[1]}</span></span
+      ></span>
     </p>
 
     <p class="hero__misure misura" aria-hidden="true" data-misure>
@@ -338,6 +344,25 @@ const prossima = (await prendi('eventi'))
 
   :global(.regia-attiva) .hero__claim-riga--su {
     white-space: nowrap;
+  }
+
+  /* Da desktop: "in un unico" / "grande spettacolo" in due righe esatte, con la misura limitata dallo spazio
+     sotto la finestra (--scena-h, --finestra-h, --finestra-l arrivano da hero-regia.ts) e dalla sua larghezza:
+     sugli schermi bassi il claim si rimpicciolisce invece di essere tagliato. */
+  @media (min-width: 721px) {
+    :global(.regia-attiva) .hero__claim {
+      font-size: min(
+        5.2vw,
+        6rem,
+        calc((var(--scena-h, 100svh) - var(--finestra-h)) / 5.4),
+        calc(var(--finestra-l) / 13.5)
+      );
+    }
+
+    :global(.regia-attiva) .hero__claim-pezzo {
+      display: block;
+      white-space: nowrap;
+    }
   }
 
   :global(.regia-attiva) .hero__claim-riga {
