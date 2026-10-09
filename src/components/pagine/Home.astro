@@ -1,27 +1,25 @@
 ---
-// Home (ARCHITECTURE.md §6): le 11 sezioni nell'ordine della tabella, una sola implementazione per IT e EN.
-// Unico pulsante oro per schermata: "Prossime date" nell'hero, "Scarica il press kit" in Promoter e venue.
-import { getImage } from 'astro:assets';
+// Home (revisione UX/UI "La pellicola in sala", ottobre 2026): una sequenza di scene legate allo scroll.
+// Hero (video che si richiude in finestra) → manifesto che si accende → panoramica → titoli di coda del repertorio
+// → il Maestro → la formazione come crediti → trailer → date → album → promoter → chiusura.
+// Movimenti dichiarati con attributi data-* e orchestrati da src/scripts/regia.ts. Una sola implementazione IT/EN.
+import { Picture, getImage } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import type { Lingua } from '../Seo.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Testata from '../Testata.astro';
 import HeroVideo from '../HeroVideo.astro';
-import Sezione from '../Sezione.astro';
 import ListaDate from '../ListaDate.astro';
-import Cinemascope from '../Cinemascope.astro';
-import Repertorio from '../Repertorio.astro';
-import Crediti from '../Crediti.astro';
 import VideoTrailer from '../VideoTrailer.astro';
 import Album from '../Album.astro';
 import Pulsante from '../Pulsante.astro';
-import Ritratto from '../Ritratto.astro';
 import PulsantePressKit from '../PulsantePressKit.astro';
 import Footer from '../Footer.astro';
 import posterTrailer from '../../assets/video/trailer-poster.jpg';
 import immagineAlbum from '../../assets/album/copertina.jpg';
 import { precaricaPoster } from '../../lib/hero';
 import { prendi } from '../../lib/contenuti';
+import { QUALITA, foto } from '../../lib/foto';
 import { paragrafi, testo } from '../../lib/testi';
 import { alternate, localizedPath, t } from '../../i18n/utils';
 
@@ -37,6 +35,29 @@ const poster = await precaricaPoster();
 const medio = paragrafi((await testo('medio', lang)).body ?? '');
 const visione = paragrafi((await testo('visione', lang)).body ?? '')[0];
 const trailer = await getEntry('link', 'trailer');
+
+// Manifesto: la prima frase del testo medio si accende parola per parola, il resto segue in colonna (testo alla lettera).
+const [primo, ...restoMedio] = medio;
+const fine = primo.search(/[.!?](\s|$)/) + 1;
+const manifesto = fine > 0 ? primo.slice(0, fine) : primo;
+const seguito = [primo.slice(manifesto.length).trim(), ...restoMedio].filter(Boolean);
+
+// Titoli di coda: i film citati nella frase del repertorio, più i western di Leone.
+const film = [...D.repertorio.citazione.matchAll(/<em>(.*?)<\/em>/g)].map((m) => m[1]);
+const coda = [...film, D.repertorio.leone];
+
+const panoramica = await foto('orchestra-schermo-03', lang);
+const fondoCoda = await foto('orchestra-schermo-02', lang);
+const ritratto = await foto('maestro-01', lang);
+const formazione = [
+  { ruolo: D.crediti.direttore, nome: 'Diego Basso', foto: await foto('maestro-02', lang) },
+  { ruolo: D.crediti.soprano, nome: 'Claudia Sasso', foto: await foto('soprano-01', lang) },
+  {
+    ruolo: D.crediti.orchestra,
+    nome: 'Orchestra Ritmico Sinfonica Italiana',
+    foto: await foto('sezione-archi-01', lang),
+  },
+];
 
 // JSON-LD (ARCHITECTURE.md §12): l'orchestra con direttore e soprano, e l'album con le piattaforme.
 const sito = Astro.site ?? Astro.url;
@@ -77,162 +98,604 @@ const jsonLd = [
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <Testata slot="testata" lang={lang} corrente="home" trasparente />
 
-  <!-- 2 · Hero -->
   <HeroVideo lang={lang} />
 
-  <!-- 3 · Prossime date -->
-  <Sezione id="date" occhiello={D.hero.date}>
-    <ListaDate lang={lang} limite={3} />
-    <p class="home__link">
-      <Pulsante href={localizedPath('date', lang)} variante="testo" lang={lang}>{T.tutteDate}</Pulsante>
-    </p>
-  </Sezione>
-
-  <!-- 4 · Il progetto -->
-  <Sezione id="progetto" occhiello={T.progetto} titolo={D.claim.sottotitolo} stileTitolo="evocativo-xl" affiancata>
-    <div class="testo">
-      {medio.map((p) => <p class="corpo" set:html={p} />)}
-    </div>
-    <p class="home__link">
-      <Pulsante href={localizedPath('progetto', lang)} variante="testo" lang={lang}>{T.scopriProgetto}</Pulsante>
-    </p>
-  </Sezione>
-  <Sezione>
-    <Cinemascope
-      foto="orchestra-schermo-03"
-      lang={lang}
-      sottotitolo={D.claim.proiezioni}
-      sizes="(min-width: 1568px) 1440px, 92vw"
-    />
-  </Sezione>
-
-  <!-- 5 · Il repertorio -->
-  <Sezione occhiello={T.repertorio} titolo={T.repertorioTitolo} centrato>
-    <Repertorio lang={lang} />
-  </Sezione>
-
-  <!-- 6 · Il Maestro -->
-  <Sezione id="maestro" class="home__maestro">
-    <Ritratto foto="maestro-01" posizione="55% 30%" lang={lang} />
-    <div class="home__maestro-testo">
-      <div class="sezione__testa">
-        <p class="occhiello om-oro">{T.maestro}</p>
-        <h2 class="titolo-l">{T.maestroTitolo}</h2>
-      </div>
+  <!-- Manifesto: il progetto in una frase che si accende -->
+  <section class="scena manifesto contenitore" id="progetto" aria-labelledby="manifesto-titolo">
+    <h2 class="solo-lettori" id="manifesto-titolo">{T.progetto}</h2>
+    <p class="manifesto__frase" data-illumina>{manifesto}</p>
+    <div class="manifesto__seguito">
+      <p class="misura manifesto__misura" aria-hidden="true">2004 → {new Date().getFullYear()}</p>
       <div class="testo">
-        <p class="corpo" set:html={visione} />
+        {seguito.map((p) => <p class="corpo om-tenue" set:html={p} />)}
       </div>
-      <p class="home__link">
-        <Pulsante href={localizedPath('maestro', lang)} variante="testo" lang={lang}>{T.scopriMaestro}</Pulsante>
-      </p>
+      <Pulsante href={localizedPath('progetto', lang)} variante="testo" lang={lang}>{T.scopriProgetto}</Pulsante>
     </div>
-  </Sezione>
+  </section>
 
-  <!-- 7 · Formazione -->
-  <Sezione occhiello={T.formazione}>
-    <Crediti lang={lang} />
-  </Sezione>
+  <!-- Panoramica: la sala, nella finestra 2,39:1 -->
+  <figure class="scena panoramica">
+    <div class="panoramica__finestra" data-sipario>
+      <div class="panoramica__immagine" data-parallasse>
+        <Picture
+          src={panoramica.src}
+          alt={panoramica.alt}
+          formats={['avif', 'webp']}
+          widths={panoramica.larghezze}
+          quality={QUALITA}
+          sizes="100vw"
+          style={`object-position: ${panoramica.posizione}`}
+        />
+      </div>
+      <span class="om-grana" aria-hidden="true"></span>
+    </div>
+    <figcaption class="contenitore panoramica__didascalia">
+      <span class="evocativo">{D.claim.proiezioni}</span>
+      <span class="misura" aria-hidden="true">2,39 : 1</span>
+    </figcaption>
+  </figure>
 
-  <!-- 8 · Video -->
+  <!-- Repertorio: titoli di coda -->
+  <section class="scena coda" aria-labelledby="coda-titolo">
+    <div class="coda__fondo" aria-hidden="true">
+      <Picture
+        src={fondoCoda.src}
+        alt=""
+        formats={['avif', 'webp']}
+        widths={fondoCoda.larghezze}
+        quality={QUALITA}
+        sizes="100vw"
+        style={`object-position: ${fondoCoda.posizione}`}
+      />
+      <span class="coda__velo"></span>
+    </div>
+    <div class="contenitore coda__testa">
+      <h2 class="titolo-l" id="coda-titolo" data-righe>{T.repertorioTitolo}</h2>
+      <p class="lead coda__frase" set:html={D.repertorio.citazione} />
+    </div>
+    <ol class="coda__titoli contenitore" aria-hidden="true">
+      {
+        coda.map((titolo, i) => (
+          <li class:list={['coda__titolo', i === coda.length - 1 && 'coda__titolo--leone']} data-accendi>
+            <span lang={lang === 'en' && i < film.length ? 'en' : undefined}>{titolo}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- Il Maestro -->
+  <section class="scena maestro contenitore" id="maestro" aria-labelledby="maestro-titolo">
+    <h2 class="titolo-l maestro__titolo" id="maestro-titolo" data-righe>{T.maestroTitolo}</h2>
+    <div class="maestro__ritratto" data-sipario>
+      <div class="maestro__immagine" data-parallasse>
+        <Picture
+          src={ritratto.src}
+          alt={ritratto.alt}
+          formats={['avif', 'webp']}
+          widths={ritratto.larghezze}
+          quality={QUALITA}
+          sizes="(min-width: 900px) 70vw, 190vw"
+          style="object-position: 55% 30%"
+        />
+      </div>
+      <span class="om-grana" aria-hidden="true"></span>
+    </div>
+    <div class="maestro__testo">
+      <p class="corpo om-tenue" set:html={visione} />
+      <Pulsante href={localizedPath('maestro', lang)} variante="testo" lang={lang}>{T.scopriMaestro}</Pulsante>
+    </div>
+  </section>
+
+  <!-- Formazione: crediti a tutta riga, la foto cambia con la riga accesa -->
+  <section class="scena formazione contenitore" aria-labelledby="formazione-titolo" data-sequenza>
+    <h2 class="solo-lettori" id="formazione-titolo">{T.formazione}</h2>
+    <div class="formazione__foto" aria-hidden="true">
+      {
+        formazione.map((v, i) => (
+          <Picture
+            class={`formazione__scatto formazione__scatto--${i}`}
+            src={v.foto.src}
+            alt=""
+            formats={['avif', 'webp']}
+            widths={[640, 960]}
+            quality={QUALITA}
+            sizes="(min-width: 900px) 60vh, 100vw"
+            style={`object-position: ${v.foto.posizione}`}
+          />
+        ))
+      }
+    </div>
+    <dl class="formazione__voci">
+      {
+        formazione.map((v, i) => (
+          <div class:list={['formazione__voce', `formazione__voce--${i}`]} data-passo>
+            <dt class="misura">{v.ruolo}</dt>
+            <dd>{v.nome}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <!-- Trailer -->
   {
     trailer?.data.youtubeId && (
-      <Sezione occhiello={T.video}>
-        <VideoTrailer
-          youtubeId={trailer.data.youtubeId}
-          titolo={trailer.data.nome}
-          poster={posterTrailer}
-          lang={lang}
-        />
-      </Sezione>
+      <section class="scena trailer-scena contenitore" aria-label={T.video}>
+        <div data-sipario>
+          <VideoTrailer
+            youtubeId={trailer.data.youtubeId}
+            titolo={trailer.data.nome}
+            poster={posterTrailer}
+            lang={lang}
+          />
+        </div>
+      </section>
     )
   }
 
-  <!-- 9 · Ascolta l'album -->
-  <Sezione id="album">
-    <Album lang={lang} />
-  </Sezione>
+  <!-- Prossime date -->
+  <section class="scena date contenitore" id="date" aria-labelledby="date-titolo">
+    <div class="date__testa">
+      <h2 class="titolo-xl" id="date-titolo" data-righe>{D.hero.date}</h2>
+      <Pulsante href={localizedPath('date', lang)} variante="testo" lang={lang}>{T.tutteDate}</Pulsante>
+    </div>
+    <ListaDate lang={lang} limite={3} />
+  </section>
 
-  <!-- 10 · Promoter e venue -->
-  <Sezione id="promoter" occhiello={T.promoter} titolo={T.promoterTitolo}>
-    <ul class="home__argomenti">
+  <!-- Album -->
+  <section class="scena contenitore" id="album" aria-label={D.album.occhiello}>
+    <Album lang={lang} />
+  </section>
+
+  <!-- Promoter e venue: un argomento per riga -->
+  <section class="scena promoter contenitore" id="promoter" aria-labelledby="promoter-titolo">
+    <h2 class="titolo-l promoter__titolo" id="promoter-titolo" data-righe>{T.promoterTitolo}</h2>
+    <ul class="promoter__righe">
       {
         T.argomenti.map((a) => (
-          <li>
-            <h3 class="titolo-m">{a.titolo}</h3>
+          <li class="promoter__riga" data-accendi>
+            <h3 class="promoter__voce">{a.titolo}</h3>
             <p class="corpo om-tenue">{a.testo}</p>
           </li>
         ))
       }
     </ul>
-    <div class="om-riga home__azioni">
+    <div class="om-riga promoter__azioni">
       <PulsantePressKit lang={lang} />
       <Pulsante href={localizedPath('contatti', lang)} variante="contorno" lang={lang}>{T.booking}</Pulsante>
       <Pulsante href={localizedPath('promoter', lang)} variante="testo" lang={lang}>{T.scopriPromoter}</Pulsante>
     </div>
-  </Sezione>
+  </section>
 
-  <!-- 11 · Piè di pagina -->
+  <!-- Chiusura -->
+  <section class="scena chiusura contenitore" aria-label={D.claim.chiusura}>
+    <p class="chiusura__frase" data-illumina>{D.claim.chiusura}</p>
+  </section>
+
   <Footer slot="piede" lang={lang} />
 </BaseLayout>
 
 <style>
-  .home__link {
-    margin-top: var(--spazio-6);
+  /* ---------- Ritmo delle scene ---------- */
+  .scena {
+    position: relative;
+    padding-block: clamp(96px, 16vh, 200px);
   }
 
-  .home__link :global(.om-pulsante--testo) {
-    padding-inline: 0;
+  .scena :global(.om-pulsante--testo) {
+    align-self: flex-start;
   }
 
-  /* Il Maestro: ritratto verticale 4:5 accanto al testo; su mobile foto sopra, testo sotto. */
-  /* La <section> la disegna Sezione: la classe arriva da qui, quindi :global. */
-  :global(.home__maestro) {
+  /* ---------- Manifesto ---------- */
+  .manifesto__frase {
+    max-width: 22ch;
+    margin: 0;
+    font: 250 clamp(2rem, 4.6vw, 4.5rem) / 1.08 var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+    color: var(--avorio);
+  }
+
+  .manifesto__seguito {
     display: grid;
     gap: var(--spazio-8);
-    align-items: center;
+    margin-top: clamp(48px, 9vh, 112px);
+    margin-left: auto;
+    max-width: 640px;
   }
 
-  @media (min-width: 900px) {
-    :global(.home__maestro) {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      gap: var(--spazio-16);
+  .manifesto__misura {
+    margin: 0;
+    color: var(--oro);
+  }
+
+  @media (min-width: 1100px) {
+    .manifesto__seguito {
+      margin-right: 8%;
     }
   }
 
-  .home__argomenti {
+  /* ---------- Panoramica ---------- */
+  .panoramica {
+    margin: 0;
+    padding-top: 0;
+  }
+
+  .panoramica__finestra {
+    position: relative;
+    aspect-ratio: 2.39 / 1;
+    overflow: hidden;
+    background: var(--sala-000);
+  }
+
+  .panoramica__immagine,
+  .maestro__immagine {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* <Picture> avvolge l'img: senza display: contents l'altezza al 100 % non arriva alla cornice. */
+  .panoramica__immagine :global(picture),
+  .maestro__immagine :global(picture),
+  .coda__fondo :global(picture) {
+    display: contents;
+  }
+
+  .panoramica__immagine :global(img),
+  .maestro__immagine :global(img),
+  .coda__fondo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .panoramica__didascalia {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--spazio-6);
+    padding-top: var(--spazio-6);
+    color: var(--avorio);
+  }
+
+  .panoramica__didascalia .misura {
+    color: var(--avorio-tenue);
+  }
+
+  @media (max-width: 720px) {
+    .panoramica__finestra {
+      aspect-ratio: 4 / 3;
+    }
+
+    .panoramica__didascalia .misura {
+      display: none;
+    }
+  }
+
+  /* ---------- Titoli di coda ---------- */
+  .coda {
+    padding-block: 0;
+  }
+
+  .coda__fondo {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    margin-bottom: -100svh;
+    overflow: hidden;
+  }
+
+  .coda__velo {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, var(--sala-100) 0, rgba(11, 9, 8, 0.78) 22%, rgba(11, 9, 8, 0.78) 78%, var(--sala-100) 100%);
+  }
+
+  .coda__testa {
+    position: relative;
+    display: grid;
+    gap: var(--spazio-6);
+    padding-top: clamp(120px, 22vh, 240px);
+  }
+
+  .coda__frase {
+    max-width: 48ch;
+    margin: 0;
+    color: var(--avorio-tenue);
+  }
+
+  .coda__frase :global(em) {
+    color: var(--avorio);
+  }
+
+  .coda__titoli {
+    position: relative;
+    margin: 0;
+    padding-block: clamp(96px, 30vh, 320px) clamp(120px, 35vh, 360px);
+    list-style: none;
+    text-align: center;
+  }
+
+  .coda__titolo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spazio-3);
+    padding-block: clamp(40px, 9vh, 96px);
+    font: italic 400 clamp(2.5rem, 6.4vw, 6rem) / 1 var(--font-accento);
+    letter-spacing: -0.015em;
+    color: var(--avorio);
+    opacity: 0.22;
+    filter: blur(1.5px);
+    transform: scale(0.94);
+    transition:
+      opacity 0.7s var(--ease-uscita),
+      filter 0.7s var(--ease-uscita),
+      transform 0.9s var(--ease-uscita),
+      color 0.7s ease;
+  }
+
+  .coda__titolo--leone {
+    font: 250 clamp(1.75rem, 4vw, 3.75rem) / 1.05 var(--font-display);
+    font-stretch: 125%;
+    text-transform: uppercase;
+  }
+
+  .coda__titolo:global(.is-acceso) {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    color: var(--oro);
+  }
+
+  /* ---------- Il Maestro ---------- */
+  .maestro {
+    display: grid;
+    gap: var(--spazio-12);
+    align-items: center;
+  }
+
+  .maestro__titolo {
+    max-width: 14ch;
+  }
+
+  .maestro__ritratto {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--sala-000);
+  }
+
+  .maestro__testo {
     display: grid;
     gap: var(--spazio-8);
-    margin: 0 0 var(--spazio-12);
+    max-width: 60ch;
+  }
+
+  @media (min-width: 900px) {
+    .maestro {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      gap: clamp(48px, 7vw, 128px);
+    }
+
+    .maestro__titolo {
+      grid-column: 1 / -1;
+      justify-self: end;
+      text-align: right;
+    }
+
+    .maestro__ritratto {
+      aspect-ratio: 5 / 6;
+    }
+  }
+
+  /* ---------- Formazione ----------
+     La scena si ferma (data-sequenza): la cornice della foto resta immobile e cambia immagine
+     mentre si accendono, una alla volta, direttore, soprano e orchestra. */
+  .formazione {
+    display: grid;
+    align-content: center;
+    gap: clamp(20px, 4vh, 48px);
+    min-height: 100svh;
+    padding-block: clamp(24px, 6vh, 72px);
+  }
+
+  .formazione__voci {
+    margin: 0;
+  }
+
+  /* Titoli di coda: ruolo in mono a sinistra, nome a destra, sulla stessa linea di base. */
+  .formazione__voce {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--spazio-6);
+    padding-block: clamp(18px, 4.5vh, 52px);
+    border-top: 1px solid var(--linea);
+    opacity: 0.55;
+    transition: opacity 0.6s var(--ease-uscita);
+  }
+
+  .formazione__voce:last-child {
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .formazione__voce:global(.is-acceso) {
+    opacity: 1;
+  }
+
+  .formazione__voce dt {
+    color: var(--oro);
+    text-align: right;
+  }
+
+  .formazione__voce dd {
+    margin: 0;
+    font: 250 clamp(1.5rem, 2.9vw, 3.25rem) / 1.02 var(--font-display);
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .formazione__foto {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--sala-000);
+  }
+
+  .formazione__foto :global(picture) {
+    display: contents;
+  }
+
+  /* Le foto sono sovrapposte: quella della voce accesa entra in dissolvenza con un respiro di scala. */
+  .formazione__foto :global(.formazione__scatto) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity 0.8s var(--ease-uscita),
+      transform 1.6s var(--ease-uscita);
+    will-change: opacity, transform;
+  }
+
+  .formazione:not(:has(:global(.is-acceso))) :global(.formazione__scatto--0),
+  .formazione:has(.formazione__voce--0:global(.is-acceso)) :global(.formazione__scatto--0),
+  .formazione:has(.formazione__voce--1:global(.is-acceso)) :global(.formazione__scatto--1),
+  .formazione:has(.formazione__voce--2:global(.is-acceso)) :global(.formazione__scatto--2) {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 600px) {
+    .formazione__voce {
+      grid-template-columns: 1fr;
+      gap: var(--spazio-1);
+    }
+
+    /* Su mobile il ruolo segue il nome, non gli sta sopra. */
+    .formazione__voce dt {
+      order: 2;
+      text-align: left;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .formazione {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(40px, 6vw, 112px);
+    }
+
+    .formazione__foto {
+      height: min(74svh, 760px);
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  /* ---------- Date ---------- */
+  .date__testa {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--spazio-6);
+    margin-bottom: clamp(40px, 7vh, 80px);
+  }
+
+  /* ---------- Promoter ---------- */
+  .promoter__titolo {
+    max-width: 18ch;
+  }
+
+  .promoter__righe {
+    margin: clamp(48px, 8vh, 96px) 0 var(--spazio-12);
     padding: 0;
     list-style: none;
   }
 
-  .home__argomenti li {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spazio-3);
-    padding-top: var(--spazio-6);
-    border-top: 1px solid var(--linea);
+  .promoter__riga {
+    position: relative;
+    display: grid;
+    gap: var(--spazio-4);
+    padding-block: clamp(28px, 5vh, 48px);
+  }
+
+  /* Il filo si disegna da sinistra quando la riga passa al centro. */
+  .promoter__riga::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--linea-forte);
+    transform: scaleX(0.08);
+    transform-origin: left center;
+    transition: transform 1.2s var(--ease-sipario);
+  }
+
+  .promoter__riga:global(.is-acceso)::before {
+    transform: scaleX(1);
+  }
+
+  .promoter__voce {
+    margin: 0;
+    font: 800 clamp(2.5rem, 6vw, 5.5rem) / 0.9 var(--font-display);
+    font-stretch: 62%;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    color: var(--avorio);
   }
 
   @media (min-width: 900px) {
-    .home__argomenti {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .promoter__riga {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: end;
+      gap: var(--spazio-12);
     }
   }
 
-  .home__azioni {
+  .promoter__azioni {
     gap: var(--spazio-6);
   }
 
   @media (max-width: 600px) {
-    .home__azioni {
+    .promoter__azioni {
       flex-direction: column;
       align-items: stretch;
     }
 
-    .home__azioni :global(.om-pulsante:not(.om-pulsante--testo)) {
+    .promoter__azioni :global(.om-pulsante:not(.om-pulsante--testo)) {
       width: 100%;
+    }
+  }
+
+  /* ---------- Chiusura ---------- */
+  .chiusura {
+    padding-block: clamp(120px, 24vh, 280px);
+  }
+
+  .chiusura__frase {
+    max-width: 18ch;
+    margin: 0 auto;
+    font: italic 400 clamp(2.25rem, 5.6vw, 5.5rem) / 1.04 var(--font-accento);
+    letter-spacing: -0.015em;
+    text-align: center;
+    color: var(--avorio);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .coda__titolo,
+    .formazione__voce {
+      opacity: 1;
+      filter: none;
+      transform: none;
     }
   }
 </style>

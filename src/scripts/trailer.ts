@@ -14,6 +14,7 @@ for (const trailer of document.querySelectorAll<HTMLElement>('[data-trailer]')) 
     iframe.allowFullscreen = true;
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
     link.replaceWith(iframe);
+    trailer.classList.add('is-in-riproduzione'); // la finestra panoramica torna 16:9 per i controlli del player
     iframe.focus();
   });
 }

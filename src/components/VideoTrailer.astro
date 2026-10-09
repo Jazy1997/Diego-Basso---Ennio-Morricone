@@ -46,11 +46,17 @@ const etichetta = `${t(lang).comune.riproduciVideo}: ${titolo}`;
 </script>
 
 <style>
+  /* Il trailer è girato in panoramico con bande nere: la facciata lo mostra in finestra 2,39:1 senza bande,
+     il player (con i suoi controlli) torna 16:9. */
   .trailer {
     position: relative;
-    aspect-ratio: var(--rapporto-video);
+    aspect-ratio: 2.39 / 1;
     background: var(--sala-000);
     overflow: hidden;
+  }
+
+  .trailer:global(.is-in-riproduzione) {
+    aspect-ratio: var(--rapporto-video);
   }
 
   .trailer__avvia,

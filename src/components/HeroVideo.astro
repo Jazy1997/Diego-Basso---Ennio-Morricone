@@ -1,11 +1,15 @@
 ---
-// Hero della Home (ARCHITECTURE.md §7.2): video a tutto schermo su desktop e mobile, in loop, in streaming HLS.
-// Deroga al DS decisa dall'utente: niente bande fisse; testata, logo, sottotitolo e pulsante stanno sopra il video,
-// leggibili grazie a due veli sfumati. Resta l'animazione firma: all'apertura il video è una finestra 2,39:1
-// che in 0,8 s si apre a tutto schermo. Con reduced-motion o Save-Data niente animazione e niente video: resta il poster.
+// Hero della Home (revisione UX/UI, ottobre 2026; video e streaming come in ARCHITECTURE.md §7.2).
+// Prima viewport: video a tutto schermo, logo verticale (h1) in basso a sinistra, prossima data con "Biglietti"
+// in basso a destra. Scorrendo, la scena si ferma e il video si richiude in una finestra panoramica
+// (2,39:1 da desktop, 1,6:1 su mobile) mentre il claim entra sopra e sotto la finestra: src/scripts/hero-regia.ts.
+// Ouverture: alla prima visita della sessione un leader 3‑2‑1 di 1,4 s, poi le ante si aprono sul video.
+// Con prefers-reduced-motion o Save-Data: niente ouverture, niente video né scena ferma; il claim sta sotto l'hero.
 import { Picture } from 'astro:assets';
 import type { Lingua } from './Seo.astro';
 import { localizedPath, t } from '../i18n/utils';
+import { coordinate, isoRoma, numeroData, oggiRoma, rigaData } from '../i18n/date';
+import { prendi } from '../lib/contenuti';
 import Logo from './Logo.astro';
 import Pulsante from './Pulsante.astro';
 import Icona from './Icona.astro';
@@ -16,96 +20,193 @@ interface Props {
   hrefDate?: string;
   /** Il logo è l'h1 della pagina (Home). */
   titolo?: boolean;
+  /** Leader 3‑2‑1 alla prima visita della sessione. */
+  ouverture?: boolean;
 }
 
-const { lang = 'it', hrefDate = localizedPath('date', lang), titolo = true } = Astro.props;
+const {
+  lang = 'it',
+  hrefDate = localizedPath('date', lang),
+  titolo = true,
+  ouverture = true,
+} = Astro.props;
 
 const D = t(lang);
-const T = { ...D.hero, sottotitolo: D.claim.sottotitolo, riproduci: D.comune.riproduciVideo };
+const T = { ...D.hero, riproduci: D.comune.riproduciVideo, biglietti: D.comune.biglietti };
 const Titolo = titolo ? 'h1' : 'div';
+
+// Il claim si divide in due: le prime tre parole sopra la finestra, il resto sotto.
+const parole = D.claim.sottotitolo.split(' ');
+const claim = [parole.slice(0, 3).join(' '), parole.slice(3).join(' ')];
+
+const oggi = oggiRoma();
+const prossima = (await prendi('eventi'))
+  .filter((e) => e.data.data >= oggi)
+  .sort((a, b) => `${a.data.data}T${a.data.ora}`.localeCompare(`${b.data.data}T${b.data.ora}`))[0]?.data;
 ---
 
 <section class="hero" data-hero data-sorgente={sorgenteVideo}>
-  <div class="hero__schermo">
-    <Picture
-      src={POSTER.src}
-      quality={POSTER.quality}
-      widths={[...POSTER.widths]}
-      sizes={POSTER.sizes}
-      formats={['avif', 'webp']}
-      alt=""
-      loading="eager"
-      fetchpriority="high"
-      class="hero__poster"
-    />
-    <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true"></video>
-    <span class="om-grana" aria-hidden="true"></span>
-    <span class="hero__velo" aria-hidden="true"></span>
+  <div class="hero__scena" data-scena>
+    <div class="hero__schermo" data-schermo>
+      <Picture
+        src={POSTER.src}
+        quality={POSTER.quality}
+        widths={[...POSTER.widths]}
+        sizes={POSTER.sizes}
+        formats={['avif', 'webp']}
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+        class="hero__poster"
+      />
+      <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <span class="om-grana" aria-hidden="true"></span>
+      <span class="hero__velo" aria-hidden="true" data-velo></span>
+    </div>
+
+    <p class="hero__claim titolo-xl" data-claim>
+      <span class="hero__claim-riga hero__claim-riga--su"><span>{claim[0]}</span></span>
+      <span class="hero__claim-riga hero__claim-riga--giu"><span>{claim[1]}</span></span>
+    </p>
+
+    <p class="hero__misure misura" aria-hidden="true" data-misure>
+      <span>2,39 : 1</span>
+      {prossima && <span>{coordinate(prossima.lat, prossima.lng)}</span>}
+    </p>
+
+    <div class="hero__contenuto" data-contenuto>
+      <Titolo class="hero__logo">
+        <Logo forma="verticale" larghezza={320} caricamento="eager" />
+      </Titolo>
+
+      <div class="hero__prossima">
+        {
+          prossima ? (
+            <>
+              <p class="hero__data">
+                <time datetime={isoRoma(prossima.data, prossima.ora)}>{numeroData(prossima.data)}</time>
+                <span lang={lang === 'it' ? undefined : 'it'}>{prossima.citta}</span>
+              </p>
+              <p class="misura hero__sede" lang={lang === 'it' ? undefined : 'it'}>
+                {prossima.sede} · {rigaData(prossima.data, prossima.ora, lang)}
+              </p>
+              <div class="hero__azioni">
+                {prossima.biglietti && (
+                  <Pulsante href={prossima.biglietti} esterno lang={lang}>
+                    {T.biglietti}
+                  </Pulsante>
+                )}
+                <Pulsante href={hrefDate} variante="testo" lang={lang}>
+                  {T.date}
+                </Pulsante>
+              </div>
+            </>
+          ) : (
+            <Pulsante href={hrefDate} lang={lang}>
+              {T.date}
+            </Pulsante>
+          )
+        }
+      </div>
+    </div>
+
+    <button
+      class="hero__pausa"
+      type="button"
+      aria-label={T.riproduci}
+      data-pausa={T.pausa}
+      data-riproduci={T.riproduci}
+      hidden
+    >
+      <Icona nome="pause" class="hero__icona-pausa" />
+      <Icona nome="play" class="hero__icona-play" />
+    </button>
   </div>
 
-  <div class="hero__contenuto">
-    <Titolo class="hero__logo">
-      <Logo forma="verticale" larghezza={360} caricamento="eager" />
-    </Titolo>
-    <p class="om-cinemascope__sottotitolo">{T.sottotitolo}</p>
-    <Pulsante href={hrefDate} lang={lang} class="hero__pulsante">{T.date}</Pulsante>
-  </div>
-
-  <button
-    class="hero__pausa"
-    type="button"
-    aria-label={T.riproduci}
-    data-pausa={T.pausa}
-    data-riproduci={T.riproduci}
-    hidden
-  >
-    <Icona nome="pause" class="hero__icona-pausa" />
-    <Icona nome="play" class="hero__icona-play" />
-  </button>
+  {
+    ouverture && (
+      <div class="ouverture" data-ouverture>
+        <span class="ouverture__anta ouverture__anta--su" />
+        <span class="ouverture__anta ouverture__anta--giu" />
+        <div class="ouverture__leader" aria-hidden="true">
+          <span class="ouverture__giro" />
+          <svg class="ouverture__mirino" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="92" />
+            <circle cx="100" cy="100" r="74" />
+            <path d="M100 0v200M0 100h200" />
+          </svg>
+          <span class="ouverture__numero">3</span>
+          <span class="ouverture__numero">2</span>
+          <span class="ouverture__numero">1</span>
+        </div>
+        <button class="ouverture__salta misura" type="button" data-salta>
+          {T.salta}
+        </button>
+      </div>
+    )
+  }
 </section>
 
 <script is:inline>
-  // Prima del primo disegno: decide se animare (evita il salto tutto schermo → finestra).
+  // Prima del primo disegno: video sì o no (data-anima) e ouverture sì o no (una volta per sessione).
   (function () {
     var hero = document.currentScript.previousElementSibling;
     var ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var risparmio = navigator.connection && navigator.connection.saveData;
     if (!ridotto && !risparmio) hero.setAttribute('data-anima', '');
+    var ouverture = hero.querySelector('[data-ouverture]');
+    if (!ouverture) return;
+    var vista = false;
+    try {
+      vista = sessionStorage.getItem('ouverture') === '1';
+      sessionStorage.setItem('ouverture', '1');
+    } catch (e) {}
+    if (ridotto || vista) {
+      ouverture.remove();
+      return;
+    }
+    hero.setAttribute('data-con-ouverture', '');
+    var chiudi = function () {
+      ouverture.remove();
+      hero.removeAttribute('data-con-ouverture');
+    };
+    ouverture.querySelector('[data-salta]').addEventListener('click', chiudi);
+    ouverture.addEventListener('animationend', function (e) {
+      if (e.target.classList.contains('ouverture__anta--giu')) chiudi();
+    });
   })();
 </script>
 
 <script>
   import '../scripts/hero.ts';
+  import '../scripts/hero-regia.ts';
 </script>
 
 <style>
   .hero {
     position: relative;
+    background: var(--sala-000);
+  }
+
+  .hero__scena {
+    --rapporto: 2.39;
+    /* La finestra chiusa occupa l'80 % della larghezza utile: lascia respiro al claim sopra e sotto. */
+    --scala: 0.8;
+    --finestra-l: calc((100cqw - 2 * var(--margine-web)) * var(--scala));
+    --finestra-h: calc(var(--finestra-l) / var(--rapporto));
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-height: max(100svh, 520px);
-    background: var(--sala-000);
+    height: max(100svh, 560px);
     overflow: hidden;
+    container-type: inline-size;
   }
 
   .hero__schermo {
     position: absolute;
     inset: 0;
-  }
-
-  /* Animazione firma: parte come finestra 2,39:1 al centro (bande sala-000 sopra e sotto) e si apre. */
-  .hero[data-anima] .hero__schermo {
-    animation: om-sipario 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both;
-  }
-
-  @keyframes om-sipario {
-    from {
-      clip-path: inset(max(0px, calc(50% - 20.92vw)) 0);
-    }
-    to {
-      clip-path: inset(0 0);
-    }
+    will-change: clip-path;
   }
 
   .hero__schermo :global(picture) {
@@ -123,68 +224,175 @@ const Titolo = titolo ? 'h1' : 'div';
 
   .hero__video {
     opacity: 0;
-    transition: opacity 0.8s ease;
+    transition: opacity 1.2s ease;
   }
 
   .hero__video.is-in-riproduzione {
     opacity: 1;
   }
 
-  /* Veli: in alto per la testata trasparente, in basso per logo e testi. */
+  /* Veli: in alto per la testata, in basso per logo e prossima data. */
   .hero__velo {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(to bottom, var(--velo) 0, transparent 22%),
-      linear-gradient(to top, rgba(5, 4, 4, 0.85) 0, var(--velo) 28%, transparent 62%);
+      linear-gradient(to bottom, rgba(5, 4, 3, 0.55) 0, transparent 24%),
+      linear-gradient(to top, rgba(5, 4, 3, 0.9) 0, rgba(5, 4, 3, 0.55) 30%, transparent 64%);
     pointer-events: none;
   }
 
+  /* ---------- Contenuto della prima viewport ---------- */
   .hero__contenuto {
     position: relative;
+    z-index: 2;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spazio-4);
-    width: 100%;
-    max-width: calc(1440px + 2 * var(--margine-web));
-    margin-inline: auto;
-    padding: var(--spazio-24) var(--margine-web) var(--spazio-12);
-  }
-
-  .hero[data-anima] .hero__contenuto {
-    animation: om-compari 0.6s ease 1s both;
-  }
-
-  @keyframes om-compari {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--spazio-12);
+    padding: var(--spazio-24) calc(var(--margine-web) + 26px) clamp(28px, 5vh, 56px) var(--margine-web);
   }
 
   .hero__logo :global(img) {
-    width: clamp(240px, 25vw, 360px);
+    width: clamp(220px, 21vw, 320px);
     height: auto;
   }
 
-  .hero__contenuto :global(.hero__pulsante) {
-    margin-top: var(--spazio-2);
+  .hero__prossima {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spazio-2);
+    text-align: right;
   }
 
+  .hero__sede {
+    margin: 0;
+    color: var(--avorio-tenue);
+  }
+
+  .hero__data {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35em;
+    margin: 0;
+    font: 300 clamp(2.25rem, 4vw, 3.5rem) / 1 var(--font-display);
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  .hero__data time {
+    font-weight: 800;
+    font-stretch: 62%;
+    color: var(--oro);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero__azioni {
+    display: flex;
+    align-items: center;
+    gap: var(--spazio-6);
+    margin-top: var(--spazio-4);
+  }
+
+  /* ---------- Claim e misure: con la regia attiva stanno sopra e sotto la finestra ---------- */
+  /* Senza regia (movimento ridotto) il claim è il sottotitolo sotto logo e prossima data. */
+  .hero__claim {
+    position: relative;
+    z-index: 2;
+    order: 1;
+    margin: 0;
+    padding: 0 var(--margine-web) clamp(28px, 5vh, 56px);
+    font: italic 400 clamp(1.25rem, 2vw, 1.75rem) / 1.2 var(--font-accento);
+    text-transform: none;
+    color: var(--avorio);
+  }
+
+  :global(html:not(.regia-attiva)) .hero__contenuto {
+    padding-bottom: var(--spazio-6);
+  }
+
+  .hero__claim-riga {
+    display: block;
+  }
+
+  .hero__misure {
+    display: none;
+  }
+
+  :global(.regia-attiva) .hero__claim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 0;
+    font-family: var(--font-display);
+    font-style: normal;
+    font-weight: 250;
+    line-height: 0.96;
+    text-transform: uppercase;
+    background: none;
+    pointer-events: none;
+    font-size: clamp(2rem, 5.2vw, 6rem);
+    font-stretch: 112%;
+  }
+
+  :global(.regia-attiva) .hero__claim-riga--su {
+    white-space: nowrap;
+  }
+
+  :global(.regia-attiva) .hero__claim-riga {
+    position: absolute;
+    left: calc((100cqw - var(--finestra-l)) / 2);
+    right: calc((100cqw - var(--finestra-l)) / 2);
+    overflow: hidden;
+    padding-block: 0.04em;
+  }
+
+  :global(.regia-attiva) .hero__claim-riga > span {
+    display: block;
+    transform: translateY(110%);
+  }
+
+  :global(.regia-attiva) .hero__claim-riga--su {
+    bottom: calc(50% + var(--finestra-h) / 2 + clamp(12px, 2vh, 28px));
+  }
+
+  :global(.regia-attiva) .hero__claim-riga--giu {
+    top: calc(50% + var(--finestra-h) / 2 + clamp(12px, 2vh, 28px));
+    text-align: right;
+  }
+
+  :global(.regia-attiva) .hero__misure {
+    position: absolute;
+    top: calc(50% - var(--finestra-h) / 2 + 14px);
+    padding-inline: 16px;
+    left: calc((100cqw - var(--finestra-l)) / 2);
+    right: calc((100cqw - var(--finestra-l)) / 2);
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    color: var(--avorio);
+    opacity: 0;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  /* ---------- Pausa ---------- */
   .hero__pausa {
     position: absolute;
-    right: var(--margine-web);
-    bottom: var(--spazio-12);
-    z-index: 2;
+    top: calc(var(--altezza-testata) + var(--spazio-4));
+    right: calc(var(--margine-web) + 26px);
+    z-index: 3;
     display: grid;
     place-items: center;
     width: 44px;
     height: 44px;
-    border: 1px solid var(--linea-forte);
-    border-radius: var(--raggio-1);
-    background: var(--velo);
+    border: 1px solid rgba(242, 234, 216, 0.28);
+    border-radius: var(--raggio-tondo);
+    background: rgba(5, 4, 3, 0.35);
     color: var(--avorio);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .hero__pausa:hover {
@@ -205,19 +413,184 @@ const Titolo = titolo ? 'h1' : 'div';
     display: block;
   }
 
+  /* ---------- Entrata dopo l'ouverture (o subito) ---------- */
+  .hero[data-anima] .hero__contenuto > * {
+    animation: hero-entra 1.2s var(--ease-uscita) both;
+    animation-delay: calc(var(--dopo, 0.15s) + var(--i, 0) * 0.12s);
+  }
+
+  .hero[data-anima] .hero__prossima {
+    --i: 1;
+  }
+
+  .hero[data-con-ouverture] {
+    --dopo: 1.35s;
+  }
+
+  @keyframes hero-entra {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+      filter: blur(6px);
+    }
+  }
+
+  /* ---------- Ouverture: leader 3‑2‑1, poi le ante si aprono dal centro ---------- */
+  .ouverture {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+  }
+
+  .ouverture__anta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50.5%;
+    background: var(--sala-000);
+    animation: 0.7s var(--ease-sipario) 1.3s both;
+  }
+
+  .ouverture__anta--su {
+    top: 0;
+    animation-name: anta-su;
+  }
+
+  .ouverture__anta--giu {
+    bottom: 0;
+    animation-name: anta-giu;
+  }
+
+  @keyframes anta-su {
+    to {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes anta-giu {
+    to {
+      transform: translateY(100%);
+    }
+  }
+
+  .ouverture__leader {
+    position: relative;
+    width: min(38vmin, 300px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    animation: leader-esce 0.35s ease 1.15s both;
+  }
+
+  .ouverture__giro {
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(from 0deg, transparent 0 62%, rgba(231, 173, 84, 0.42) 100%);
+    animation: giro 0.4s linear 3 both;
+  }
+
+  .ouverture__mirino {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: var(--linea-forte);
+    stroke-width: 1;
+  }
+
+  .ouverture__numero {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font: 800 min(22vmin, 170px) / 1 var(--font-display);
+    font-stretch: 62%;
+    color: var(--avorio);
+    opacity: 0;
+    animation: numero 0.4s steps(1, end) forwards;
+  }
+
+  .ouverture__numero:nth-of-type(2) {
+    animation-delay: 0.4s;
+  }
+
+  .ouverture__numero:nth-of-type(3) {
+    animation-delay: 0.8s;
+  }
+
+  @keyframes giro {
+    from {
+      transform: rotate(0turn);
+    }
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @keyframes numero {
+    0%,
+    99% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes leader-esce {
+    to {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+  }
+
+  .ouverture__salta {
+    position: absolute;
+    right: var(--margine-web);
+    bottom: var(--spazio-8);
+    min-height: 44px;
+    padding: 0 var(--spazio-2);
+    color: var(--avorio-tenue);
+    animation: leader-esce 0.3s ease 1.15s both;
+  }
+
+  .ouverture__salta:hover {
+    color: var(--avorio);
+  }
+
+  /* ---------- Mobile ---------- */
   @media (max-width: 720px) {
-    .hero__contenuto {
-      align-items: stretch;
-      padding-bottom: var(--spazio-8);
+    .hero__scena {
+      --rapporto: 1.6;
+      --scala: 1;
     }
 
-    .hero__contenuto :global(.hero__pulsante) {
+    .hero__contenuto {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--spazio-8);
+      padding-inline: var(--margine-web);
+    }
+
+    .hero__prossima {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .hero__azioni {
+      flex-wrap: wrap;
       width: 100%;
     }
 
+    .hero__azioni :global(.om-pulsante--oro) {
+      flex: 1 0 100%;
+    }
+
     .hero__pausa {
-      top: calc(var(--altezza-testata) + var(--spazio-2));
-      bottom: auto;
+      right: var(--margine-web);
     }
   }
 </style>

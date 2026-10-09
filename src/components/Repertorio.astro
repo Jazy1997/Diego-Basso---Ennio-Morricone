@@ -12,7 +12,7 @@ const { lang = 'it' } = Astro.props;
 ---
 
 <blockquote class="repertorio">
-  <p class="evocativo-xl" set:html={t(lang).repertorio.citazione} />
+  <p class="evocativo-xl" data-illumina set:html={t(lang).repertorio.citazione} />
 </blockquote>
 
 <style>

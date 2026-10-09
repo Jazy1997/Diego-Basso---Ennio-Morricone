@@ -1,10 +1,11 @@
 /* Stili globali del sito (ARCHITECTURE.md §6, §14).
-   Ordine: token del DS → font → stili tipografici del DS → classi om- del DS → base del sito.
+   Ordine: token del DS → font → stili tipografici del DS → classi om- del DS → tema (nuova identità) → base del sito.
    Solo valori da token: nessun colore, spazio o font scritto a mano. */
 @import './ds/tokens.css';
 @import './fonts.css';
 @import './ds/tipografia.css';
 @import './ds/bundle.css';
+@import './tema.css';
 
 /* Altezza della Testata (padding spazio-6 × 2 + logo 280 px alto 41 + filetto): l'hero la lascia libera. */
 :root {
@@ -198,20 +199,6 @@ a:not(.om-pulsante):hover {
   pointer-events: none;
 }
 
-/* ---------- Comparsa allo scorrimento (Reveal): 600 ms, +12 px, una volta ---------- */
-.js [data-reveal] {
-  opacity: 0;
-  transform: translateY(12px);
-  transition:
-    opacity 600ms ease,
-    transform 600ms ease;
-}
-
-.js [data-reveal].is-visibile {
-  opacity: 1;
-  transform: none;
-}
-
 /* ---------- Movimento ridotto ---------- */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -224,11 +211,6 @@ a:not(.om-pulsante):hover {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-
-  .js [data-reveal] {
-    opacity: 1;
-    transform: none;
   }
 }
 

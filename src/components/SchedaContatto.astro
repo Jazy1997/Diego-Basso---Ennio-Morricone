@@ -20,8 +20,8 @@ const T = t(lang).contatto;
 ---
 
 <div class:list={['scheda-contatto', segnaposto && 'segnaposto']}>
-  <h3 class="occhiello om-tenue">{titolo}</h3>
-  {nome && <p class="scheda-contatto__nome">{nome}</p>}
+  <h3 class="titolo-m">{titolo}</h3>
+  {nome && nome !== titolo && <p class="scheda-contatto__nome">{nome}</p>}
   <div class="scheda-contatto__azioni">
     <LinkIcona href={`mailto:${email}`} icona="mail" etichetta={`${T.email} ${titolo}: ${email}`} />
     {
@@ -37,9 +37,8 @@ const T = t(lang).contatto;
     display: flex;
     flex-direction: column;
     gap: var(--spazio-3);
-    padding: var(--spazio-6);
-    background: var(--sala-200);
-    border-radius: var(--raggio-0);
+    padding: var(--spazio-6) 0;
+    border-top: 1px solid var(--linea);
   }
 
   .scheda-contatto__nome {

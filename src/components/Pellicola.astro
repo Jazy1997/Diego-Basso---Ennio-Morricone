@@ -1,0 +1,90 @@
+---
+// Pellicola (revisione UX/UI, ottobre 2026): il bordo perforato di una pellicola 35 mm lungo il lato destro,
+// che scorre con la pagina come nel proiettore. Il filo d'oro misura l'avanzamento, il contatore i fotogrammi
+// (24 al secondo) e il timecode. Decorativo: nascosto ai lettori di schermo. Su mobile resta il solo filo in alto.
+// Valori aggiornati da src/scripts/regia.ts (--avanzamento, --scorrimento, [data-fotogramma], [data-timecode]).
+---
+
+<div class="pellicola" data-pellicola aria-hidden="true">
+  <div class="pellicola__bordo"></div>
+  <div class="pellicola__filo"></div>
+  <p class="pellicola__misura misura">
+    <span>FOT <span data-fotogramma>00000</span></span>
+    <span data-timecode>00:00:00:00</span>
+  </p>
+</div>
+
+<style>
+  .pellicola {
+    --avanzamento: 0;
+    --scorrimento: 0px;
+    position: fixed;
+    z-index: 90;
+    pointer-events: none;
+  }
+
+  /* Mobile: un filo d'oro in alto. */
+  .pellicola__filo {
+    position: fixed;
+    inset: 0 0 auto;
+    height: 2px;
+    background: var(--oro);
+    transform: scaleX(var(--avanzamento));
+    transform-origin: left center;
+  }
+
+  .pellicola__bordo,
+  .pellicola__misura {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .pellicola {
+      inset: 0 0 0 auto;
+      width: 26px;
+      border-left: 1px solid var(--linea);
+      background: var(--sala-000);
+    }
+
+    /* Perforazioni Kodak: rettangoli dagli angoli arrotondati ogni 48 px, scorrono con la pagina. */
+    .pellicola__bordo {
+      display: block;
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(var(--sala-000), var(--sala-000)) left / 7px 100% no-repeat,
+        linear-gradient(var(--sala-000), var(--sala-000)) right / 7px 100% no-repeat,
+        repeating-linear-gradient(
+          to bottom,
+          var(--sala-000) 0 14px,
+          #2a241d 14px 34px,
+          var(--sala-000) 34px 48px
+        );
+      background-position-y: 0, 0, var(--scorrimento);
+      opacity: 0.9;
+    }
+
+    .pellicola__filo {
+      position: absolute;
+      inset: 0 auto 0 -1px;
+      width: 1px;
+      height: auto;
+      transform: scaleY(var(--avanzamento));
+      transform-origin: center top;
+    }
+
+    .pellicola__misura {
+      display: flex;
+      gap: 18px;
+      position: absolute;
+      right: 34px;
+      bottom: 22px;
+      margin: 0;
+      color: var(--avorio-tenue);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+      mix-blend-mode: difference;
+    }
+  }
+</style>
