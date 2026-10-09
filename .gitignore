@@ -14,3 +14,10 @@ graphify-out/
 
 # Dati forniti dal cliente (può contenere chiavi e dati personali: solo in locale)
 DATI-DA-FORNIRE.md
+
+# Revisione UX/UI: catture di lavoro (screenshot dei reference e dei giri di controllo)
+.playwright-mcp/
+.impeccable/review/
+.impeccable/giro.js
+design/reference/*.jpeg
+.impeccable/questions/

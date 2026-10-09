@@ -25,6 +25,8 @@ export const en: Dizionario = {
   hero: {
     date: 'Upcoming dates',
     pausa: 'Pause the video',
+    prossima: 'Next date',
+    salta: 'Skip intro',
   },
   date: { vuoto: 'New dates coming soon', contatti: 'Get in touch', archivio: 'Past concerts' },
   etichette: {
@@ -167,6 +169,7 @@ export const en: Dizionario = {
     home: 'Back to the home page',
   },
   repertorio: {
+    leone: 'The great westerns of Sergio Leone',
     citazione:
       'Some of Ennio Morricone’s best-loved film scores, from <em>Cinema Paradiso</em> to <em>The Mission</em>, from <em>The Legend of 1900</em> to <em>Once Upon a Time in America</em>, all the way to the great westerns of Sergio Leone.',
   },
@@ -181,5 +184,6 @@ export const en: Dizionario = {
     foto: 'Photography',
     privacy: 'Privacy',
     cookie: 'Cookies',
+    fine: 'The End',
   },
 };

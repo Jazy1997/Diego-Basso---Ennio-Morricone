@@ -3,6 +3,7 @@
 // Testata e piè di pagina arrivano dagli slot "testata" e "piede" (componenti T15 e T24).
 import '../styles/global.css';
 import FontPreload from '../components/FontPreload.astro';
+import Pellicola from '../components/Pellicola.astro';
 import Seo, { type Alternativa, type Lingua } from '../components/Seo.astro';
 import { t } from '../i18n/utils';
 
@@ -27,6 +28,8 @@ const salta = t(lang).comune.saltaContenuto;
     <meta name="theme-color" content="#0b0a08" />
     <script is:inline>
       document.documentElement.classList.add('js');
+      // La regia di scroll (src/scripts/regia.ts) parte solo senza prefers-reduced-motion: deciso prima del disegno.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('regia-attiva');
     </script>
     <FontPreload />
     <slot name="head" />
@@ -43,8 +46,9 @@ const salta = t(lang).comune.saltaContenuto;
       <slot />
     </main>
     <slot name="piede" />
+    <Pellicola />
     <script>
-      import '../scripts/reveal.ts';
+      import '../scripts/regia.ts';
     </script>
   </body>
 </html>

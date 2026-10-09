@@ -24,6 +24,8 @@ export const it = {
   hero: {
     date: 'Prossime date',
     pausa: 'Metti in pausa il video',
+    prossima: 'Prossima data',
+    salta: 'Salta l’introduzione',
   },
   date: { vuoto: 'Nuove date in arrivo', contatti: 'Scrivici', archivio: 'Archivio' },
   etichette: {
@@ -166,6 +168,7 @@ export const it = {
     home: 'Torna alla home',
   },
   repertorio: {
+    leone: 'I grandi western di Sergio Leone',
     citazione:
       'Alcune delle colonne sonore più amate di Ennio Morricone, da <em>Nuovo Cinema Paradiso</em> a <em>The Mission</em>, da <em>La leggenda del pianista sull’oceano</em> a <em>C’era una volta in America</em>, fino ai grandi western di Sergio Leone.',
   },
@@ -180,6 +183,7 @@ export const it = {
     foto: 'Fotografie',
     privacy: 'Privacy',
     cookie: 'Cookie',
+    fine: 'Fine',
   },
 };
 

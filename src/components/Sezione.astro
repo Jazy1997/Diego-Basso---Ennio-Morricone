@@ -1,6 +1,6 @@
 ---
-// Sezione di pagina (ARCHITECTURE.md §6, §8): spaziatura DS, occhiello oro + titolo h2 (senza titolo l'occhiello
-// è l'h2), comparsa con Reveal.
+// Sezione di pagina (ARCHITECTURE.md §6, §8): titolo h2 che esce riga per riga (senza titolo l'occhiello diventa
+// il titolo; con entrambi l'occhiello non si mostra: niente etichette sopra i titoli), comparsa con la regia.
 // `contenitore` (predefinito) limita la larghezza e applica i margini web; senza, la sezione va a tutta larghezza.
 // `affiancata`: da 1100 px titolo a sinistra (fermo mentre il testo scorre) e contenuto a destra, così la colonna
 // di testo non lascia metà schermo vuota; sotto 1100 px una colonna sola. Lo slot "testa" aggiunge contenuto
@@ -47,13 +47,17 @@ const testa = occhiello || titolo || Astro.slots.has('testa');
   {
     testa && (
       <div class="sezione__testa">
-        {occhiello &&
-          (titolo ? (
-            <p class="occhiello om-oro">{occhiello}</p>
-          ) : (
-            <h2 class="occhiello om-oro">{occhiello}</h2>
-          ))}
-        {titolo && <h2 class:list={[stileTitolo, titoloNascosto && 'solo-lettori']}>{titolo}</h2>}
+        {titolo ? (
+          <h2 class:list={[stileTitolo, titoloNascosto && 'solo-lettori']} data-righe={titoloNascosto ? undefined : ''}>
+            {titolo}
+          </h2>
+        ) : (
+          occhiello && (
+            <h2 class="titolo-l" data-righe>
+              {occhiello}
+            </h2>
+          )
+        )}
         <slot name="testa" />
       </div>
     )

@@ -106,6 +106,7 @@ const anno = new Date().getFullYear();
       </p>
     </div>
   </div>
+  <p class="piede__fine" aria-hidden="true" lang={lang}>{T.fine}</p>
 </footer>
 
 <style>
@@ -113,6 +114,18 @@ const anno = new Date().getFullYear();
     margin-top: var(--spazio-24);
     background: var(--sala-000);
     border-top: 1px solid var(--linea);
+    overflow: hidden;
+  }
+
+  /* Come alla fine dei film italiani: "Fine", enorme e quasi spento, tagliato dal bordo della pagina. */
+  .piede__fine {
+    margin: 0 0 -0.22em;
+    padding-inline: var(--margine-web);
+    font: italic 400 clamp(7rem, 30vw, 28rem) / 0.8 var(--font-accento);
+    letter-spacing: -0.04em;
+    color: var(--sala-300);
+    text-align: center;
+    user-select: none;
   }
 
   .piede__dentro {

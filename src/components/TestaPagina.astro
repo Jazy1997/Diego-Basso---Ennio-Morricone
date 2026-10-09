@@ -1,17 +1,18 @@
 ---
-// Apertura delle pagine interne (ARCHITECTURE.md §5): occhiello, titolo h1 (unico della pagina) e lead facoltativo.
+// Apertura delle pagine interne (ARCHITECTURE.md §5): titolo h1 (unico della pagina) che esce riga per riga e lead facoltativo.
+// `occhiello` resta tra le props per compatibilità ma non si mostra più: niente etichette sopra i titoli (revisione 2026).
 interface Props {
   occhiello?: string;
   titolo: string;
   lead?: string;
 }
 
-const { occhiello, titolo, lead } = Astro.props;
+const { titolo, lead } = Astro.props;
 ---
 
 <header class="testa-pagina contenitore">
-  {occhiello && <p class="occhiello om-oro">{occhiello}</p>}
-  <h1 class="titolo-xl">{titolo}</h1>
+  <h1 class="titolo-xl" data-righe>{titolo}</h1>
+  <span class="testa-pagina__filo" aria-hidden="true"></span>
   {lead && <p class="evocativo testa-pagina__lead">{lead}</p>}
   <slot />
 </header>
@@ -20,9 +21,29 @@ const { occhiello, titolo, lead } = Astro.props;
   .testa-pagina {
     display: flex;
     flex-direction: column;
-    gap: var(--spazio-3);
-    padding-top: var(--spazio-16);
-    padding-bottom: var(--spazio-12);
+    gap: var(--spazio-6);
+    padding-top: clamp(96px, 18vh, 200px);
+    padding-bottom: clamp(48px, 9vh, 112px);
+  }
+
+  .testa-pagina h1 {
+    max-width: 16ch;
+  }
+
+  /* Il filo d'oro si stende sotto il titolo all'apertura della pagina. */
+  .testa-pagina__filo {
+    display: block;
+    width: min(240px, 40%);
+    height: 1px;
+    background: var(--oro);
+    transform-origin: left center;
+    animation: filo-entra 1.4s var(--ease-sipario) 0.3s both;
+  }
+
+  @keyframes filo-entra {
+    from {
+      transform: scaleX(0);
+    }
   }
 
   .testa-pagina__lead {
