@@ -6,6 +6,7 @@
 //   data-parallasse immagine che scorre più lenta della pagina dentro la sua cornice (scrub)
 //   data-conta      numero che conta fino al suo valore (una volta)
 //   data-accendi    elemento che prende la classe .is-acceso quando passa al centro dello schermo
+//   data-sequenza   scena fermata (pin) i cui [data-passo] si accendono uno alla volta scorrendo
 // Con prefers-reduced-motion niente di tutto questo: lo stato iniziale visibile è quello finale.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -117,34 +118,65 @@ if (!ridotto) {
           ),
       });
     }
+    // I pin (hero, formazione) aggiungono spazio: si ricalcola in ordine di pagina, non di creazione.
+    ScrollTrigger.sort();
     ScrollTrigger.refresh();
   });
 
   // Sipario: la cornice si apre dal centro (bande nere sopra e sotto), l'immagine rientra da uno zoom leggero.
+  // Lo zoom va sull'involucro della parallasse quando c'è: due animazioni sulla stessa <img> si contendono
+  // il transform e l'immagine scatta.
   for (const el of document.querySelectorAll<HTMLElement>('[data-sipario]')) {
-    const immagine = el.querySelector('img, video');
-    const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 82%', once: true } });
+    const zoom = el.querySelector<HTMLElement>('[data-parallasse]') ?? el.querySelector('img, video');
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      onComplete: () => gsap.set(el, { clearProps: 'clipPath,willChange' }),
+    });
     tl.fromTo(
       el,
-      { clipPath: 'inset(50% 0% 50% 0%)' },
-      { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut' },
+      { clipPath: 'inset(50% 0% 50% 0%)', willChange: 'clip-path' },
+      { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5, ease: 'expo.inOut' },
     );
-    if (immagine) tl.from(immagine, { scale: 1.18, duration: 2, ease: uscita }, 0);
+    if (zoom) tl.from(zoom, { scale: 1.12, duration: 2.2, ease: uscita, force3D: true }, 0);
   }
 
+  // Parallasse: solo traslazione (lo zoom di base è fisso), su GPU.
   for (const el of document.querySelectorAll<HTMLElement>('[data-parallasse]')) {
     const immagine = el.querySelector('img, video');
     if (!immagine) continue;
+    gsap.set(immagine, { scale: 1.14, force3D: true, willChange: 'transform' });
     gsap.fromTo(
       immagine,
-      { yPercent: -7, scale: 1.16 },
+      { yPercent: -6 },
       {
-        yPercent: 7,
-        scale: 1.16,
+        yPercent: 6,
         ease: 'none',
         scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
       },
     );
+  }
+
+  // Sequenza: la scena si ferma e i passi si accendono uno alla volta mentre si scorre
+  // (Formazione: la cornice della foto resta ferma e cambia immagine a ogni voce).
+  for (const el of document.querySelectorAll<HTMLElement>('[data-sequenza]')) {
+    const passi = [...el.querySelectorAll<HTMLElement>('[data-passo]')];
+    if (passi.length === 0) continue;
+    let attivo = -1;
+    const accendi = (i: number) => {
+      if (i === attivo) return;
+      attivo = i;
+      passi.forEach((p, j) => p.classList.toggle('is-acceso', j === i));
+    };
+    accendi(0);
+    ScrollTrigger.create({
+      trigger: el,
+      start: () => (window.innerHeight > el.offsetHeight ? `top ${(window.innerHeight - el.offsetHeight) / 2}px` : 'top top'),
+      end: () => `+=${window.innerHeight * 0.7 * passi.length}`,
+      pin: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (st) => accendi(Math.min(passi.length - 1, Math.floor(st.progress * passi.length))),
+    });
   }
 
   for (const el of document.querySelectorAll<HTMLElement>('[data-conta]')) {
@@ -180,7 +212,7 @@ if (!ridotto) {
     });
   }
 } else {
-  document.querySelectorAll('[data-accendi]').forEach((el) => el.classList.add('is-acceso'));
+  document.querySelectorAll('[data-accendi], [data-passo]').forEach((el) => el.classList.add('is-acceso'));
 }
 
 // Le altre parti (hero) usano la stessa istanza.

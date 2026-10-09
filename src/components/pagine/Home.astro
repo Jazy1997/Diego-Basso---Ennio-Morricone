@@ -188,7 +188,7 @@ const jsonLd = [
   </section>
 
   <!-- Formazione: crediti a tutta riga, la foto cambia con la riga accesa -->
-  <section class="scena formazione contenitore" aria-labelledby="formazione-titolo">
+  <section class="scena formazione contenitore" aria-labelledby="formazione-titolo" data-sequenza>
     <h2 class="solo-lettori" id="formazione-titolo">{T.formazione}</h2>
     <div class="formazione__foto" aria-hidden="true">
       {
@@ -200,7 +200,7 @@ const jsonLd = [
             formats={['avif', 'webp']}
             widths={[640, 960]}
             quality={QUALITA}
-            sizes="(min-width: 900px) 34vw, 0px"
+            sizes="(min-width: 900px) 60vh, 100vw"
             style={`object-position: ${v.foto.posizione}`}
           />
         ))
@@ -209,7 +209,7 @@ const jsonLd = [
     <dl class="formazione__voci">
       {
         formazione.map((v, i) => (
-          <div class:list={['formazione__voce', `formazione__voce--${i}`]} data-accendi>
+          <div class:list={['formazione__voce', `formazione__voce--${i}`]} data-passo>
             <dt class="misura">{v.ruolo}</dt>
             <dd>{v.nome}</dd>
           </div>
@@ -491,11 +491,15 @@ const jsonLd = [
     }
   }
 
-  /* ---------- Formazione ---------- */
+  /* ---------- Formazione ----------
+     La scena si ferma (data-sequenza): la cornice della foto resta immobile e cambia immagine
+     mentre si accendono, una alla volta, direttore, soprano e orchestra. */
   .formazione {
     display: grid;
-    gap: var(--spazio-12);
-    align-items: center;
+    align-content: center;
+    gap: clamp(20px, 4vh, 48px);
+    min-height: 100svh;
+    padding-block: clamp(24px, 6vh, 72px);
   }
 
   .formazione__voci {
@@ -505,10 +509,10 @@ const jsonLd = [
   /* Titoli di coda: ruolo in mono a sinistra, nome a destra, sulla stessa linea di base. */
   .formazione__voce {
     display: grid;
-    grid-template-columns: 8.5rem minmax(0, 1fr);
+    grid-template-columns: 7rem minmax(0, 1fr);
     align-items: baseline;
     gap: var(--spazio-6);
-    padding-block: clamp(28px, 5vh, 56px);
+    padding-block: clamp(18px, 4.5vh, 52px);
     border-top: 1px solid var(--linea);
     opacity: 0.55;
     transition: opacity 0.6s var(--ease-uscita);
@@ -527,10 +531,53 @@ const jsonLd = [
     text-align: right;
   }
 
+  .formazione__voce dd {
+    margin: 0;
+    font: 250 clamp(1.5rem, 2.9vw, 3.25rem) / 1.02 var(--font-display);
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .formazione__foto {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--sala-000);
+  }
+
+  .formazione__foto :global(picture) {
+    display: contents;
+  }
+
+  /* Le foto sono sovrapposte: quella della voce accesa entra in dissolvenza con un respiro di scala. */
+  .formazione__foto :global(.formazione__scatto) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity 0.8s var(--ease-uscita),
+      transform 1.6s var(--ease-uscita);
+    will-change: opacity, transform;
+  }
+
+  .formazione:not(:has(:global(.is-acceso))) :global(.formazione__scatto--0),
+  .formazione:has(.formazione__voce--0:global(.is-acceso)) :global(.formazione__scatto--0),
+  .formazione:has(.formazione__voce--1:global(.is-acceso)) :global(.formazione__scatto--1),
+  .formazione:has(.formazione__voce--2:global(.is-acceso)) :global(.formazione__scatto--2) {
+    opacity: 1;
+    transform: none;
+  }
+
   @media (max-width: 600px) {
     .formazione__voce {
       grid-template-columns: 1fr;
-      gap: var(--spazio-2);
+      gap: var(--spazio-1);
     }
 
     /* Su mobile il ruolo segue il nome, non gli sta sopra. */
@@ -540,56 +587,16 @@ const jsonLd = [
     }
   }
 
-  .formazione__voce dd {
-    margin: 0;
-    font: 250 clamp(1.625rem, 3.6vw, 3.5rem) / 1.02 var(--font-display);
-    font-stretch: 125%;
-    text-transform: uppercase;
-    letter-spacing: -0.015em;
-    text-wrap: balance;
-  }
-
-  .formazione__foto {
-    display: none;
-  }
-
   @media (min-width: 900px) {
     .formazione {
-      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(40px, 6vw, 112px);
     }
 
     .formazione__foto {
-      position: sticky;
-      top: 20vh;
-      display: block;
+      height: min(74svh, 760px);
       aspect-ratio: 4 / 5;
-      overflow: hidden;
-      background: var(--sala-000);
-    }
-
-    .formazione__foto :global(picture) {
-      display: contents;
-    }
-
-    .formazione__foto :global(.formazione__scatto) {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      clip-path: inset(50% 0 50% 0);
-      transform: scale(1.12);
-      transition:
-        clip-path 0.9s var(--ease-sipario),
-        transform 1.4s var(--ease-uscita);
-    }
-
-    .formazione:not(:has(:global(.is-acceso))) :global(.formazione__scatto--0),
-    .formazione:has(.formazione__voce--0:global(.is-acceso)) :global(.formazione__scatto--0),
-    .formazione:has(.formazione__voce--1:global(.is-acceso)) :global(.formazione__scatto--1),
-    .formazione:has(.formazione__voce--2:global(.is-acceso)) :global(.formazione__scatto--2) {
-      clip-path: inset(0 0 0 0);
-      transform: none;
     }
   }
 

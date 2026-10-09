@@ -1,12 +1,12 @@
-# HANDSOFF — 2026-10-09 · sessione 5: revisione UX/UI "La pellicola in sala" in anteprima (PR #102, NON unire senza ok)
+# HANDSOFF — 2026-10-09 · sessione 5: revisione UX/UI "La pellicola in sala" approvata e pubblicata (PR #102)
 
-**Stato**: produzione invariata (`main`). Redesign sul branch `redesign/motion`, PR bozza #102, anteprima Vercel https://diegobassoenniomorricone-git-bc523c-giacomos-projects-3426766d.vercel.app · stato precedente nel tag `pre-redesign-2026-10-09`.
-**Se l'utente approva**: squash merge di #102. **Se rifiuta**: chiudere la PR e cancellare il branch (`main` è già lo stato precedente); per riportare un branch al punto esatto: `git checkout -B <branch> pre-redesign-2026-10-09`.
+**Stato**: redesign approvato dall'utente e unito in `main` (PR #102) · il sito precedente resta nel tag `pre-redesign-2026-10-09` (per tornarci: `git revert` dello squash di #102, oppure branch da quel tag).
+**Ultime richieste dell'utente (fatte)**: foto senza scatti (sipario e parallasse non animano più la stessa <img>), Formazione come sequenza fermata (`data-sequenza` / `data-passo` in regia.ts: cornice ferma, foto che cambia), pagina a tutta larghezza (`.contenitore` senza max-width), "Fine" intera, titoli dimensionati sul contenitore (`cqi`) per non tagliare le parole lunghe.
 **Redesign**: identità nuova (logo invariato) in `src/styles/tema.css` (sovrascrive i token di `ds/`, che non si toccano) · font Archivo (wdth 62–125) + Bodoni Moda corsivo + JetBrains Mono (`scripts/fonts.mjs`) · regia in `src/scripts/regia.ts` (Lenis + GSAP ScrollTrigger/SplitText; attributi `data-righe|illumina|sipario|parallasse|conta|accendi|reveal`) · hero in `HeroVideo.astro` + `hero-regia.ts` (ouverture 3‑2‑1 una volta per sessione, video che si richiude in 2,39:1, `refreshPriority: 1` sul pin) · `Pellicola.astro` (avanzamento) · View Transitions cross-document in `tema.css` · "Fine" nel footer.
 **Regole nuove**: niente occhielli sopra i titoli (TestaPagina/Sezione li ignorano) · `.regia-attiva` decisa nel `<head>` (reduced-motion → tutto statico) · JS iniziale ~53 KB gzip (budget alzato dall'utente).
-**Direzione e contesto**: `PRODUCT.md`, `.impeccable/surfaces/src-components-pagine-home-astro.md` (contratto), `design/reference/SINTESI.md` (reference). Manca DESIGN.md (da scrivere con l'agente documenter dopo l'ok).
+**Direzione e contesto**: `PRODUCT.md`, `.impeccable/surfaces/src-components-pagine-home-astro.md` (contratto), `design/reference/SINTESI.md` (reference). Manca DESIGN.md (prossimo passo: agente impeccable-documenter).
 **Ancora aperti**: T33 (email), T40 (dati in `DATI-DA-FORNIRE.md`), T41 (go-live) · Lighthouse da rifare sul redesign · ARCHITECTURE.md §6–§8 descrive ancora la vecchia home.
-**Flusso**: branch → PR (`Closes #n`) → check Vercel → squash merge autonomo (ma #102 solo dopo l'ok esplicito dell'utente).
+**Flusso**: branch → PR (`Closes #n`) → check Vercel → squash merge autonomo.
 **Comandi**: `npm run dev|build|check` · `npx astro dev --background` · `VERCEL_ENV=production npx astro build && python scripts/verifica_en.py` · `python scripts/{foto,testi,og,loghi}.py`.
 **Note**: in Bash `export PATH="/c/Program Files/nodejs:$PATH"` e `"/c/Program Files/GitHub CLI/gh.exe"` · non lanciare Prettier su file interi · GSAP: con transform già in CSS usare `fromTo` con `y: 0` · catture di lavoro in `.impeccable/review/` e `design/reference/*.jpeg` (ignorate da git).
 

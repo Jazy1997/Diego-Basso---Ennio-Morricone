@@ -117,11 +117,11 @@ const anno = new Date().getFullYear();
     overflow: hidden;
   }
 
-  /* Come alla fine dei film italiani: "Fine", enorme e quasi spento, tagliato dal bordo della pagina. */
+  /* Come alla fine dei film italiani: "Fine", enorme e quasi spento, intero in fondo alla pagina. */
   .piede__fine {
-    margin: 0 0 -0.22em;
-    padding-inline: var(--margine-web);
-    font: italic 400 clamp(7rem, 30vw, 28rem) / 0.8 var(--font-accento);
+    margin: 0;
+    padding: 0 var(--margine-web) clamp(16px, 3vw, 48px);
+    font: italic 400 clamp(6rem, 26vw, 26rem) / 1.05 var(--font-accento);
     letter-spacing: -0.04em;
     color: var(--sala-300);
     text-align: center;

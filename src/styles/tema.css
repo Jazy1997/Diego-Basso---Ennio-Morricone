@@ -449,3 +449,32 @@ html.lenis body {
     opacity 0.5s var(--ease-uscita),
     visibility 0.5s;
 }
+
+/* ---------- Larghezza: la pagina occupa tutto lo schermo, solo i margini restano ---------- */
+.contenitore {
+  max-width: none;
+}
+
+/* ---------- Titoli grandi che non si tagliano mai ----------
+   La misura segue la larghezza del loro contenitore (cqi), non solo dello schermo: nelle colonne strette
+   (sezioni affiancate, pagine interne) la parola più lunga resta intera dentro la maschera delle righe. */
+.sezione__testa,
+.testa-pagina,
+.scena,
+.promoter__estero {
+  container-type: inline-size;
+}
+
+.titolo-l {
+  font-size: clamp(1.75rem, min(5.4vw, 7.2cqi), 5.5rem);
+}
+
+.titolo-xl {
+  font-size: clamp(2.25rem, min(6.6vw, 8.6cqi), 6rem);
+}
+
+.titolo-l,
+.titolo-xl {
+  overflow-wrap: normal;
+  hyphens: manual;
+}
