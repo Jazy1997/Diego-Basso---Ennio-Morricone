@@ -1,11 +1,12 @@
 ---
 // Piè di pagina (ARCHITECTURE.md §6 riga 11, §8): schede Booking/Stampa/Pubblico, ascolto e social,
-// FasciaPartner, crediti fotografici aggregati da foto.json, Privacy/Cookie, ©, logo bianco orizzontale 280 px.
-// I dati segnaposto (contatti, social, partner) spariscono in produzione tramite prendi().
+// crediti fotografici aggregati da foto.json, Privacy/Cookie, ©, logo bianco orizzontale 280 px.
+// I loghi partner per ora servono solo nella stampa (decisione dell'utente, ottobre 2026): per
+// rimetterli basta `<FasciaPartner lang={lang} />` prima di `.piede__legale` e i dati in partner.json.
+// I dati segnaposto (contatti, social) spariscono in produzione tramite prendi().
 import type { Lingua } from './Seo.astro';
 import Logo from './Logo.astro';
 import SchedaContatto from './SchedaContatto.astro';
-import FasciaPartner from './FasciaPartner.astro';
 import LinkIcona from './LinkIcona.astro';
 import { prendi } from '../lib/contenuti';
 import { localizedPath, t } from '../i18n/utils';
@@ -89,8 +90,6 @@ const anno = new Date().getFullYear();
         }
       </div>
     </div>
-
-    <FasciaPartner lang={lang} />
 
     <div class="piede__legale">
       {
