@@ -21,7 +21,7 @@ const T = t(lang).contatto;
 
 <div class:list={['scheda-contatto', segnaposto && 'segnaposto']}>
   <h3 class="occhiello om-tenue">{titolo}</h3>
-  {nome && <p class="scheda-contatto__nome">{nome}</p>}
+  {nome && nome !== titolo && <p class="scheda-contatto__nome">{nome}</p>}
   <div class="scheda-contatto__azioni">
     <LinkIcona href={`mailto:${email}`} icona="mail" etichetta={`${T.email} ${titolo}: ${email}`} />
     {

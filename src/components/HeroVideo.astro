@@ -70,7 +70,7 @@ const prossima = (await prendi('eventi'))
     </p>
 
     <p class="hero__misure misura" aria-hidden="true" data-misure>
-      <span>35 mm · 2,39 : 1</span>
+      <span>2,39 : 1</span>
       {prossima && <span>{coordinate(prossima.lat, prossima.lng)}</span>}
     </p>
 
@@ -83,7 +83,6 @@ const prossima = (await prendi('eventi'))
         {
           prossima ? (
             <>
-              <p class="misura hero__etichetta">{T.prossima}</p>
               <p class="hero__data">
                 <time datetime={isoRoma(prossima.data, prossima.ora)}>{numeroData(prossima.data)}</time>
                 <span lang={lang === 'it' ? undefined : 'it'}>{prossima.citta}</span>
@@ -266,7 +265,6 @@ const prossima = (await prendi('eventi'))
     text-align: right;
   }
 
-  .hero__etichetta,
   .hero__sede {
     margin: 0;
     color: var(--avorio-tenue);
@@ -334,14 +332,12 @@ const prossima = (await prendi('eventi'))
     text-transform: uppercase;
     background: none;
     pointer-events: none;
-    font-size: clamp(1.75rem, 3.6vw, 4.5rem);
+    font-size: clamp(2rem, 5.2vw, 6rem);
     font-stretch: 112%;
   }
 
-  @media (min-width: 721px) {
-    :global(.regia-attiva) .hero__claim-riga {
-      white-space: nowrap;
-    }
+  :global(.regia-attiva) .hero__claim-riga--su {
+    white-space: nowrap;
   }
 
   :global(.regia-attiva) .hero__claim-riga {
@@ -428,7 +424,7 @@ const prossima = (await prendi('eventi'))
   }
 
   .hero[data-con-ouverture] {
-    --dopo: 1.55s;
+    --dopo: 1.35s;
   }
 
   @keyframes hero-entra {

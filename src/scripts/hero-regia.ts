@@ -19,10 +19,13 @@ if (hero && scena && !ridotto) {
     const margine = parseFloat(getComputedStyle(contenuto).paddingLeft) || 24;
     const rapporto = parseFloat(stile.getPropertyValue('--rapporto')) || 2.39;
     const scala = parseFloat(stile.getPropertyValue('--scala')) || 1;
-    const l = (scena.clientWidth - 2 * margine) * scala;
-    const h = l / rapporto;
+    // Mai più alta di metà scena: sopra e sotto resta posto per il claim anche sugli schermi bassi.
+    const h = Math.min(((scena.clientWidth - 2 * margine) * scala) / rapporto, scena.clientHeight * 0.48);
+    const l = h * rapporto;
     const lato = (scena.clientWidth - l) / 2;
     const v = Math.max(0, (scena.clientHeight - h) / 2);
+    scena.style.setProperty('--finestra-l', `${l}px`);
+    scena.style.setProperty('--finestra-h', `${h}px`);
     return `inset(${v}px ${lato}px ${v}px ${lato}px)`;
   };
 
@@ -50,6 +53,14 @@ if (hero && scena && !ridotto) {
     .to(velo, { opacity: 0.25, duration: 0.6 }, 0)
     .fromTo(righe, { y: 0, yPercent: 110 }, { y: 0, yPercent: 0, duration: 0.45, ease: 'expo.out', stagger: 0.12 }, 0.5);
   if (misure) tl.to(misure, { opacity: 1, duration: 0.3 }, 0.75);
+
+  // Un solo logo per schermata: quello della testata entra quando il logo dell'hero se ne va.
+  const testata = document.querySelector<HTMLElement>('[data-testata]');
+  if (testata) {
+    testata.classList.add('nasconde-logo');
+    tl.call(() => testata.classList.add('nasconde-logo'), [], 0.12);
+    tl.call(() => testata.classList.remove('nasconde-logo'), [], 0.18);
+  }
   // Uno spazio di respiro a finestra chiusa prima che la scena riparta.
   tl.to({}, { duration: 0.25 });
 }

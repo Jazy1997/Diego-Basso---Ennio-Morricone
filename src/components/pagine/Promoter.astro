@@ -56,7 +56,7 @@ const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
     <div class="testo corpo">
       <Storia />
     </div>
-    <h3 class="occhiello om-oro promoter__etichetta">{T.luoghi}</h3>
+    <h3 class="titolo-m promoter__etichetta">{T.luoghi}</h3>
     <ul class="promoter__luoghi">
       {
         italia.map((l) => (
@@ -71,8 +71,8 @@ const booking = (await prendi('contatti')).find((c) => c.id === 'booking');
     {
       estero.map((l) => (
         <div class="promoter__estero">
-          <p class="occhiello om-oro">{T.internazionale} · 2015/2016</p>
           <p class="titolo-l">{l.data.citta[lang]}</p>
+          <p class="coordinate om-oro">{T.internazionale} · 2015/2016</p>
           <p class="corpo">{l.data.nome}</p>
           <p class="coordinate om-tenue">{coordinate(l.data.lat, l.data.lng)}</p>
         </div>

@@ -157,7 +157,6 @@ const jsonLd = [
       {
         coda.map((titolo, i) => (
           <li class:list={['coda__titolo', i === coda.length - 1 && 'coda__titolo--leone']} data-accendi>
-            <span class="misura">{String(i + 1).padStart(2, '0')}</span>
             <span lang={lang === 'en' && i < film.length ? 'en' : undefined}>{titolo}</span>
           </li>
         ))
@@ -167,6 +166,7 @@ const jsonLd = [
 
   <!-- Il Maestro -->
   <section class="scena maestro contenitore" id="maestro" aria-labelledby="maestro-titolo">
+    <h2 class="titolo-l maestro__titolo" id="maestro-titolo" data-righe>{T.maestroTitolo}</h2>
     <div class="maestro__ritratto" data-sipario>
       <div class="maestro__immagine" data-parallasse>
         <Picture
@@ -182,7 +182,6 @@ const jsonLd = [
       <span class="om-grana" aria-hidden="true"></span>
     </div>
     <div class="maestro__testo">
-      <h2 class="titolo-l" id="maestro-titolo" data-righe>{T.maestroTitolo}</h2>
       <p class="corpo om-tenue" set:html={visione} />
       <Pulsante href={localizedPath('maestro', lang)} variante="testo" lang={lang}>{T.scopriMaestro}</Pulsante>
     </div>
@@ -431,11 +430,6 @@ const jsonLd = [
       color 0.7s ease;
   }
 
-  .coda__titolo .misura {
-    font-style: normal;
-    color: var(--avorio-tenue);
-  }
-
   .coda__titolo--leone {
     font: 250 clamp(1.75rem, 4vw, 3.75rem) / 1.05 var(--font-display);
     font-stretch: 125%;
@@ -454,6 +448,10 @@ const jsonLd = [
     display: grid;
     gap: var(--spazio-12);
     align-items: end;
+  }
+
+  .maestro__titolo {
+    max-width: 14ch;
   }
 
   .maestro__ritratto {
@@ -475,6 +473,12 @@ const jsonLd = [
       gap: clamp(48px, 7vw, 128px);
     }
 
+    .maestro__titolo {
+      grid-column: 1 / -1;
+      justify-self: end;
+      text-align: right;
+    }
+
     .maestro__ritratto {
       aspect-ratio: 5 / 6;
     }
@@ -491,12 +495,15 @@ const jsonLd = [
     margin: 0;
   }
 
+  /* Titoli di coda: ruolo in mono a sinistra, nome a destra, sulla stessa linea di base. */
   .formazione__voce {
     display: grid;
-    gap: var(--spazio-3);
+    grid-template-columns: minmax(7rem, 2fr) minmax(0, 7fr);
+    align-items: baseline;
+    gap: var(--spazio-6);
     padding-block: clamp(28px, 5vh, 56px);
     border-top: 1px solid var(--linea);
-    opacity: 0.35;
+    opacity: 0.55;
     transition: opacity 0.6s var(--ease-uscita);
   }
 
@@ -510,6 +517,18 @@ const jsonLd = [
 
   .formazione__voce dt {
     color: var(--oro);
+    text-align: right;
+  }
+
+  @media (max-width: 600px) {
+    .formazione__voce {
+      grid-template-columns: 1fr;
+      gap: var(--spazio-2);
+    }
+
+    .formazione__voce dt {
+      text-align: left;
+    }
   }
 
   .formazione__voce dd {
@@ -554,6 +573,7 @@ const jsonLd = [
         transform 1.4s var(--ease-uscita);
     }
 
+    .formazione:not(:has(:global(.is-acceso))) :global(.formazione__scatto--0),
     .formazione:has(.formazione__voce--0:global(.is-acceso)) :global(.formazione__scatto--0),
     .formazione:has(.formazione__voce--1:global(.is-acceso)) :global(.formazione__scatto--1),
     .formazione:has(.formazione__voce--2:global(.is-acceso)) :global(.formazione__scatto--2) {
