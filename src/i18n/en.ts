@@ -182,6 +182,7 @@ export const en: Dizionario = {
     pubblico: 'Audience information',
     ascolta: 'Listen to the album',
     seguici: 'Follow us',
+    produzione: 'Production and booking',
     foto: 'Photography',
     privacy: 'Privacy',
     cookie: 'Cookies',

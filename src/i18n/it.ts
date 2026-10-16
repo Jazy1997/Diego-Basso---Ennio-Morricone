@@ -181,6 +181,7 @@ export const it = {
     pubblico: 'Informazioni per il pubblico',
     ascolta: 'Ascolta l’album',
     seguici: 'Seguici',
+    produzione: 'Produzione e booking',
     foto: 'Fotografie',
     privacy: 'Privacy',
     cookie: 'Cookie',
