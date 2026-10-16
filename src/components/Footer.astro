@@ -4,12 +4,15 @@
 // I loghi partner per ora servono solo nella stampa (decisione dell'utente, ottobre 2026): per
 // rimetterli basta `<FasciaPartner lang={lang} />` prima di `.piede__legale` e i dati in partner.json.
 // I dati segnaposto (contatti, social) spariscono in produzione tramite prendi().
+// iCona (produzione e booking) ha il suo logo bianco accanto ad ascolto e social: non è un partner di data.
+import { Image } from 'astro:assets';
 import type { Lingua } from './Seo.astro';
 import Logo from './Logo.astro';
 import SchedaContatto from './SchedaContatto.astro';
 import LinkIcona from './LinkIcona.astro';
 import { prendi } from '../lib/contenuti';
 import { localizedPath, t } from '../i18n/utils';
+import logoIcona from '../assets/partner/icona-bianco.png';
 
 interface Props {
   lang?: Lingua;
@@ -88,6 +91,10 @@ const anno = new Date().getFullYear();
               </div>
             ))
         }
+        <div>
+          <p class="occhiello om-tenue">{T.produzione}</p>
+          <Image class="piede__icona" src={logoIcona} alt="iCona" height={36} densities={[1, 2]} format="webp" />
+        </div>
       </div>
     </div>
 
@@ -166,6 +173,13 @@ const anno = new Date().getFullYear();
     margin: var(--spazio-3) 0 0;
     padding: 0;
     list-style: none;
+  }
+
+  .piede__icona {
+    display: block;
+    width: auto;
+    height: 36px;
+    margin-top: var(--spazio-3);
   }
 
   .piede__legale {
