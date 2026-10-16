@@ -28,7 +28,7 @@ export const en: Dizionario = {
     prossima: 'Next date',
     salta: 'Skip intro',
   },
-  date: { vuoto: 'New dates coming soon', contatti: 'Get in touch', archivio: 'Past concerts' },
+  date: { vuoto: 'New dates coming soon', contatti: 'Get in touch', archivio: 'Past concerts', concerto: 'concert', concerti: 'concerts' },
   etichette: {
     nuova: 'New date',
     ultimi: 'Last tickets',

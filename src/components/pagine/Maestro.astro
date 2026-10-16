@@ -1,13 +1,12 @@
 ---
 // Il Maestro (ARCHITECTURE.md §5): "La visione del Maestro Diego Basso" dal docx alla lettera.
-// Primo paragrafo accanto al ritratto; gli altri due (Alessandroni, Griminelli, "Lost Boys Calling") sono le
+// Primo paragrafo nella scena a tutto schermo con lo scontorno (ScenaMaestro); gli altri due (Alessandroni, Griminelli, "Lost Boys Calling") sono le
 // collaborazioni; chiude la Formazione con Crediti e la foto di soprano e direttore.
 import type { Lingua } from '../Seo.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Testata from '../Testata.astro';
-import TestaPagina from '../TestaPagina.astro';
 import Sezione from '../Sezione.astro';
-import Ritratto from '../Ritratto.astro';
+import ScenaMaestro from '../ScenaMaestro.astro';
 import Cinemascope from '../Cinemascope.astro';
 import Crediti from '../Crediti.astro';
 import Footer from '../Footer.astro';
@@ -34,14 +33,9 @@ const formazione = await testo('formazione', lang);
   og="/og/maestro.jpg"
 >
   <Testata slot="testata" lang={lang} corrente="maestro" />
-  <TestaPagina occhiello={D.menu.maestro} titolo={visione.data.titolo} />
-
-  <Sezione class="maestro__apertura">
-    <Ritratto foto="maestro-02" posizione="78% 25%" lang={lang} />
-    <div class="testo corpo">
-      <p class="lead" set:html={apertura} />
-    </div>
-  </Sezione>
+  <ScenaMaestro lang={lang} titolo={visione.data.titolo} apertura>
+    <p class="corpo" set:html={apertura} />
+  </ScenaMaestro>
 
   <Sezione id="collaborazioni" titolo={D.maestro.collaborazioni} affiancata>
     <div class="testo corpo">
@@ -63,19 +57,3 @@ const formazione = await testo('formazione', lang);
 
   <Footer slot="piede" lang={lang} />
 </BaseLayout>
-
-<style>
-  /* La <section> la disegna Sezione: la classe arriva da qui, quindi :global. */
-  :global(.maestro__apertura) {
-    display: grid;
-    gap: var(--spazio-8);
-    align-items: center;
-  }
-
-  @media (min-width: 900px) {
-    :global(.maestro__apertura) {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      gap: var(--spazio-16);
-    }
-  }
-</style>

@@ -1,6 +1,7 @@
 ---
 // Elenco delle date (DS › DataTour): prossime in ordine crescente (con `limite` per la Home),
-// oppure `archivio` con le passate dalla più recente. Nessuna data futura: "Nuove date in arrivo".
+// oppure `archivio` con le passate dalla più recente, raggruppate per anno in sezioni espandibili (<details>,
+// aperto solo l'anno più recente). Nessuna data futura: "Nuove date in arrivo".
 // "Passata" si calcola alla build: il rebuild giornaliero (T03) tiene aggiornato l'elenco.
 import type { CollectionEntry } from 'astro:content';
 import type { Lingua } from './Seo.astro';
@@ -27,10 +28,39 @@ const scelti = eventi
   .slice(0, limite);
 
 const T = t(lang).date;
+
+// Archivio: un gruppo per anno, dal più recente (gli eventi sono già in ordine decrescente).
+const anni: { anno: string; voci: CollectionEntry<'eventi'>[] }[] = [];
+if (archivio) {
+  for (const e of scelti) {
+    const anno = e.data.data.slice(0, 4);
+    if (anni.at(-1)?.anno !== anno) anni.push({ anno, voci: [] });
+    anni.at(-1)!.voci.push(e);
+  }
+}
 ---
 
 {
-  scelti.length > 0 ? (
+  archivio ? (
+    <div class="archivio">
+      {anni.map(({ anno, voci }, i) => (
+        <details class="archivio__anno" open={i === 0} data-anno>
+          <summary class="archivio__testa">
+            <span class="archivio__numero">{anno}</span>
+            <span class="archivio__conteggio">
+              {voci.length} {voci.length === 1 ? T.concerto : T.concerti}
+            </span>
+            <span class="archivio__segno" aria-hidden="true"></span>
+          </summary>
+          <ol class="om-date archivio__date">
+            {voci.map((e) => (
+              <DataTour evento={e} lang={lang} />
+            ))}
+          </ol>
+        </details>
+      ))}
+    </div>
+  ) : scelti.length > 0 ? (
     <ol class="om-date">
       {scelti.map((e) => (
         <DataTour evento={e} lang={lang} />
@@ -48,7 +78,120 @@ const T = t(lang).date;
   )
 }
 
+<script>
+  // Aprendo o chiudendo un anno la pagina cambia altezza: finita l'apertura animata (0,6 s) le scene legate
+  // allo scroll ricalcolano le posizioni.
+  import { ScrollTrigger } from '../scripts/regia';
+  for (const anno of document.querySelectorAll('[data-anno]')) {
+    anno.addEventListener('toggle', () => setTimeout(() => ScrollTrigger.refresh(), 650));
+  }
+</script>
+
 <style>
+  /* ---------- Archivio per anno ---------- */
+  .archivio {
+    border-bottom: 1px solid var(--linea);
+    interpolate-size: allow-keywords;
+  }
+
+  .archivio__anno {
+    border-top: 1px solid var(--linea);
+  }
+
+  .archivio__testa {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: var(--spazio-6);
+    padding-block: clamp(20px, 3.5vh, 36px);
+    cursor: pointer;
+    list-style: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .archivio__testa::-webkit-details-marker {
+    display: none;
+  }
+
+  .archivio__testa:hover {
+    background: var(--sala-200);
+  }
+
+  .archivio__testa:focus-visible {
+    outline: none;
+    box-shadow: var(--anello-focus);
+  }
+
+  .archivio__numero {
+    font: 800 clamp(2.75rem, 6vw, 5rem) / 0.9 var(--font-display);
+    font-stretch: 62%;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    color: var(--avorio-tenue);
+    transition: color 0.4s ease;
+  }
+
+  .archivio__anno[open] .archivio__numero,
+  .archivio__testa:hover .archivio__numero {
+    color: var(--oro);
+  }
+
+  .archivio__conteggio {
+    font: 500 12px / 16px var(--font-misura);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--avorio-tenue);
+  }
+
+  /* Più che diventa meno: la barra verticale si chiude ruotando. */
+  .archivio__segno {
+    position: relative;
+    width: 20px;
+    aspect-ratio: 1;
+  }
+
+  .archivio__segno::before,
+  .archivio__segno::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: var(--oro);
+    transition: transform 0.5s var(--ease-uscita);
+  }
+
+  .archivio__segno::after {
+    transform: rotate(90deg);
+  }
+
+  .archivio__anno[open] .archivio__segno::after {
+    transform: rotate(0deg);
+  }
+
+  /* Le righe dell'anno: niente doppio filo con quello dell'intestazione. */
+  .archivio__date {
+    border-bottom: 0;
+  }
+
+  /* Apertura animata dove il browser lo consente (::details-content); altrove si apre di colpo. */
+  .archivio__anno::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 0.6s var(--ease-uscita),
+      content-visibility 0.6s allow-discrete;
+  }
+
+  .archivio__anno[open]::details-content {
+    block-size: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .archivio__anno::details-content {
+      transition: none;
+    }
+  }
+
   .lista-date__vuota {
     display: flex;
     flex-direction: column;

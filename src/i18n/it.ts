@@ -27,7 +27,7 @@ export const it = {
     prossima: 'Prossima data',
     salta: 'Salta l’introduzione',
   },
-  date: { vuoto: 'Nuove date in arrivo', contatti: 'Scrivici', archivio: 'Archivio' },
+  date: { vuoto: 'Nuove date in arrivo', contatti: 'Scrivici', archivio: 'Archivio', concerto: 'concerto', concerti: 'concerti' },
   etichette: {
     nuova: 'Nuova data',
     ultimi: 'Ultimi posti',

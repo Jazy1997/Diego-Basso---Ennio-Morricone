@@ -1,0 +1,255 @@
+---
+// Il Maestro a tutto schermo (ottobre 2026, reference nyphil.org/discover/gustavo): lo scontorno di Diego Basso
+// sale dal fondo, staccato dal buio da fasce di parole che scorrono con lo scroll (Nastro). Dietro di lui una fascia
+// oro col nome e una profilata in verso opposto, che sfumano a sinistra per lasciare leggibile il testo; davanti,
+// in basso, una fascia sottile che copre il taglio della foto. Testo a sinistra (sopra la figura su mobile).
+// Usata in home (h2 + "Scopri il Maestro" nello slot) e in apertura della pagina Il Maestro (h1, `apertura`).
+import { Picture } from 'astro:assets';
+import type { Lingua } from './Seo.astro';
+import Nastro from './Nastro.astro';
+import scontorno from '../assets/foto/maestro-scontornato.webp';
+import { QUALITA } from '../lib/foto';
+import { t } from '../i18n/utils';
+
+interface Props {
+  lang: Lingua;
+  titolo: string;
+  /** h1 in apertura di pagina (la scena riempie lo schermo sotto la testata), h2 in home. */
+  apertura?: boolean;
+  id?: string;
+}
+
+const { lang, titolo, apertura = false, id } = Astro.props;
+const D = t(lang);
+const Titolo = apertura ? 'h1' : 'h2';
+const idTitolo = `${id ?? 'maestro'}-titolo`;
+const alt =
+  lang === 'it'
+    ? 'Il Maestro Diego Basso in frac, la bacchetta nella mano destra e la sinistra aperta verso l’orchestra'
+    : 'Conductor Diego Basso in tails, baton in his right hand and his left hand open towards the orchestra';
+---
+
+<section class:list={['scena', 'sm', apertura && 'sm--apertura']} id={id} aria-labelledby={idTitolo}>
+  <div class="sm__palco">
+    <span class="sm__luce" aria-hidden="true"></span>
+    <Nastro voci={['Diego Basso']} direzione={-1} class="sm__fascia sm__fascia--oro" />
+    <Nastro voci={[D.crediti.direttore, 'Ennio Morricone']} contorno direzione={1} class="sm__fascia sm__fascia--contorno" />
+    <div class="sm__figura" data-sale>
+      <Picture
+        src={scontorno}
+        alt={alt}
+        formats={['avif', 'webp']}
+        widths={[640, 960, 1280, 1920, 2560, scontorno.width]}
+        quality={QUALITA}
+        sizes="(min-width: 900px) min(107svh, 62vw), 110vw"
+        loading={apertura ? 'eager' : 'lazy'}
+        fetchpriority={apertura ? 'high' : 'auto'}
+      />
+    </div>
+    <Nastro
+      voci={['Orchestra Ritmico Sinfonica Italiana', D.crediti.direttore, 'Omaggio a Ennio Morricone']}
+      direzione={1}
+      class="sm__fascia sm__fascia--piede"
+    />
+    <span class="om-grana" aria-hidden="true"></span>
+  </div>
+
+  <div class="contenitore sm__testo">
+    <Titolo class="sm__titolo" id={idTitolo} data-righe>{titolo}</Titolo>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .sm {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: 0;
+    background: var(--sala-100);
+  }
+
+  /* ---------- Il palco: luce, fasce e figura ---------- */
+  .sm__palco {
+    position: relative;
+    aspect-ratio: 1.02;
+    margin-top: var(--spazio-4);
+  }
+
+  /* Il controluce caldo dietro la figura, come la sala del concerto. */
+  .sm__luce {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 52% 58% at 62% 46%, rgba(231, 173, 84, 0.2), transparent 70%),
+      radial-gradient(ellipse 80% 70% at 62% 60%, rgba(122, 84, 32, 0.35), transparent 75%);
+  }
+
+  .sm :global(.sm__fascia) {
+    position: absolute;
+    left: -20%;
+    right: -20%;
+    padding-block: 0;
+  }
+
+  /* Fascia oro col nome: passa dietro le braccia, il frac scuro si stacca dal fondo. */
+  .sm :global(.sm__fascia--oro) {
+    top: 58%;
+    background: var(--oro);
+    transform: rotate(-6deg);
+  }
+
+  .sm :global(.sm__fascia--oro .nastro__voce) {
+    padding-block: 0.06em 0;
+    font: 800 clamp(3.25rem, 9vw, 9rem) / 1 var(--font-display);
+    font-stretch: 62%;
+    letter-spacing: 0;
+    color: var(--su-oro);
+  }
+
+  .sm :global(.sm__fascia--oro .nastro__punto) {
+    background: var(--su-oro);
+  }
+
+  /* Fascia profilata in verso opposto, all'altezza della testa. */
+  .sm :global(.sm__fascia--contorno) {
+    top: 16%;
+    transform: rotate(4deg);
+  }
+
+  .sm :global(.sm__fascia--contorno .nastro__voce) {
+    font-size: clamp(2.5rem, 7vw, 7rem);
+    -webkit-text-stroke-color: var(--avorio-tenue);
+    opacity: 0.55;
+  }
+
+  /* Davanti, in basso: copre il taglio della foto, come i titoli che corrono sotto lo schermo. */
+  .sm :global(.sm__fascia--piede) {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background: var(--sala-000);
+    border-top: 1px solid var(--oro);
+  }
+
+  .sm :global(.sm__fascia--piede .nastro__voce) {
+    padding: 14px 0.6em;
+    font: 500 12px / 1 var(--font-misura);
+    letter-spacing: 0.18em;
+    color: var(--avorio);
+  }
+
+  .sm :global(.sm__fascia--piede .nastro__punto) {
+    width: 5px;
+  }
+
+  /* Su mobile la figura sborda appena: la punta della bacchetta esce a sinistra, il Maestro resta grande. */
+  .sm__figura {
+    position: absolute;
+    right: -3%;
+    bottom: 0;
+    z-index: 1;
+    width: 110%;
+    transform-origin: 60% 100%;
+  }
+
+  .sm__figura :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .sm .om-grana {
+    z-index: 3;
+  }
+
+  /* ---------- Testo ---------- */
+  .sm__testo {
+    position: relative;
+    z-index: 4;
+    display: grid;
+    gap: var(--spazio-8);
+    padding-block: var(--spazio-12) clamp(56px, 9vh, 120px);
+    container-type: inline-size;
+  }
+
+
+  .sm__titolo {
+    max-width: 12ch;
+    margin: 0;
+    font: 250 clamp(2.125rem, 11cqi, 5.5rem) / 0.98 var(--font-display);
+    font-stretch: 125%;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    overflow-wrap: normal;
+  }
+
+  .sm__testo :global(p) {
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .sm__testo :global(.om-pulsante--testo) {
+    justify-self: start;
+  }
+
+  /* ---------- Da 900 px: la figura a tutta altezza a destra, il testo a sinistra ---------- */
+  @media (min-width: 900px) {
+    .sm {
+      display: flex;
+      align-items: center;
+      min-height: 100svh;
+    }
+
+    .sm__palco {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+      margin: 0;
+    }
+
+    /* Le fasce dietro la figura nascono dal buio: a sinistra, dove c'è il testo, sono trasparenti. */
+    .sm :global(.sm__fascia--oro),
+    .sm :global(.sm__fascia--contorno) {
+      -webkit-mask-image: linear-gradient(to right, transparent 42%, #000 56%);
+      mask-image: linear-gradient(to right, transparent 42%, #000 56%);
+    }
+
+    .sm :global(.sm__fascia--oro) {
+      top: 57%;
+    }
+
+    .sm :global(.sm__fascia--contorno) {
+      top: 14%;
+    }
+
+    .sm__figura {
+      right: 0;
+      width: min(calc(88svh * 1.21), 62vw);
+    }
+
+    .sm__testo {
+      gap: clamp(20px, 3.5vh, 40px);
+      padding-block: clamp(56px, 9vh, 120px);
+    }
+
+    /* In apertura la testata (sticky, ~78 px) sta sopra la scena nel flusso: insieme riempiono lo schermo. */
+    .sm--apertura {
+      min-height: calc(100svh - 78px);
+    }
+
+    /* Colonna stretta: la mano con la bacchetta resta libera alla sua destra. */
+    .sm__testo {
+      grid-template-columns: min(30vw, 460px);
+    }
+
+    .sm__testo {
+      container-type: normal;
+    }
+
+    .sm__titolo {
+      font-size: clamp(2.25rem, 4.2vw, 5rem);
+    }
+  }
+</style>
