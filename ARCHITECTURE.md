@@ -75,7 +75,7 @@ WEBSITE/
 ├─ public/
 │  ├─ video/             # hero-1920.mp4, hero-1280.mp4, hero.webm
 │  ├─ favicon.svg/.ico, apple-touch-icon.png, og/*.jpg
-│  └─ presskit/          # zip press kit (quando disponibile)
+│  └─ presskit/          # press kit (PDF o zip): il pulsante compare da solo
 └─ src/
    ├─ assets/
    │  ├─ foto/           # JPG ottimizzati con nomi semantici
