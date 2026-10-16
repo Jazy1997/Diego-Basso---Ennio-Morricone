@@ -9,6 +9,7 @@
 //   data-sequenza   scena fermata (pin) i cui [data-passo] si accendono uno alla volta scorrendo
 //   data-nastro     fascia di parole che scorre in orizzontale con lo scroll (Nastro.astro)
 //   data-allarga    riquadro che si apre fino ai bordi dello schermo arrivando al centro
+//   data-sale       figura scontornata che sale dal fondo della scena mentre la si attraversa (ScenaMaestro)
 // Con prefers-reduced-motion niente di tutto questo: lo stato iniziale visibile è quello finale.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -154,6 +155,21 @@ if (!ridotto) {
         yPercent: 6,
         ease: 'none',
         scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
+      },
+    );
+  }
+
+  // Sale: la figura emerge dal fondo e si avvicina appena; la fascia davanti ne copre il bordo basso.
+  for (const el of document.querySelectorAll<HTMLElement>('[data-sale]')) {
+    gsap.fromTo(
+      el,
+      { yPercent: 9, scale: 1.06 },
+      {
+        yPercent: -2,
+        scale: 1,
+        ease: 'none',
+        force3D: true,
+        scrollTrigger: { trigger: el.parentElement ?? el, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
       },
     );
   }

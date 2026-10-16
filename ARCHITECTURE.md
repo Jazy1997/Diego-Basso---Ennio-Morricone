@@ -130,7 +130,7 @@ Revisione "La pellicola in sala" (ottobre 2026): la home è una sequenza di scen
 | 3 | Nastro | ORCHESTRA · VOCE · CINEMA | Scorre in orizzontale con lo scroll |
 | 4 | Panoramica | `orchestra-schermo-03` in 2,39:1 + "Un viaggio tra proiezioni e musica." | Sipario + parallasse |
 | 5 | Repertorio | Titolo, frase approvata, poi i film come titoli di coda (Bodoni corsivo) | Il titolo al centro si accende d'oro; foto di sala ferma dietro |
-| 6 | Il Maestro | Titolo a tutta larghezza, ritratto, estratto "visione" | Nome "DIEGO BASSO" profilato che scorre dietro; sipario sul ritratto |
+| 6 | Il Maestro | `ScenaMaestro`: scontorno di Diego Basso a tutto schermo a destra, titolo + estratto "visione" + "Scopri il Maestro" a sinistra (sopra la figura su mobile) | La figura sale dal fondo (`data-sale`); dietro, fascia oro "DIEGO BASSO" e fascia profilata in verso opposto (sfumano verso il testo); davanti, fascia sottile che copre il taglio della foto |
 | 7 | Formazione | Direttore / Soprano / 46 elementi come crediti su una riga | Scena ferma (`data-sequenza`): zoom lento della foto, tendina verso la successiva, filo d'oro per voce |
 | 8 | Trailer | Facciata 2,39:1 (torna 16:9 al play) | Si apre fino ai bordi arrivando al centro (`data-allarga`) |
 | 9 | Nastro città | Città reali degli eventi | Scorre verso destra |
@@ -187,8 +187,9 @@ Ogni componente usa le classi `om-` di `src/styles/ds/bundle.css` (copiato dal D
 | `SchedaContatto` | — (`sala-200`, `raggio-0`) | `titolo`, `nome`, `email`, `telefono` | `mailto:`/`tel:` |
 | `ModuloContatti` | campi `sala-300`, bordo `linea-forte` | `lang` | POST a `/api/contatti` (validazione Zod lato server, invio via Resend), honeypot + limite di frequenza, motivo (Booking/Stampa/Info), consenso privacy obbligatorio, pagina di conferma |
 | `Footer` | `om-partner` | `lang` | Crediti fotografici aggregati da `foto.json` |
-| Regia (`src/scripts/regia.ts`) | — | attributi | Lenis + GSAP. `data-righe` (titolo riga per riga), `data-illumina` (parole che si accendono), `data-sipario`, `data-parallasse`, `data-conta`, `data-accendi`, `data-sequenza`/`data-passo`/`data-scatto`/`data-filo` (scena ferma), `data-nastro`, `data-allarga`, `data-reveal`. Mai due animazioni sulla stessa immagine. Reduced-motion: niente regia, tutto visibile |
+| Regia (`src/scripts/regia.ts`) | — | attributi | Lenis + GSAP. `data-righe` (titolo riga per riga), `data-illumina` (parole che si accendono), `data-sipario`, `data-parallasse`, `data-conta`, `data-accendi`, `data-sequenza`/`data-passo`/`data-scatto`/`data-filo` (scena ferma), `data-nastro`, `data-allarga`, `data-sale`, `data-reveal`. Mai due animazioni sulla stessa immagine. Reduced-motion: niente regia, tutto visibile |
 | `Nastro` | — | `voci`, `contorno`, `direzione` | Parole giganti che scorrono con lo scroll; `aria-hidden` |
+| `ScenaMaestro` | — | `lang`, `titolo`, `apertura`, `id`; slot = testo e azioni | Home (h2) e apertura della pagina Il Maestro (h1, `apertura`: riempie lo schermo sotto la testata). Scontorno da `scripts/scontorno.py`; reference nyphil.org/discover/gustavo |
 | `Pellicola` | — | — | Avanzamento della pagina; `aria-hidden` |
 | `Sezione` | — | `id`, `occhiello`, `titolo` | `h2` riga per riga; l'occhiello si mostra solo se manca il titolo (allora è il titolo) |
 | `Seo` | — | `title`, `description`, `og`, `lang`, `alternate` | Dentro BaseLayout |
@@ -211,7 +212,7 @@ Ogni componente usa le classi `om-` di `src/styles/ds/bundle.css` (copiato dal D
 | `foto` | `foto.json` | `file`, `categoria`, `alt` {it,en}, `credito`, `segnaposto` |
 
 Regole:
-- Eventi futuri ordinati per data crescente; passati → Archivio (decrescente). Data passata calcolata a build: serve un **rebuild giornaliero** (Vercel Deploy Hook chiamato da una GitHub Action cron alle 04:00) — vedi T03.
+- Eventi futuri ordinati per data crescente; passati → Archivio (decrescente), raggruppato per anno in `<details>` (aperto solo l'anno più recente, apertura animata con `::details-content` dove supportato). Data passata calcolata a build: serve un **rebuild giornaliero** (Vercel Deploy Hook chiamato da una GitHub Action cron alle 04:00) — vedi T03.
 - **Segnaposto**: in `astro dev` visibili con bordo tratteggiato e scritta "SEGNAPOSTO"; in build di produzione (`VERCEL_ENV=production`) i contenuti `segnaposto: true` sono **esclusi**. Il ticket T40 li sostituisce.
 - Formati data (DS): grafica `SAB 17.07.2027 · ORE 21:00`, testo "sabato 17 luglio 2027, ore 21", EN "Sat 17 July 2027, 9 pm". Helper in `src/i18n/date.ts` con `Intl.DateTimeFormat`, fuso `Europe/Rome`.
 
@@ -239,6 +240,8 @@ Si usa `.om-grana` di `bundle.css` del DS (rumore SVG incorporato, nessun file i
 - Ritaglio 8% in basso: elimina la firma del fotografo con il logo ricolorato (vietato dal DS).
 - Crediti: Lorenzo Marafante; le foto con "© Omaggio a Ennio Morricone" (#12–16 del provino) hanno `creditoDaConfermare: true` (T40).
 - `maestro-04` e `luogo-aperto-01` sono a 2048 px: non usarle a tutta larghezza.
+- Scontorno del Maestro (`scripts/scontorno.py`): da `Diego Scontornata.png` → `src/assets/foto/maestro-scontornato.webp` (ritaglio ai bordi della figura, RGB azzerato sul trasparente, 2600 px di altezza, WebP con alfa).
+- `widths` e `sizes` vanno calcolati sull'immagine **intera** quando la cornice la ritaglia (`object-fit: cover`) o la ingrandisce (Ken Burns): la Formazione mostra una 16:10 in una cornice 4:5 a 1,18×, quindi `sizes` ≈ 140svh.
 
 ---
 
